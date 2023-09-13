@@ -1,0 +1,54 @@
+
+###
+health card
+
+the card:
+	-can be opened in 2 ways with the fingerprint & without
+	if with ##to be compelete##
+	        ##               ##
+	
+we have 5 kinds of users
+	doctor
+	pharmacist
+	lab
+	owner
+	other
+	
+Using the "User" account he can:
+----------------------------------
+doctor 
+	-see the full history of the patient 
+	-add new medicine, x-rays and tests ...
+	-...
+----------------------------------
+pharmacist
+	-the account forward him to the medicin section in the prescriptions
+	-can add schedules for taking medications
+	-...
+----------------------------------
+lab
+	-the accout forward him to the X-rays and tests in the prescriptions
+	-can add the results
+	-...
+----------------------------------
+owner
+	-He can only see his health history and can't edit anything
+	-can schedule an appointment with a doctor & lab
+	-...
+----------------------------------
+other 
+	this case while:
+	-emergency #patient fingerprint wll be used# can see:
+		-blood type
+		-chronic diseases
+		-some tips
+		-Relative phone number
+		-can call the ampulance and come to the current location
+		-...
+	-loosing  can see:
+		-owner phone number
+		-...
+.
+.
+.		
+###
