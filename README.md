@@ -4,6 +4,7 @@
 
 # How to Run
 1- create Database with name "medicory"
+
 2- create user in this database with username "medicory" and password "medicory" 
 ```code
   CREATE USER 'medicory'@'localhost' IDENTIFIED BY 'medicory';
@@ -212,7 +213,9 @@ CREATE TABLE surgeries (
 ```
 
 4- Clone the project repository from Git (if it's not already cloned).
+
 5- Import the project into your favorite Java IDE (e.g., IntelliJ, Eclipse, etc.).
+
 6- Build the project to resolve dependencies.
 
  
