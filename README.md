@@ -1,6 +1,6 @@
 # Requirements
 - Java Development Kit (JDK) 17 or above
-- MySQL Database (You can either use a local PostgreSQL instance or connect to a remote one)
+- MySQL Database (You can either use a local MySQL instance or connect to a remote one)
 
 # How to Run
 1- create Database with name "medicory"
