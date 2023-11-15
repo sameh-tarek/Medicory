@@ -113,10 +113,11 @@ CREATE TABLE medicines (
 CREATE TABLE medications (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     current_prescription_id BIGINT,
+    medicine_id BIGINT,
     dose VARCHAR(255) NOT NULL,
     frequency INT NOT NULL,
     FOREIGN KEY (current_prescription_id) REFERENCES current_prescriptions(id),
-    FOREIGN KEY (id) REFERENCES medicines(id)
+    FOREIGN KEY (medicine_id) REFERENCES medicines(id)
 );
 
 -- 12
