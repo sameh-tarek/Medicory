@@ -219,4 +219,8 @@ CREATE TABLE surgeries (
 
 6- Build the project to resolve dependencies.
 
+# ERD 
+![medicory6](https://github.com/sameh-tarek/Medicory/assets/108232157/a0d41887-8ecd-433f-bc6b-c8e0028e77e4)
+
+
  
