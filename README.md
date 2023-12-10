@@ -226,4 +226,5 @@ CREATE TABLE surgeries (
 
 # ERD
 
-![medicoryERD2.png](..%2F..%2F..%2FDB%2FmedicoryERD2.png)
+![medicoryERD2](https://github.com/sameh-tarek/Medicory/assets/108232157/8a1662c9-2a6b-4d24-88e2-677abe3bc54c)
+
