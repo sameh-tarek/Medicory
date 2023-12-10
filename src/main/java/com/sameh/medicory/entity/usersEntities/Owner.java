@@ -67,9 +67,6 @@ public class Owner {
             inverseJoinColumns = @JoinColumn(name = "surgery_id"))
     private List<Surgery> surgeries;
 
-    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
-    private CurrentPrescription currentPrescription;
-
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

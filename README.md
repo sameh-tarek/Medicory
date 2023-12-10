@@ -219,7 +219,7 @@ CREATE TABLE surgeries (
 
 6- Build the project to resolve dependencies.
 
-# ERD 
+# ERD
 
 ![medicory6](https://github.com/said-ahmd/health_card/assets/108232157/4f6d721b-64f6-485c-879b-6d204fcec849)
 

@@ -20,6 +20,10 @@ public class Medication {
     private CurrentPrescription currentPrescription;
 
     @ManyToOne
+    @JoinColumn(name = "current_schedule_id")
+    private CurrentSchedule currentSchedule;
+
+    @ManyToOne
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
 
