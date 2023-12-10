@@ -1,3 +1,8 @@
+# Test the API here :
+<a href="https://orange-resonance-199861.postman.co/collection/28660393-3250146c-3baa-4035-9ebe-837a4e7a0ce0?source=rip_html">
+	<img alt="Run in Postman" src="https://run.pstmn.io/button.svg">
+</a>
+
 # Requirements
 - Java Development Kit (JDK) 17 or above
 - MySQL Database (You can either use a local MySQL instance or connect to a remote one)
@@ -221,6 +226,4 @@ CREATE TABLE surgeries (
 
 # ERD
 
-![medicory6](https://github.com/said-ahmd/health_card/assets/108232157/4f6d721b-64f6-485c-879b-6d204fcec849)
-
- 
+![medicoryERD2.png](..%2F..%2F..%2FDB%2FmedicoryERD2.png)
