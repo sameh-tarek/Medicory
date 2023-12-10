@@ -21,6 +21,8 @@ public class ChronicDiseases {
     @Column(nullable = false)
     private String name;
 
+    private String information;
+
     @ManyToMany(mappedBy = "chronicDiseases")
     private List<Owner> owners;
 }

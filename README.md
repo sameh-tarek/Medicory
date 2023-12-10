@@ -1,3 +1,8 @@
+# Test the API here :
+<a href="https://interstellar-capsule-619026.postman.co/collection/28660393-3250146c-3baa-4035-9ebe-837a4e7a0ce0?source=rip_html">
+	<img alt="Run in Postman" src="https://run.pstmn.io/button.svg">
+</a>
+
 # Requirements
 - Java Development Kit (JDK) 17 or above
 - MySQL Database (You can either use a local MySQL instance or connect to a remote one)
@@ -219,8 +224,7 @@ CREATE TABLE surgeries (
 
 6- Build the project to resolve dependencies.
 
-# ERD 
+# ERD
 
-![medicory6](https://github.com/said-ahmd/health_card/assets/108232157/4f6d721b-64f6-485c-879b-6d204fcec849)
+![medicoryERD2](https://github.com/sameh-tarek/Medicory/assets/108232157/8a1662c9-2a6b-4d24-88e2-677abe3bc54c)
 
- 
