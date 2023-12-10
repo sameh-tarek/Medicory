@@ -1,5 +1,5 @@
 # Test the API here :
-<a href="https://orange-resonance-199861.postman.co/collection/28660393-3250146c-3baa-4035-9ebe-837a4e7a0ce0?source=rip_html">
+<a href="https://interstellar-capsule-619026.postman.co/collection/28660393-3250146c-3baa-4035-9ebe-837a4e7a0ce0?source=rip_html">
 	<img alt="Run in Postman" src="https://run.pstmn.io/button.svg">
 </a>
 
