@@ -3,10 +3,12 @@ package com.sameh.medicory.entity.usersEntities;
 
 import com.sameh.medicory.entity.phoneEntities.OwnerPhoneNumber;
 import com.sameh.medicory.entity.enums.Role;
+import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -33,5 +35,19 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<OwnerPhoneNumber> ownerPhoneNumbers;
+
+    @OneToMany(mappedBy = "user")
+    private List<RelativePhoneNumber> relativePhoneNumbers;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", isEnabled=" + isEnabled +
+                '}';
+    }
 }
 

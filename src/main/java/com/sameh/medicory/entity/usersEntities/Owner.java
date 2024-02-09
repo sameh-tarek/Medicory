@@ -6,14 +6,12 @@ import com.sameh.medicory.entity.Immunization;
 import com.sameh.medicory.entity.Surgery;
 import com.sameh.medicory.entity.enums.BloodType;
 import com.sameh.medicory.entity.enums.Gender;
-import com.sameh.medicory.entity.medicationEntities.CurrentPrescription;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
