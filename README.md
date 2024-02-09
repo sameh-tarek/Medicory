@@ -7,7 +7,7 @@
 - Java Development Kit (JDK) 17 or above
 - MySQL Database (You can either use a local MySQL instance or connect to a remote one)
 # How to Run
-1 - [DataBase Configuration](DB/README.md)
+1 - [DataBase Configuration](DB#readme)
 
 2- Clone the project repository from Git (if it's not already cloned).
 
