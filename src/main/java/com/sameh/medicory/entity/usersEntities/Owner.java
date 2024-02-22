@@ -1,9 +1,9 @@
 package com.sameh.medicory.entity.usersEntities;
 
-import com.sameh.medicory.entity.Allergies;
-import com.sameh.medicory.entity.ChronicDiseases;
-import com.sameh.medicory.entity.Immunization;
-import com.sameh.medicory.entity.Surgery;
+import com.sameh.medicory.entity.otherEntities.Allergies;
+import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
+import com.sameh.medicory.entity.otherEntities.Immunization;
+import com.sameh.medicory.entity.otherEntities.Surgery;
 import com.sameh.medicory.entity.enums.BloodType;
 import com.sameh.medicory.entity.enums.Gender;
 import jakarta.persistence.*;
@@ -41,16 +41,10 @@ public class Owner {
     @Enumerated(EnumType.STRING)
     private BloodType bloodType;
 
-    @ManyToMany
-    @JoinTable(name = "owner_chronic_diseases",
-            joinColumns = @JoinColumn(name = "owner_id"),
-            inverseJoinColumns = @JoinColumn(name = "chronic_disease_id"))
+    @OneToMany(mappedBy = "owner")
     private List<ChronicDiseases> chronicDiseases;
 
-    @ManyToMany
-    @JoinTable(name = "owner_allergies",
-            joinColumns = @JoinColumn(name = "owner_id"),
-            inverseJoinColumns = @JoinColumn(name = "allergy_id"))
+    @OneToMany(mappedBy = "owner")
     private List<Allergies> allergies;
 
     @ManyToMany
@@ -59,10 +53,7 @@ public class Owner {
             inverseJoinColumns = @JoinColumn(name = "immunization_id"))
     private List<Immunization> immunizations;
 
-    @ManyToMany
-    @JoinTable(name = "owner_surgeries",
-            joinColumns = @JoinColumn(name = "owner_id"),
-            inverseJoinColumns = @JoinColumn(name = "surgery_id"))
+    @OneToMany(mappedBy = "owner")
     private List<Surgery> surgeries;
 
     @OneToOne

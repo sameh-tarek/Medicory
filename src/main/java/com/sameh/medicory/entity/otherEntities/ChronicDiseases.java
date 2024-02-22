@@ -1,4 +1,4 @@
-package com.sameh.medicory.entity;
+package com.sameh.medicory.entity.otherEntities;
 
 import com.sameh.medicory.entity.usersEntities.Owner;
 import jakarta.persistence.*;
@@ -12,16 +12,20 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "surgeries")
-public class Surgery {
+@Table(name = "chronic_diseases")
+public class ChronicDiseases {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String description;
+    private String name;
 
-    @ManyToMany(mappedBy = "surgeries")
-    private List<Owner> owners;
+    private String information;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
 }
+
 

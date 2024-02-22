@@ -1,15 +1,16 @@
 package com.sameh.medicory.service.impl;
 
+import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
 import com.sameh.medicory.entity.phoneEntities.OwnerPhoneNumber;
 import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.entity.usersEntities.User;
-import com.sameh.medicory.exception.RecordNotFoundException;
+import com.sameh.medicory.mapper.ChronicDiseasesMapper;
+import com.sameh.medicory.model.chronicDisease.ChronicDiseasesDTO;
 import com.sameh.medicory.model.patient.PatientPersonalInformation;
-import com.sameh.medicory.repository.OwnerRepository;
-import com.sameh.medicory.repository.UserRepository;
 import com.sameh.medicory.service.DoctorService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sameh.medicory.utils.SecurityUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,20 +19,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class DoctorServiceImpl implements DoctorService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private OwnerRepository ownerRepository;
+
+    private final ChronicDiseasesMapper chronicDiseasesMapper;
+    private final SecurityUtils securityUtils;
 
     @Override
     public PatientPersonalInformation getPatientPersonalInformation() {
-        Long userId = 1L; // TODO get authenticated user id
-        User patientUser =  userRepository.findById(userId)
-                .orElseThrow(() -> new RecordNotFoundException("This User with Id " + userId + " doesn't exist"));
-        Owner patientOwner = ownerRepository.findAllByUserId(userId)
-                .orElseThrow(() -> new RecordNotFoundException("This Patient with userId " + userId + " doesn't exist"));
-
+        User patientUser = securityUtils.getCurrentUser();
+        Owner patientOwner = securityUtils.getCurrentOwner();
         PatientPersonalInformation patientPersonalInformation = new PatientPersonalInformation(
                 patientOwner.getFirstName() + " " + patientOwner.getMiddleName() + " " + patientOwner.getLastName(),
                 getCurrentAge(patientOwner.getDateOfBirth()),
@@ -42,8 +39,17 @@ public class DoctorServiceImpl implements DoctorService {
                 patientUser.getEmail(),
                 patientOwner.getBloodType().name()
         );
-
         return patientPersonalInformation;
+    }
+    @Override
+    public List<ChronicDiseasesDTO> getPatientChronicDiseases() {
+        Owner patientOwner = securityUtils.getCurrentOwner();
+        List<ChronicDiseases> chronicDiseases = patientOwner.getChronicDiseases();
+        List<ChronicDiseasesDTO> chronicDiseasesDTOS = chronicDiseases
+                .stream()
+                .map(chronicDiseasesMapper::toDTO)
+                .collect(Collectors.toList());
+        return chronicDiseasesDTOS;
     }
 
     private Integer getCurrentAge(LocalDate dateOfBirth) {
