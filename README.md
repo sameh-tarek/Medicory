@@ -7,13 +7,24 @@
 - Java Development Kit (JDK) 17 or above
 - MySQL Database (You can either use a local MySQL instance or connect to a remote one)
 # How to Run
-1 - [DataBase Configuration](DB#readme)
+1 - [Database Configuration](DB#readme)
 
 2- Clone the project repository from Git (if it's not already cloned).
 
 3- Import the project into your favorite Java IDE (e.g., IntelliJ, Eclipse, etc.).
 
 4- Build the project to resolve dependencies.
+
+## Features
+
+### Doctor
+
+| No. | Feature                      | Description                                                                | Endpoint                        |
+|----:|------------------------------|----------------------------------------------------------------------------|---------------------------------|
+|  1. | Patient Personal Information | Doctor get Patient Personal Information with current Authenticated user id | `GET /doctor/patient/personal-information` |
+|  2. | Patient Chronic Diseases     | Doctor get Patient Chronic Diseases with current Authenticated user id     | `GET /doctor/patient/chronic-diseases`                |
+|  ..                                                                                                                |       
+
 
 # ERD
 

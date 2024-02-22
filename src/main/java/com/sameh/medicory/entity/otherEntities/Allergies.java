@@ -1,4 +1,4 @@
-package com.sameh.medicory.entity;
+package com.sameh.medicory.entity.otherEntities;
 
 import com.sameh.medicory.entity.usersEntities.Owner;
 import jakarta.persistence.*;
@@ -21,8 +21,9 @@ public class Allergies {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "allergies")
-    private List<Owner> owners;
+    @ManyToOne()
+    @JoinColumn(name = "owner_id", nullable = false)
+    private Owner owner;
 }
 
 
