@@ -21,7 +21,9 @@ public class Allergies {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne()
+    private String information;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private Owner owner;
 }

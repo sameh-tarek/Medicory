@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Data
 @AllArgsConstructor
@@ -23,9 +21,16 @@ public class ChronicDiseases {
 
     private String information;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private Owner owner;
+
+    @Override
+    public String toString() {
+        return "ChronicDiseases{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", information='" + information + '\'' +
+                '}';
+    }
 }
-
-

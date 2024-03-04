@@ -1,4 +1,4 @@
-package com.sameh.medicory.model.chronicDisease;
+package com.sameh.medicory.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChronicDiseasesDTO {
+public class AllergiesDTO {
     private String name;
     private String information;
 }

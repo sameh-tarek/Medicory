@@ -41,10 +41,10 @@ public class Owner {
     @Enumerated(EnumType.STRING)
     private BloodType bloodType;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChronicDiseases> chronicDiseases;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Allergies> allergies;
 
     @ManyToMany
@@ -53,11 +53,27 @@ public class Owner {
             inverseJoinColumns = @JoinColumn(name = "immunization_id"))
     private List<Immunization> immunizations;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Surgery> surgeries;
 
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Override
+    public String toString() {
+        return "Owner{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", gender=" + gender +
+                ", dateOfBirth=" + dateOfBirth +
+                ", address='" + address + '\'' +
+                ", bloodType=" + bloodType +
+                ", chronicDiseases=" + chronicDiseases +
+                ", user=" + user +
+                '}';
+    }
 }
 

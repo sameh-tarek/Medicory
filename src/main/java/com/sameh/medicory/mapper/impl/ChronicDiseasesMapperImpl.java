@@ -1,10 +1,9 @@
 package com.sameh.medicory.mapper.impl;
 
 import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
-import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.mapper.ChronicDiseasesMapper;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesDTO;
-import com.sameh.medicory.repository.OwnerRepository;
+import com.sameh.medicory.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,15 +11,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ChronicDiseasesMapperImpl implements ChronicDiseasesMapper {
 
-    private final OwnerRepository ownerRepository;
+    private final SecurityUtils securityUtils;
 
     @Override
     public ChronicDiseases toEntity(ChronicDiseasesDTO chronicDiseasesDTO) {
         ChronicDiseases chronicDiseases = new ChronicDiseases();
         chronicDiseases.setName(chronicDiseasesDTO.getName());
-        chronicDiseases.setInformation(chronicDiseases.getInformation());
-        chronicDiseases.setOwner(ownerRepository.findById(chronicDiseases.getId())
-                .orElseThrow(() -> new RecordNotFoundException("Not Found User With Id : " + chronicDiseasesDTO.getOwnerId())));
+        chronicDiseases.setInformation(chronicDiseasesDTO.getInformation());
+        chronicDiseases.setOwner(securityUtils.getCurrentOwner());
         return chronicDiseases;
     }
 
@@ -29,7 +27,6 @@ public class ChronicDiseasesMapperImpl implements ChronicDiseasesMapper {
         ChronicDiseasesDTO chronicDiseasesDTO = new ChronicDiseasesDTO();
         chronicDiseasesDTO.setName(chronicDiseases.getName());
         chronicDiseasesDTO.setInformation(chronicDiseases.getInformation());
-        chronicDiseasesDTO.setOwnerId(chronicDiseases.getOwner().getId());
         return chronicDiseasesDTO;
     }
 }
