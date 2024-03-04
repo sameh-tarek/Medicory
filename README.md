@@ -19,13 +19,13 @@
 
 ### Doctor
 
-| No. | Feature                      | Description                                                                | Endpoint                        |
-|----:|------------------------------|----------------------------------------------------------------------------|---------------------------------|
-|  1. | Patient Personal Information | Doctor get Patient Personal Information with current Authenticated user id | `GET /doctor/patient/personal-information` |
-|  2. | Patient Chronic Diseases     | Doctor get Patient Chronic Diseases with current Authenticated user id     | `GET /doctor/patient/chronic-diseases`                |
-|  ..                                                                                                                |       
-
-
+| No. | Feature                      | Description                                                     | Endpoint                                     |
+|----:|------------------------------|-----------------------------------------------------------------|----------------------------------------------|
+|  1. | Patient Personal Information | Retrieve personal information of a patient                      | `GET /doctor/patient/personal-information`  |
+|  2. | Patient Chronic Diseases     | Retrieve chronic diseases of a patient                          | `GET /doctor/patient/chronic-diseases`      |
+|  3. | Add Chronic Disease          | Add a new chronic disease for a patient                        | `POST /doctor/patient/chronic-diseases/add`|
+|  4. | Patient Allergies            | Retrieve allergies of a patient                                | `GET /doctor/patient/allergies`             |
+|  .. |
 # ERD
 
 ![medicoryERD2](https://github.com/said-ahmd/health_card/assets/108232157/6a505ea2-e375-43d8-b5a5-611f9f1c8301)
