@@ -41,4 +41,9 @@ public class DoctorController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PostMapping("patient/allergies/add")
+    public ResponseEntity<String> addNewAllergiesForPatient(@RequestBody AllergiesDTO allergiesDTO){
+        return new ResponseEntity<>(doctorService.addNewAllergiesForPatient(allergiesDTO), HttpStatus.CREATED);
+    }
+
 }

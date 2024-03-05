@@ -26,7 +26,10 @@
 |  2. | Patient Chronic Diseases     | Retrieve chronic diseases of a patient                          | `GET /doctor/patient/chronic-diseases`      |
 |  3. | Add Chronic Disease          | Add a new chronic disease for a patient                        | `POST /doctor/patient/chronic-diseases/add`|
 |  4. | Patient Allergies            | Retrieve allergies of a patient                                | `GET /doctor/patient/allergies`             |
+|  5. | Add Allergies                | Add a new allergy for a patient                                | `POST /doctor/patient/allergies/add`       |
 |  .. |
+
+
 
 # ERD
 
