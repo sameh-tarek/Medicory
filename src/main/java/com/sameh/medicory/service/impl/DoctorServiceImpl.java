@@ -1,5 +1,6 @@
 package com.sameh.medicory.service.impl;
 
+import com.sameh.medicory.entity.otherEntities.Allergies;
 import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
 import com.sameh.medicory.entity.phoneEntities.OwnerPhoneNumber;
 import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
@@ -15,7 +16,6 @@ import com.sameh.medicory.service.DoctorService;
 import com.sameh.medicory.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -92,6 +92,19 @@ public class DoctorServiceImpl implements DoctorService {
                 .collect(Collectors.toList());
         log.info("All Patient Allergies {}", allergiesDTOS);
         return allergiesDTOS;
+    }
+
+    @Override
+    public String addNewAllergiesForPatient(AllergiesDTO allergiesDTO) {
+        Owner patientOwner = securityUtils.getCurrentOwner();
+        log.info("Doctor want to add new Allergies: {} for patient owner his ID: {}", allergiesDTO,patientOwner.getId());
+        Allergies allergies = allergiesMapper.toEntity(allergiesDTO);
+        List<Allergies> patientAllergies = patientOwner.getAllergies();
+        patientAllergies.add(allergies);
+        patientOwner.setAllergies(patientAllergies);
+        ownerRepository.save(patientOwner);
+        log.info("the new Allergies Added successfully {}", patientOwner.getAllergies());
+        return "New Allergies Added successfully";
     }
 
 

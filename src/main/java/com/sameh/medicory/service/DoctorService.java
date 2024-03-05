@@ -14,4 +14,6 @@ public interface DoctorService {
     String addNewChronicDiseasesForPatient(ChronicDiseasesDTO chronicDiseasesDTO);
 
     List<AllergiesDTO> getPatientAllergies();
+
+    String addNewAllergiesForPatient(AllergiesDTO allergiesDTO);
 }
