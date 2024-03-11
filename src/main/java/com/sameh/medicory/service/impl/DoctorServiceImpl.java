@@ -2,13 +2,19 @@ package com.sameh.medicory.service.impl;
 
 import com.sameh.medicory.entity.otherEntities.Allergies;
 import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
+import com.sameh.medicory.entity.otherEntities.Immunization;
+import com.sameh.medicory.entity.otherEntities.Surgery;
 import com.sameh.medicory.entity.phoneEntities.OwnerPhoneNumber;
 import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.mapper.AllergiesMapper;
 import com.sameh.medicory.mapper.ChronicDiseasesMapper;
+import com.sameh.medicory.mapper.ImmunizationMapper;
+import com.sameh.medicory.mapper.SurgeryMapper;
 import com.sameh.medicory.model.AllergiesDTO;
+import com.sameh.medicory.model.ImmunizationDTO;
+import com.sameh.medicory.model.SurgeryDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesDTO;
 import com.sameh.medicory.model.patient.PatientPersonalInformation;
 import com.sameh.medicory.repository.OwnerRepository;
@@ -16,6 +22,7 @@ import com.sameh.medicory.service.DoctorService;
 import com.sameh.medicory.utils.OwnerContext;
 import com.sameh.medicory.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +32,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class DoctorServiceImpl implements DoctorService {
 
@@ -33,6 +40,8 @@ public class DoctorServiceImpl implements DoctorService {
     private final ChronicDiseasesMapper chronicDiseasesMapper;
     private final OwnerContext ownerContext;
     private final AllergiesMapper allergiesMapper;
+    private final ImmunizationMapper immunizationMapper;
+    private final SurgeryMapper surgeryMapper;
 
     @Override
     public PatientPersonalInformation getPatientPersonalInformation() {
@@ -106,6 +115,56 @@ public class DoctorServiceImpl implements DoctorService {
         ownerRepository.save(patientOwner);
         log.info("the new Allergies Added successfully {}", patientOwner.getAllergies());
         return "New Allergies Added successfully";
+    }
+
+    @Override
+    public List<ImmunizationDTO> getaAllPatientImmunizations() {
+        Owner patientOwner = ownerContext.getCurrentOwner();
+        log.info("Doctor want to get All Immunizations for patient owner with id {}", patientOwner.getId());
+        List<ImmunizationDTO> immunizationDTOS = patientOwner.getImmunizations()
+                .stream()
+                .map(immunizationMapper::toDTO)
+                .collect(Collectors.toList());
+        log.info("All Immunizations {}", immunizationDTOS);
+        return immunizationDTOS;
+    }
+
+    @Override
+    public String addNewImmunizationForPatient(ImmunizationDTO immunizationDTO) {
+        Owner patientOwner = ownerContext.getCurrentOwner();
+        log.info("Doctor want to add this new Immunization {}, for owner with id {}", immunizationDTO, patientOwner.getId());
+        Immunization newImmunization = immunizationMapper.toEntity(immunizationDTO);
+        List<Immunization> allPatientImmunizations = patientOwner.getImmunizations();
+        allPatientImmunizations.add(newImmunization);
+        patientOwner.setImmunizations(allPatientImmunizations);
+        ownerRepository.save(patientOwner);
+        log.info("the New immunization added successfully {}", patientOwner.getImmunizations());
+        return "New Immunization Added Successfully";
+    }
+
+    @Override
+    public List<SurgeryDTO> getPatientSurgicalHistory() {
+        Owner patientOwner = ownerContext.getCurrentOwner();
+        log.info("Doctor want to Surgical History for patient owner with id {}", patientOwner.getId());
+        List<SurgeryDTO> surgeryDTOS = patientOwner.getSurgeries()
+                .stream()
+                .map(surgeryMapper::toDTO)
+                .collect(Collectors.toList());
+        log.info("patient Surgical History {}", surgeryDTOS);
+        return surgeryDTOS;
+    }
+
+    @Override
+    public String addNewSurgeryForPatient(SurgeryDTO surgeryDTO) {
+        Owner patientOwner = ownerContext.getCurrentOwner();
+        log.info("Doctor want to add this new Surgery {}, for owner with id {}", surgeryDTO, patientOwner.getId());
+        Surgery surgery = surgeryMapper.toEntity(surgeryDTO);
+        List<Surgery> allPatientSurgeries = patientOwner.getSurgeries();
+        allPatientSurgeries.add(surgery);
+        patientOwner.setSurgeries(allPatientSurgeries);
+        ownerRepository.save(patientOwner);
+        log.info("the New Surgery added successfully {}", patientOwner.getSurgeries());
+        return "New Surgery Added Successfully";
     }
 
 

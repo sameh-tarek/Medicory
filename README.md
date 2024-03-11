@@ -19,14 +19,19 @@
 ## Features
 
 ### Doctor
+### Doctor
 
 | No. | Feature                      | Description                                                     | Endpoint                                     |
 |----:|------------------------------|-----------------------------------------------------------------|----------------------------------------------|
 |  1. | Patient Personal Information | Retrieve personal information of a patient                      | `GET /doctor/patient/personal-information`  |
 |  2. | Patient Chronic Diseases     | Retrieve chronic diseases of a patient                          | `GET /doctor/patient/chronic-diseases`      |
-|  3. | Add Chronic Disease          | Add a new chronic disease for a patient                        | `POST /doctor/patient/chronic-diseases/add`|
+|  3. | Add Chronic Disease          | Add a new chronic disease for a patient                        | `POST /doctor/patient/chronic-diseases`     |
 |  4. | Patient Allergies            | Retrieve allergies of a patient                                | `GET /doctor/patient/allergies`             |
-|  5. | Add Allergies                | Add a new allergy for a patient                                | `POST /doctor/patient/allergies/add`       |
+|  5. | Add Allergies                | Add a new allergy for a patient                                | `POST /doctor/patient/allergies`            |
+|  6. | Patient Immunizations        | Retrieve immunizations of a patient                            | `GET /doctor/patient/immunizations`         |
+|  7. | Add Immunization             | Add a new immunization for a patient                           | `POST /doctor/patient/immunizations`        |
+|  8. | Patient Surgeries            | Retrieve surgical history of a patient                         | `GET /doctor/patient/surgeries`             |
+|  9. | Add Surgery                  | Add a new surgery for a patient                                | `POST /doctor/patient/surgeries`            |
 |  .. |
 
 
