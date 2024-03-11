@@ -1,6 +1,8 @@
 package com.sameh.medicory.controller;
 
 import com.sameh.medicory.model.AllergiesDTO;
+import com.sameh.medicory.model.ImmunizationDTO;
+import com.sameh.medicory.model.SurgeryDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesDTO;
 import com.sameh.medicory.model.patient.PatientPersonalInformation;
 import com.sameh.medicory.service.DoctorService;
@@ -30,7 +32,7 @@ public class DoctorController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("/patient/chronic-diseases/add")
+    @PostMapping("/patient/chronic-diseases")
     public ResponseEntity<String> addNewChronicDiseasesForPatient(@RequestBody ChronicDiseasesDTO chronicDiseasesDTO){
        return new ResponseEntity<>(doctorService.addNewChronicDiseasesForPatient(chronicDiseasesDTO), HttpStatus.CREATED);
     }
@@ -41,9 +43,31 @@ public class DoctorController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("patient/allergies/add")
-    public ResponseEntity<String> addNewAllergiesForPatient(@RequestBody AllergiesDTO allergiesDTO){
+    @PostMapping("patient/allergies")
+    public ResponseEntity<String> addNewAllergiesForPatient(@RequestBody AllergiesDTO allergiesDTO) {
         return new ResponseEntity<>(doctorService.addNewAllergiesForPatient(allergiesDTO), HttpStatus.CREATED);
+    }
+
+    @GetMapping("patient/immunizations")
+    public ResponseEntity<List<ImmunizationDTO>> getaAllPatientImmunizations(){
+        List<ImmunizationDTO> result = doctorService.getaAllPatientImmunizations();
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("patient/immunizations")
+    public ResponseEntity<String> addNewImmunizationForPatient(@RequestBody ImmunizationDTO immunizationDTO) {
+        return new ResponseEntity<>(doctorService.addNewImmunizationForPatient(immunizationDTO), HttpStatus.CREATED);
+    }
+
+    @GetMapping("patient/surgeries")
+    public ResponseEntity<List<SurgeryDTO>> getPatientSurgicalHistory(){
+        List<SurgeryDTO> result = doctorService.getPatientSurgicalHistory();
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("patient/surgeries")
+    public ResponseEntity<String> addNewSurgeryForPatient(@RequestBody SurgeryDTO surgeryDTO) {
+        return new ResponseEntity<>(doctorService.addNewSurgeryForPatient(surgeryDTO), HttpStatus.CREATED);
     }
 
 }

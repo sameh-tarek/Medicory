@@ -21,6 +21,9 @@ public class Immunization {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "immunizations")
-    private List<Owner> owners;
+    private String information;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
 }
