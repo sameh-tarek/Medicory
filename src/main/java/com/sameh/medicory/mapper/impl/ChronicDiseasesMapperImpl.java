@@ -3,6 +3,7 @@ package com.sameh.medicory.mapper.impl;
 import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
 import com.sameh.medicory.mapper.ChronicDiseasesMapper;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesDTO;
+import com.sameh.medicory.utils.OwnerContext;
 import com.sameh.medicory.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,14 +12,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ChronicDiseasesMapperImpl implements ChronicDiseasesMapper {
 
-    private final SecurityUtils securityUtils;
+    private final OwnerContext ownerContext;
 
     @Override
     public ChronicDiseases toEntity(ChronicDiseasesDTO chronicDiseasesDTO) {
         ChronicDiseases chronicDiseases = new ChronicDiseases();
         chronicDiseases.setName(chronicDiseasesDTO.getName());
         chronicDiseases.setInformation(chronicDiseasesDTO.getInformation());
-        chronicDiseases.setOwner(securityUtils.getCurrentOwner());
+        chronicDiseases.setOwner(ownerContext.getCurrentOwner());
         return chronicDiseases;
     }
 

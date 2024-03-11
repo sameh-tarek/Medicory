@@ -13,6 +13,7 @@ import com.sameh.medicory.model.chronicDisease.ChronicDiseasesDTO;
 import com.sameh.medicory.model.patient.PatientPersonalInformation;
 import com.sameh.medicory.repository.OwnerRepository;
 import com.sameh.medicory.service.DoctorService;
+import com.sameh.medicory.utils.OwnerContext;
 import com.sameh.medicory.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,13 +31,13 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final OwnerRepository ownerRepository;
     private final ChronicDiseasesMapper chronicDiseasesMapper;
-    private final SecurityUtils securityUtils;
+    private final OwnerContext ownerContext;
     private final AllergiesMapper allergiesMapper;
 
     @Override
     public PatientPersonalInformation getPatientPersonalInformation() {
-        User patientUser = securityUtils.getCurrentUser();
-        Owner patientOwner = securityUtils.getCurrentOwner();
+        User patientUser = ownerContext.getCurrentUser();
+        Owner patientOwner = ownerContext.getCurrentOwner();
         log.info("Doctor Wants to get patient personal information for owner with id {}", patientOwner.getId());
         PatientPersonalInformation patientPersonalInformation = new PatientPersonalInformation(
                 patientOwner.getFirstName() + " " + patientOwner.getMiddleName() + " " + patientOwner.getLastName(),
@@ -54,7 +55,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<ChronicDiseasesDTO> getPatientChronicDiseases() {
-        Owner patientOwner = securityUtils.getCurrentOwner();
+        Owner patientOwner = ownerContext.getCurrentOwner();
         log.info("Doctor Wants to get patient Chronic Diseases for owner with id {}", patientOwner.getId());
         List<ChronicDiseases> chronicDiseases = patientOwner.getChronicDiseases();
         List<ChronicDiseasesDTO> chronicDiseasesDTOS = chronicDiseases
@@ -67,7 +68,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public String addNewChronicDiseasesForPatient(ChronicDiseasesDTO chronicDiseasesDTO) {
-        Owner patientOwner = securityUtils.getCurrentOwner();
+        Owner patientOwner = ownerContext.getCurrentOwner();
         log.info("Doctor wants to add a new chronic disease: {} for patient with owner id: {}", chronicDiseasesDTO, patientOwner.getId());
 
         ChronicDiseases newChronicDisease = chronicDiseasesMapper.toEntity(chronicDiseasesDTO);
@@ -84,7 +85,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<AllergiesDTO> getPatientAllergies() {
-        Owner patientOwner = securityUtils.getCurrentOwner();
+        Owner patientOwner = ownerContext.getCurrentOwner();
         log.info("Doctor want to get patient Allergies owner with id: {}", patientOwner.getAllergies());
         List<AllergiesDTO> allergiesDTOS = patientOwner.getAllergies()
                 .stream()
@@ -96,7 +97,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public String addNewAllergiesForPatient(AllergiesDTO allergiesDTO) {
-        Owner patientOwner = securityUtils.getCurrentOwner();
+        Owner patientOwner = ownerContext.getCurrentOwner();
         log.info("Doctor want to add new Allergies: {} for patient owner his ID: {}", allergiesDTO,patientOwner.getId());
         Allergies allergies = allergiesMapper.toEntity(allergiesDTO);
         List<Allergies> patientAllergies = patientOwner.getAllergies();
