@@ -6,5 +6,6 @@ public enum Role {
     PHARMACY,
     LAB,
     OWNER,
-    ADMIN
+    ADMIN,
+    EMERGENCY
 }

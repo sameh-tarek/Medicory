@@ -1,5 +1,6 @@
 package com.sameh.medicory.entity.usersEntities;
 
+import com.sameh.medicory.entity.labTestsEntities.LabTest;
 import com.sameh.medicory.entity.otherEntities.Allergies;
 import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
 import com.sameh.medicory.entity.otherEntities.Immunization;
@@ -52,6 +53,9 @@ public class Owner {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Surgery> surgeries;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LabTest> labTests;
 
     @OneToOne
     @JoinColumn(name = "user_id")

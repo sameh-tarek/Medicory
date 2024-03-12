@@ -18,12 +18,11 @@ public class LabTest {
 
     private String description;
 
-    @OneToOne(mappedBy = "labTest", cascade = CascadeType.ALL)
-    private LabTestResult labTestResult;
+    private String imageResult;
 
-    @ManyToOne
+    private String resultNotes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private Owner owner;
 }
-
-
