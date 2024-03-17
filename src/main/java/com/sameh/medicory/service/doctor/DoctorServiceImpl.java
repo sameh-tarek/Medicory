@@ -21,9 +21,7 @@ import com.sameh.medicory.model.allergies.AllergiesRequestDTO;
 import com.sameh.medicory.model.allergies.AllergiesResponseDTO;
 import com.sameh.medicory.model.labtests.LabTestDTO;
 import com.sameh.medicory.model.patient.PatientPersonalInformation;
-import com.sameh.medicory.repository.ChronicDiseasesRepository;
-import com.sameh.medicory.repository.LabTestRepository;
-import com.sameh.medicory.repository.OwnerRepository;
+import com.sameh.medicory.repository.*;
 import com.sameh.medicory.utils.OwnerContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +46,9 @@ public class DoctorServiceImpl implements DoctorService {
     private final LabTestMapper labTestMapper;
     private final LabTestRepository labTestRepository;
     private final ChronicDiseasesRepository chronicDiseasesRepository;
+    private final AllergiesRepository allergiesRepository;
+    private final ImmunizationRepository immunizationRepository;
+    private final SurgeryRepository surgeryRepository;
 
     @Override
     public PatientPersonalInformation getPatientPersonalInformation(Long ownerId) {
@@ -131,6 +132,9 @@ public class DoctorServiceImpl implements DoctorService {
         return "success";
     }
 
+
+
+
     @Override
     public List<AllergiesResponseDTO> getPatientAllergies(Long ownerId) {
         Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
@@ -156,6 +160,43 @@ public class DoctorServiceImpl implements DoctorService {
         log.info("the new Allergies Added successfully {}", patientOwner.getAllergies());
         return "New Allergies Added successfully";
     }
+
+    @Override
+    public AllergiesResponseDTO findAllergiesById(Long allergiesId) {
+        Allergies allergies = allergiesRepository.findById(allergiesId)
+                .orElseThrow(() -> new RecordNotFoundException("This Allergies with id "+allergiesId+" doesn't exist"));
+          AllergiesResponseDTO allergiesResponseDTO = allergiesMapper.toDTO(allergies);
+        log.info("Allergies with id  {}, details {}", allergiesId, allergiesResponseDTO);
+        return allergiesResponseDTO;
+    }
+
+    @Override
+    public String updateAllergies(AllergiesRequestDTO allergiesRequestDTO, Long allergiesId, Long ownerId) {
+        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+        log.info("Doctor want to update Allergies with id {}", allergiesId);
+        Allergies existAllergies = allergiesRepository.findById(allergiesId)
+                .orElseThrow(() -> new RecordNotFoundException("This Allergies with id "+allergiesId+" doesn't exist"));
+        Allergies updatedAllergies = allergiesMapper.toEntity(allergiesRequestDTO);
+        updatedAllergies.setOwner(patientOwner);
+        updatedAllergies.setId(allergiesId);
+        allergiesRepository.save(updatedAllergies);
+        log.info("Allergies updated successfully this before update {} and This after update {}", existAllergies, updatedAllergies);
+        return "Success";
+    }
+
+    @Override
+    public String deleteAllergies(Long allergiesId) {
+        log.info("Doctor want to delete Allergies disease with id {}", allergiesId);
+        Allergies allergies = allergiesRepository.findById(allergiesId)
+                .orElseThrow(() -> new RecordNotFoundException("This Allergies with id "+allergiesId+" Already doesn't exist"));
+        allergiesRepository.delete(allergies);
+        log.info("Allergies deleted successfully");
+        return "success";
+    }
+
+
+
+
 
     @Override
     public List<ImmunizationResponseDTO> getaAllPatientImmunizations(Long ownerId) {
@@ -184,6 +225,43 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public ImmunizationResponseDTO findImmunizationById(Long immunizationId) {
+        Immunization immunization = immunizationRepository.findById(immunizationId)
+                .orElseThrow(() -> new RecordNotFoundException("This immunization with id "+immunizationId+" doesn't exist"));
+        ImmunizationResponseDTO immunizationResponseDTO = immunizationMapper.toDTO(immunization);
+        log.info("immunization with id  {}, details {}", immunizationId, immunizationResponseDTO);
+        return immunizationResponseDTO;
+    }
+
+    @Override
+    public String updateImmunization(ImmunizationRequestDTO immunizationRequestDTO, Long immunizationId, Long ownerId) {
+        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+        log.info("Doctor want to update Immunization with id {}", immunizationId);
+        Immunization existImmunization = immunizationRepository.findById(immunizationId)
+                .orElseThrow(() -> new RecordNotFoundException("This Immunization with id "+immunizationId+" doesn't exist"));
+        Immunization updatedImmunization = immunizationMapper.toEntity(immunizationRequestDTO);
+        updatedImmunization.setOwner(patientOwner);
+        updatedImmunization.setId(immunizationId);
+        immunizationRepository.save(updatedImmunization);
+        log.info("Immunization updated successfully this before update {} and This after update {}", existImmunization, updatedImmunization);
+        return "Success";
+    }
+
+    @Override
+    public String deleteImmunization(Long immunizationId) {
+        log.info("Doctor want to delete Immunization disease with id {}", immunizationId);
+        Immunization immunization = immunizationRepository.findById(immunizationId)
+                .orElseThrow(() -> new RecordNotFoundException("This Immunization with id "+immunizationId+" Already doesn't exist"));
+        immunizationRepository.delete(immunization);
+        log.info("Immunization deleted successfully");
+        return "success";
+
+    }
+
+
+
+
+    @Override
     public List<SurgeryResponseDTO> getPatientSurgicalHistory(Long ownerId) {
         Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
         log.info("Doctor want to Surgical History for patient owner with id {}", patientOwner.getId());
@@ -198,16 +276,52 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public String addNewSurgeryForPatient(SurgeryRequestDTO surgeryRequestDTO, Long ownerId) {
         Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
-        log.info("Doctor want to add this new Surgery {}, for owner with id {}", surgeryRequestDTO, patientOwner.getId());
+        log.info("Doctor want to add this new SurgeryRepository {}, for owner with id {}", surgeryRequestDTO, patientOwner.getId());
         Surgery surgery = surgeryMapper.toEntity(surgeryRequestDTO);
         surgery.setOwner(patientOwner);
         List<Surgery> allPatientSurgeries = patientOwner.getSurgeries();
         allPatientSurgeries.add(surgery);
         patientOwner.setSurgeries(allPatientSurgeries);
         ownerRepository.save(patientOwner);
-        log.info("the New Surgery added successfully {}", patientOwner.getSurgeries());
-        return "New Surgery Added Successfully";
+        log.info("the New SurgeryRepository added successfully {}", patientOwner.getSurgeries());
+        return "New SurgeryRepository Added Successfully";
     }
+
+    @Override
+    public SurgeryResponseDTO findSurgeryById(Long surgeryId) {
+        Surgery surgery = surgeryRepository.findById(surgeryId)
+                .orElseThrow(() -> new RecordNotFoundException("This Surgery with id "+surgeryId+" doesn't exist"));
+        SurgeryResponseDTO surgeryResponseDTO = surgeryMapper.toDTO(surgery);
+        log.info("Surgery with id  {}, details {}", surgeryId, surgeryResponseDTO);
+        return surgeryResponseDTO;
+    }
+
+    @Override
+    public String updateSurgery(SurgeryRequestDTO surgeryRequestDTO, Long surgeryId, Long ownerId) {
+        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+        log.info("Doctor want to update Surgery with id {}", surgeryId);
+        Surgery existSurgery = surgeryRepository.findById(surgeryId)
+                .orElseThrow(() -> new RecordNotFoundException("This Surgery with id "+surgeryId+" doesn't exist"));
+        Surgery updatedSurgery = surgeryMapper.toEntity(surgeryRequestDTO);
+        updatedSurgery.setOwner(patientOwner);
+        updatedSurgery.setId(surgeryId);
+        surgeryRepository.save(updatedSurgery);
+        log.info("Surgery updated successfully this before update {} and This after update {}", existSurgery, updatedSurgery);
+        return "Success";
+    }
+
+    @Override
+    public String deleteSurgery(Long surgeryId) {
+        log.info("Doctor want to delete Surgery disease with id {}", surgeryId);
+        Surgery surgery = surgeryRepository.findById(surgeryId)
+                .orElseThrow(() -> new RecordNotFoundException("This Surgery with id "+surgeryId+" Already doesn't exist"));
+        surgeryRepository.delete(surgery);
+        log.info("Surgery deleted successfully");
+        return "success";
+    }
+
+
+
 
     @Override
     public List<LabTestDTO> findAllLabTestsForPatient(Long ownerId) {

@@ -50,6 +50,8 @@ public class DoctorMedicalHistoryController {
     }
 
 
+
+
     @GetMapping("{ownerId}/allergies")
     public ResponseEntity<List<AllergiesResponseDTO>> getPatientAllergies(@PathVariable Long ownerId){
         List<AllergiesResponseDTO> result = doctorService.getPatientAllergies(ownerId);
@@ -60,6 +62,24 @@ public class DoctorMedicalHistoryController {
     public ResponseEntity<String> addNewAllergiesForPatient(@RequestBody AllergiesRequestDTO allergiesRequestDTO, @PathVariable Long ownerId) {
         return new ResponseEntity<>(doctorService.addNewAllergiesForPatient(allergiesRequestDTO, ownerId), HttpStatus.CREATED);
     }
+
+    @GetMapping("allergies/{allergiesId}")
+    public ResponseEntity<AllergiesResponseDTO> findAllergiesById(@PathVariable Long allergiesId){
+        return new ResponseEntity<>(doctorService.findAllergiesById(allergiesId), HttpStatus.OK);
+    }
+
+    @PutMapping("{ownerId}/allergies/{allergiesId}")
+    public ResponseEntity<String> updateAllergies(@RequestBody AllergiesRequestDTO allergiesRequestDTO, @PathVariable Long allergiesId, @PathVariable Long ownerId){
+        return new ResponseEntity<>(doctorService.updateAllergies(allergiesRequestDTO, allergiesId, ownerId), HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("allergies/{allergiesId}")
+    public ResponseEntity<String> deleteAllergies(@PathVariable Long allergiesId){
+        return new ResponseEntity<>(doctorService.deleteAllergies(allergiesId), HttpStatus.ACCEPTED);
+    }
+
+
+
 
 
     @GetMapping("{ownerId}/immunizations")
@@ -73,6 +93,23 @@ public class DoctorMedicalHistoryController {
         return new ResponseEntity<>(doctorService.addNewImmunizationForPatient(immunizationRequestDTO, ownerId), HttpStatus.CREATED);
     }
 
+    @GetMapping("immunizations/{immunizationId}")
+    public ResponseEntity<ImmunizationResponseDTO> findImmunizationById(@PathVariable Long immunizationId){
+        return new ResponseEntity<>(doctorService.findImmunizationById(immunizationId), HttpStatus.OK);
+    }
+
+    @PutMapping("{ownerId}/immunizations/{immunizationId}")
+    public ResponseEntity<String> updateImmunization(@RequestBody ImmunizationRequestDTO immunizationRequestDTO, @PathVariable Long immunizationId, @PathVariable Long ownerId){
+        return new ResponseEntity<>(doctorService.updateImmunization(immunizationRequestDTO, immunizationId, ownerId), HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("immunizations/{immunizationId}")
+    public ResponseEntity<String> deleteImmunization(@PathVariable Long immunizationId){
+        return new ResponseEntity<>(doctorService.deleteImmunization(immunizationId), HttpStatus.ACCEPTED);
+    }
+
+
+
 
     @GetMapping("{ownerId}/surgeries")
     public ResponseEntity<List<SurgeryResponseDTO>> getPatientSurgicalHistory(@PathVariable Long ownerId){
@@ -84,5 +121,20 @@ public class DoctorMedicalHistoryController {
     public ResponseEntity<String> addNewSurgeryForPatient(@RequestBody SurgeryRequestDTO surgeryRequestDTO, @PathVariable Long ownerId) {
         return new ResponseEntity<>(doctorService.addNewSurgeryForPatient(surgeryRequestDTO, ownerId), HttpStatus.CREATED);
     }
+    @GetMapping("surgeries/{surgeryId}")
+    public ResponseEntity<SurgeryResponseDTO> findSurgeryById(@PathVariable Long surgeryId){
+        return new ResponseEntity<>(doctorService.findSurgeryById(surgeryId), HttpStatus.OK);
+    }
+
+    @PutMapping("{ownerId}/surgeries/{surgeryId}")
+    public ResponseEntity<String> updateSurgery(@RequestBody SurgeryRequestDTO surgeryRequestDTO, @PathVariable Long surgeryId, @PathVariable Long ownerId){
+        return new ResponseEntity<>(doctorService.updateSurgery(surgeryRequestDTO, surgeryId, ownerId), HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("surgeries/{surgeryId}")
+    public ResponseEntity<String> deleteSurgery(@PathVariable Long surgeryId){
+        return new ResponseEntity<>(doctorService.deleteSurgery(surgeryId), HttpStatus.ACCEPTED);
+    }
+
 
 }
