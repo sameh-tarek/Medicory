@@ -1,15 +1,13 @@
-package com.sameh.medicory.model.labtests;
+package com.sameh.medicory.model.surgery;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class LabTestDTO {
+@NoArgsConstructor
+public class SurgeryResponseDTO {
     private Long id;
     private String description;
-    private String imageResult;
-    private String resultNotes;
 }

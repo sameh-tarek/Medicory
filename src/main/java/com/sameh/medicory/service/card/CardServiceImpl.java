@@ -16,12 +16,11 @@ public class CardServiceImpl implements CardService {
     private final SecurityUtils securityUtils;
 
     @Override
-    public Role getInteractingRoleBasedOnCard() {
+    public Role getInteractingRoleBasedOnCard(Long ownerId) {
 
         Long authenticatedUserId = securityUtils.getCurrentAuthenticatedOwnerId();
-        Long cardOwnerId = ownerContext.getOwnerId();
 
-        if (authenticatedUserId.equals(cardOwnerId)) {
+        if (authenticatedUserId.equals(ownerId)) {
             return Role.OWNER;
         } else {
             Role authenticatedUserRole = securityUtils.getCurrentAuthenticatedUserRole();
