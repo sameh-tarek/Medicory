@@ -13,22 +13,13 @@ public class OwnerContext {
 
     private final OwnerRepository ownerRepository;
     //TODO when we use the card we will fetch the id from the card with card/scan endpoint
-    private Long ownerId = 1L;
 
-    public Long getOwnerId() {
-        return ownerId;
+    public Owner getCurrentOwner(Long ownerId){
+        return ownerRepository.findById(ownerId).
+                orElseThrow(() -> new RecordNotFoundException("This user with id " + ownerId + " doesn't exist"));
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public Owner getCurrentOwner(){
-        return ownerRepository.findById(getOwnerId()).
-                orElseThrow(() -> new RecordNotFoundException("This user with id " + getOwnerId() + " doesn't exist"));
-    }
-
-    public User getCurrentUser(){
-        return getCurrentOwner().getUser();
+    public User getCurrentUser(Long ownerId){
+        return getCurrentOwner(ownerId).getUser();
     }
 }

@@ -5,28 +5,23 @@ import com.sameh.medicory.service.card.CardService;
 import com.sameh.medicory.utils.OwnerContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("card")
 @RequiredArgsConstructor
 public class CardController {
 
-    private final OwnerContext ownerContext;
     private final CardService cardService;
 
     @PostMapping("/scan")
-    public ResponseEntity<String> scanCard(@RequestParam("ownerId") Long ownerId) {
-        ownerContext.setOwnerId(ownerId);
-        return ResponseEntity.ok("card scanned successfully");
+    public ResponseEntity<Long> scanCard(@RequestParam("ownerId") Long ownerId) {
+        return ResponseEntity.ok(ownerId);
     }
 
-    @PostMapping("/interacting-role")
-    public ResponseEntity<Role> getInteractingRoleBasedOnCard() {
-        Role interactingRole = cardService.getInteractingRoleBasedOnCard();
+    @PostMapping("/interacting-role/{ownerId}")
+    public ResponseEntity<Role> getInteractingRoleBasedOnCard(@PathVariable Long ownerId) {
+        Role interactingRole = cardService.getInteractingRoleBasedOnCard(ownerId);
         return ResponseEntity.ok(interactingRole);
     }
 }

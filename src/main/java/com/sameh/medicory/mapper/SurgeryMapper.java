@@ -1,9 +1,12 @@
 package com.sameh.medicory.mapper;
 
 import com.sameh.medicory.entity.otherEntities.Surgery;
-import com.sameh.medicory.model.SurgeryDTO;
+import com.sameh.medicory.model.surgery.SurgeryRequestDTO;
+import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
+import org.mapstruct.Mapper;
 
+@Mapper(componentModel = "spring")
 public interface SurgeryMapper {
-    Surgery toEntity(SurgeryDTO surgeryDTO);
-    SurgeryDTO toDTO(Surgery surgery);
+    Surgery toEntity(SurgeryRequestDTO surgeryRequestDTO);
+    SurgeryResponseDTO toDTO(Surgery surgery);
 }

@@ -1,34 +1,36 @@
 package com.sameh.medicory.service.doctor;
 
-import com.sameh.medicory.model.AllergiesDTO;
-import com.sameh.medicory.model.ImmunizationDTO;
-import com.sameh.medicory.model.SurgeryDTO;
-import com.sameh.medicory.model.chronicDisease.ChronicDiseasesDTO;
+import com.sameh.medicory.model.immunization.ImmunizationRequestDTO;
+import com.sameh.medicory.model.immunization.ImmunizationResponseDTO;
+import com.sameh.medicory.model.allergies.AllergiesRequestDTO;
+import com.sameh.medicory.model.allergies.AllergiesResponseDTO;
+import com.sameh.medicory.model.chronicDisease.ChronicDiseasesRequestDTO;
+import com.sameh.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
+import com.sameh.medicory.model.surgery.SurgeryRequestDTO;
+import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
 import com.sameh.medicory.model.labtests.LabTestDTO;
-import com.sameh.medicory.model.labtests.LabTestRequiredDTO;
 import com.sameh.medicory.model.patient.PatientPersonalInformation;
 
 import java.util.List;
 
 public interface DoctorService {
-    PatientPersonalInformation getPatientPersonalInformation();
-    List<ChronicDiseasesDTO> getPatientChronicDiseases();
+    PatientPersonalInformation getPatientPersonalInformation(Long ownerId);
 
-    String addNewChronicDiseasesForPatient(ChronicDiseasesDTO chronicDiseasesDTO);
+    List<ChronicDiseasesResponseDTO> getPatientChronicDiseases(Long ownerId);
+    String addNewChronicDiseasesForPatient(ChronicDiseasesRequestDTO chronicDiseasesRequestDTO, Long ownerId);
+    ChronicDiseasesResponseDTO findChronicDiseasesById(Long diseasesId);
+    String updateChronicDisease(ChronicDiseasesRequestDTO chronicDiseasesRequestDTO, Long diseasesId, Long ownerId);
+    String deleteChronicDiseases(Long diseasesId);
 
-    List<AllergiesDTO> getPatientAllergies();
+    List<AllergiesResponseDTO> getPatientAllergies(Long ownerId);
+    String addNewAllergiesForPatient(AllergiesRequestDTO allergiesRequestDTO, Long ownerId);
 
-    String addNewAllergiesForPatient(AllergiesDTO allergiesDTO);
+    List<ImmunizationResponseDTO> getaAllPatientImmunizations(Long ownerId);
+    String addNewImmunizationForPatient(ImmunizationRequestDTO immunizationRequestDTO, Long ownerId);
 
-    List<ImmunizationDTO> getaAllPatientImmunizations();
+    List<SurgeryResponseDTO> getPatientSurgicalHistory(Long ownerId);
+    String addNewSurgeryForPatient(SurgeryRequestDTO surgeryRequestDTO, Long ownerId);
 
-    String addNewImmunizationForPatient(ImmunizationDTO immunizationDTO);
-
-    List<SurgeryDTO> getPatientSurgicalHistory();
-
-    String addNewSurgeryForPatient(SurgeryDTO surgeryDTO);
-
-    List<LabTestDTO> findAllLabTestsForPatient();
-
+    List<LabTestDTO> findAllLabTestsForPatient(Long ownerId);
     String deleteLabTestFromHistory(Long testId);
 }
