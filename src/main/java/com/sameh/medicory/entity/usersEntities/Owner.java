@@ -1,6 +1,7 @@
 package com.sameh.medicory.entity.usersEntities;
 
 import com.sameh.medicory.entity.labTestsEntities.LabTest;
+import com.sameh.medicory.entity.medicationEntities.CurrentSchedule;
 import com.sameh.medicory.entity.otherEntities.Allergies;
 import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
 import com.sameh.medicory.entity.otherEntities.Immunization;
@@ -60,6 +61,10 @@ public class Owner {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToOne
+    @JoinColumn(name = "current_schedule_id")
+    private CurrentSchedule currentSchedule;
 
     @Override
     public String toString() {
