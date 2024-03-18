@@ -18,6 +18,7 @@ public class Medicine {
     @Column(nullable = false)
     private String name;
 
+    //general description
     private String description;
 }
 

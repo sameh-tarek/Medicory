@@ -13,6 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "current_schedule")
+//********************
+//TODO to be deleted *
+//********************
 public class CurrentSchedule {
 
     @Id

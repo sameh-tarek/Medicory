@@ -14,8 +14,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "current_prescriptions")
-public class CurrentPrescription {
+@Table(name = "prescriptions")
+public class Prescription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,11 +28,14 @@ public class CurrentPrescription {
     @JoinColumn(name = "clinic_id")
     private Clinic clinic;
 
+    @Column(name = "status")
+    private boolean status;
+
     @ManyToOne
     @JoinColumn(name = "hospital_id")
     private Hospital hospital;
 
-    @OneToMany(mappedBy = "currentPrescription", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL)
     private List<Medication> medications;
 }
 

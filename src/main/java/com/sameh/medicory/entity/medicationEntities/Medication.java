@@ -16,8 +16,8 @@ public class Medication {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "current_prescription_id")
-    private CurrentPrescription currentPrescription;
+    @JoinColumn(name = "prescription_id")
+    private Prescription prescription;
 
     @ManyToOne
     @JoinColumn(name = "current_schedule_id")
@@ -32,4 +32,7 @@ public class Medication {
 
     @Column(nullable = false)
     private int frequency;
+
+    @Column(name = "side_effects")
+    private String sideEffects;
 }

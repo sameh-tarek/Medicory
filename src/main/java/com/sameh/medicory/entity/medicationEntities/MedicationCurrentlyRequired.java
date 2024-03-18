@@ -13,6 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "medications_currently_required")
+//*******************
+//TODO to be deleted*
+//*******************
 public class MedicationCurrentlyRequired {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
