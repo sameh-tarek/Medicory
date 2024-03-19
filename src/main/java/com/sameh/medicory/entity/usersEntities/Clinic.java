@@ -19,17 +19,17 @@ public class Clinic {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true)
+    @Column(name="google_maps_link",nullable = true)
     private String googleMapsLink;
 
     @Column(nullable = false)
     private String address;
 
+    @Column(name="owner_name")
     private String ownerName;
 
     private String specialization;
-
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 }

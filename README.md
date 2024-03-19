@@ -34,6 +34,22 @@
 |  9. | Add Surgery                  | Add a new surgery for a patient                                | `POST /doctor/patient/surgeries`            |
 |  .. |
 
+--------
+### Admin
+
+#### Admin-Clinic
+| No. | Feature               | Description                              | Endpoint                                      |
+|----:|-----------------------|------------------------------------------|-----------------------------------------------|
+|  1. | Clinic's data (id)    | Retrieve clinic's data using clinic id   | `GET /admin/clinic/clinicById/{clinicId}`     |
+|  2. | Clinic's data (name)  | Retrieve clinic's data using clinic name | `GET /admin/clinic/clinicByName/{clinicName}` |
+|  3. | Clinic's data (email) | Retrieve clinic's data using user email  | `GET /admin/clinic/clinicById/{email}`        |
+|  4. | Clinics' data         | Retrieve data of all clinics             | `GET /admin/clinic/allClinics`                |
+|  5. | Add clinic            | Add new user -> clinic                   | `POST /admin/clinic `                         |
+|  6. | Update Clinic         | Update an existing user ->clinic         | `PUT /admin/clinic `                          |
+|  7. | Delete Clinic         | Delete Clinic using id                   | `DEL /admin/clinic/{clinicId}`                |
+|  .. |
+
+
 
 
 # ERD
