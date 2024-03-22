@@ -1,6 +1,7 @@
 package com.sameh.medicory.entity.usersEntities;
 
-import com.sameh.medicory.entity.labTestsEntities.LabTest;
+import com.sameh.medicory.entity.testsEntities.ImagingTest;
+import com.sameh.medicory.entity.testsEntities.LabTest;
 import com.sameh.medicory.entity.medicationEntities.CurrentSchedule;
 import com.sameh.medicory.entity.otherEntities.Allergies;
 import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
@@ -14,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -58,6 +60,9 @@ public class Owner {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LabTest> labTests;
 
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImagingTest> imagingTests;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -65,6 +70,10 @@ public class Owner {
     @OneToOne
     @JoinColumn(name = "current_schedule_id")
     private CurrentSchedule currentSchedule;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
     @Override
     public String toString() {

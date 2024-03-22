@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -26,6 +28,10 @@ public class Pharmacy {
     private String address;
 
     private String ownerName;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
     @OneToOne
     @JoinColumn(name = "user_id")

@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -38,6 +39,10 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<RelativePhoneNumber> relativePhoneNumbers;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
     @Override
     public String toString() {

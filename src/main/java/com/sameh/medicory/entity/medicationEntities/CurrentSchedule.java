@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -13,9 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "current_schedule")
-//********************
-//TODO to be deleted *
-//********************
 public class CurrentSchedule {
 
     @Id
@@ -28,4 +26,6 @@ public class CurrentSchedule {
 
     @OneToMany(mappedBy = "currentSchedule", cascade = CascadeType.ALL)
     private List<Medication> medications;
+
+    private LocalDateTime updatedAt;
 }

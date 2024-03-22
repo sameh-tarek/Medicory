@@ -1,6 +1,6 @@
 package com.sameh.medicory.controller.doctor;
 
-import com.sameh.medicory.model.labtests.LabTestDTO;
+import com.sameh.medicory.model.tests.LabTestDTO;
 import com.sameh.medicory.service.doctor.DoctorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

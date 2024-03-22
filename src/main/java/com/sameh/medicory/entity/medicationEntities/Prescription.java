@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -20,6 +21,9 @@ public class Prescription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "status")
+    private boolean status;
+
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private Owner owner;
@@ -28,14 +32,15 @@ public class Prescription {
     @JoinColumn(name = "clinic_id")
     private Clinic clinic;
 
-    @Column(name = "status")
-    private boolean status;
-
     @ManyToOne
     @JoinColumn(name = "hospital_id")
     private Hospital hospital;
 
     @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL)
     private List<Medication> medications;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }
 

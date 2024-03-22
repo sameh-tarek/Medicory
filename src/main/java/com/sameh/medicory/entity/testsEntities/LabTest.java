@@ -1,10 +1,12 @@
-package com.sameh.medicory.entity.labTestsEntities;
+package com.sameh.medicory.entity.testsEntities;
 
 import com.sameh.medicory.entity.usersEntities.Owner;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -22,7 +24,13 @@ public class LabTest {
 
     private String resultNotes;
 
+    private boolean status;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private Owner owner;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }
