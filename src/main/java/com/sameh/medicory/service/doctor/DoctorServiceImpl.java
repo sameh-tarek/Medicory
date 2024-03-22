@@ -1,6 +1,6 @@
 package com.sameh.medicory.service.doctor;
 
-import com.sameh.medicory.entity.labTestsEntities.LabTest;
+import com.sameh.medicory.entity.testsEntities.LabTest;
 import com.sameh.medicory.entity.otherEntities.Allergies;
 import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
 import com.sameh.medicory.entity.otherEntities.Immunization;
@@ -19,7 +19,7 @@ import com.sameh.medicory.model.surgery.SurgeryRequestDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
 import com.sameh.medicory.model.allergies.AllergiesRequestDTO;
 import com.sameh.medicory.model.allergies.AllergiesResponseDTO;
-import com.sameh.medicory.model.labtests.LabTestDTO;
+import com.sameh.medicory.model.tests.LabTestDTO;
 import com.sameh.medicory.model.patient.PatientPersonalInformation;
 import com.sameh.medicory.repository.*;
 import com.sameh.medicory.utils.OwnerContext;
@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,6 +90,8 @@ public class DoctorServiceImpl implements DoctorService {
 
         ChronicDiseases newChronicDisease = chronicDiseasesMapper.toEntity(chronicDiseasesRequestDTO);
         newChronicDisease.setOwner(patientOwner);
+        newChronicDisease.setCreatedAt(LocalDateTime.now());
+        newChronicDisease.setUpdatedAt(LocalDateTime.now());
         List<ChronicDiseases> patientChronicDiseases = patientOwner.getChronicDiseases();
         patientChronicDiseases.add(newChronicDisease);
         log.info("patientChronicDiseases {}", patientChronicDiseases);
@@ -116,6 +119,8 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElseThrow(() -> new RecordNotFoundException("This Chronic Disease with id "+diseasesId+" doesn't exist"));
         ChronicDiseases updatedChronicDiseases = chronicDiseasesMapper.toEntity(chronicDiseasesRequestDTO);
         updatedChronicDiseases.setOwner(patientOwner);
+        updatedChronicDiseases.setCreatedAt(existChronicDiseases.getCreatedAt());
+        updatedChronicDiseases.setUpdatedAt(LocalDateTime.now());
         updatedChronicDiseases.setId(diseasesId);
         chronicDiseasesRepository.save(updatedChronicDiseases);
         log.info("Chronic Disease updated successfully this before update {} and This after update {}", existChronicDiseases, updatedChronicDiseases);
@@ -153,6 +158,8 @@ public class DoctorServiceImpl implements DoctorService {
         log.info("Doctor want to add new Allergies: {} for patient owner his ID: {}", allergiesRequestDTO,patientOwner.getId());
         Allergies allergies = allergiesMapper.toEntity(allergiesRequestDTO);
         allergies.setOwner(patientOwner);
+        allergies.setCreatedAt(LocalDateTime.now());
+        allergies.setUpdatedAt(LocalDateTime.now());
         List<Allergies> patientAllergies = patientOwner.getAllergies();
         patientAllergies.add(allergies);
         patientOwner.setAllergies(patientAllergies);
@@ -178,6 +185,8 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElseThrow(() -> new RecordNotFoundException("This Allergies with id "+allergiesId+" doesn't exist"));
         Allergies updatedAllergies = allergiesMapper.toEntity(allergiesRequestDTO);
         updatedAllergies.setOwner(patientOwner);
+        updatedAllergies.setCreatedAt(existAllergies.getCreatedAt());
+        updatedAllergies.setUpdatedAt(LocalDateTime.now());
         updatedAllergies.setId(allergiesId);
         allergiesRepository.save(updatedAllergies);
         log.info("Allergies updated successfully this before update {} and This after update {}", existAllergies, updatedAllergies);
@@ -216,6 +225,8 @@ public class DoctorServiceImpl implements DoctorService {
         log.info("Doctor want to add this new Immunization {}, for owner with id {}", immunizationRequestDTO, patientOwner.getId());
         Immunization newImmunization = immunizationMapper.toEntity(immunizationRequestDTO);
         newImmunization.setOwner(patientOwner);
+        newImmunization.setCreatedAt(LocalDateTime.now());
+        newImmunization.setUpdatedAt(LocalDateTime.now());
         List<Immunization> allPatientImmunizations = patientOwner.getImmunizations();
         allPatientImmunizations.add(newImmunization);
         patientOwner.setImmunizations(allPatientImmunizations);
@@ -241,6 +252,8 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElseThrow(() -> new RecordNotFoundException("This Immunization with id "+immunizationId+" doesn't exist"));
         Immunization updatedImmunization = immunizationMapper.toEntity(immunizationRequestDTO);
         updatedImmunization.setOwner(patientOwner);
+        updatedImmunization.setCreatedAt(existImmunization.getCreatedAt());
+        updatedImmunization.setUpdatedAt(LocalDateTime.now());
         updatedImmunization.setId(immunizationId);
         immunizationRepository.save(updatedImmunization);
         log.info("Immunization updated successfully this before update {} and This after update {}", existImmunization, updatedImmunization);
@@ -279,6 +292,8 @@ public class DoctorServiceImpl implements DoctorService {
         log.info("Doctor want to add this new SurgeryRepository {}, for owner with id {}", surgeryRequestDTO, patientOwner.getId());
         Surgery surgery = surgeryMapper.toEntity(surgeryRequestDTO);
         surgery.setOwner(patientOwner);
+        surgery.setCreatedAt(LocalDateTime.now());
+        surgery.setUpdatedAt(LocalDateTime.now());
         List<Surgery> allPatientSurgeries = patientOwner.getSurgeries();
         allPatientSurgeries.add(surgery);
         patientOwner.setSurgeries(allPatientSurgeries);
@@ -304,6 +319,8 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElseThrow(() -> new RecordNotFoundException("This Surgery with id "+surgeryId+" doesn't exist"));
         Surgery updatedSurgery = surgeryMapper.toEntity(surgeryRequestDTO);
         updatedSurgery.setOwner(patientOwner);
+        updatedSurgery.setCreatedAt(existSurgery.getCreatedAt());
+        updatedSurgery.setUpdatedAt(LocalDateTime.now());
         updatedSurgery.setId(surgeryId);
         surgeryRepository.save(updatedSurgery);
         log.info("Surgery updated successfully this before update {} and This after update {}", existSurgery, updatedSurgery);

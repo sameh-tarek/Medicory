@@ -8,7 +8,7 @@ import com.sameh.medicory.model.chronicDisease.ChronicDiseasesRequestDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
 import com.sameh.medicory.model.surgery.SurgeryRequestDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
-import com.sameh.medicory.model.labtests.LabTestDTO;
+import com.sameh.medicory.model.tests.LabTestDTO;
 import com.sameh.medicory.model.patient.PatientPersonalInformation;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.sameh.medicory.mapper;
 
-import com.sameh.medicory.entity.labTestsEntities.LabTest;
-import com.sameh.medicory.model.labtests.LabTestDTO;
+import com.sameh.medicory.entity.testsEntities.LabTest;
+import com.sameh.medicory.model.tests.LabTestDTO;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
