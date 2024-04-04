@@ -8,9 +8,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -40,9 +39,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<RelativePhoneNumber> relativePhoneNumbers;
 
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
-    private LocalDateTime updatedAt;
+    private LocalDate updatedAt;
 
     @Override
     public String toString() {
