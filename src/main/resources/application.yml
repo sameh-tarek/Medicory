@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/medicory
     username: medicory
-    password: Medicory.1
+    password: medicory
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

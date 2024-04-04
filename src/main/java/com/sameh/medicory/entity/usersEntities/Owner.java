@@ -1,5 +1,6 @@
 package com.sameh.medicory.entity.usersEntities;
 
+import com.sameh.medicory.entity.enums.MaritalStatus;
 import com.sameh.medicory.entity.testsEntities.ImagingTest;
 import com.sameh.medicory.entity.testsEntities.LabTest;
 import com.sameh.medicory.entity.medicationEntities.CurrentSchedule;
@@ -28,10 +29,13 @@ public class Owner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "first_name")
     private String firstName;
 
+    @Column(name = "middle_name")
     private String middleName;
 
+    @Column(name = "last_name")
     private String lastName;
 
     @Enumerated(EnumType.STRING)
@@ -43,7 +47,17 @@ public class Owner {
     private String address;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "blood_type")
     private BloodType bloodType;
+
+    @Column(name = "national_id")
+    private long nationalId;
+
+    @Column(name = "marital_status")
+    @Enumerated(EnumType.STRING)
+    private MaritalStatus maritalStatus;
+
+    private String job;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChronicDiseases> chronicDiseases;
@@ -71,9 +85,6 @@ public class Owner {
     @JoinColumn(name = "current_schedule_id")
     private CurrentSchedule currentSchedule;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     @Override
     public String toString() {
