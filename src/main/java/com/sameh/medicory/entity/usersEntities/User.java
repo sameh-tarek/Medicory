@@ -5,17 +5,18 @@ import com.sameh.medicory.entity.phoneEntities.OwnerPhoneNumber;
 import com.sameh.medicory.entity.enums.Role;
 import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
+@Getter
 @Table(name = "users")
 public class User {
     @Id
@@ -38,9 +39,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<RelativePhoneNumber> relativePhoneNumbers;
-
+    @Column(name = "created_at")
     private LocalDate createdAt;
-
+    @Column(name = "updated_at")
     private LocalDate updatedAt;
 
     @Override
