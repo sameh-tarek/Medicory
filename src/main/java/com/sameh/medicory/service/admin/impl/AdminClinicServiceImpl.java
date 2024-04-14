@@ -6,6 +6,7 @@ import com.sameh.medicory.exception.ConflictException;
 import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.mapper.ClinicMapper;
 import com.sameh.medicory.model.users.ClinicDTO;
+import com.sameh.medicory.model.users.UserDTO;
 import com.sameh.medicory.repository.ClinicRepository;
 import com.sameh.medicory.repository.UserRepository;
 import com.sameh.medicory.service.admin.AdminClinicService;
@@ -15,6 +16,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,13 +28,11 @@ import java.util.Optional;
 
 //TODO enhance this
 public class AdminClinicServiceImpl implements AdminClinicService {
-    @Autowired
-    ClinicRepository clinicRepository;
-    @Autowired
-    UserRepository userRepository;
 
-    @Autowired
-    ClinicMapper map;
+   private final ClinicRepository clinicRepository;
+   private final  UserRepository userRepository;
+   private final ClinicMapper map;
+
     @Override
     public ClinicDTO findClinicById(Long clinicId) {
         if (clinicId > 0){
@@ -42,7 +43,7 @@ public class AdminClinicServiceImpl implements AdminClinicService {
             } else {
                 throw new RecordNotFoundException("Clinic not found with ID: " + clinicId);
             }
-        }else throw new RecordNotFoundException("Invalid id : ");
+        }else throw new RuntimeException("Invalid id : ");
     }
 
 
@@ -77,35 +78,65 @@ public class AdminClinicServiceImpl implements AdminClinicService {
            throw new RecordNotFoundException("No clinics :)");
     }
 
-
-    // TODO *edit=>ex
-
-    //TODO if adding to an existing user_id
     @Override
     public String addNewClinic(ClinicDTO clinicDTO) {
         Clinic newClinic = map.toEntity(clinicDTO);
-        if (clinicRepository.findByUserEmail(newClinic.getUser().getEmail()) != null){
-            //save user first
-            if (newClinic.getUser() != null) {
-                User newUser = userRepository.save(newClinic.getUser());
-                newClinic.setUser(newUser);
-            }
-        clinicRepository.save(newClinic);
-        return "Clinic added successfully";
+        User user = newClinic.getUser();
+        User exsistingUser =userRepository.findByEmail(user.getEmail());
+        if(exsistingUser == null){
+            newClinic.setCreatedAt(LocalDateTime.now());
+            newClinic.setUpdatedAt(LocalDateTime.now());
+            user.setCreatedAt(LocalDate.now());
+            user.setUpdatedAt(LocalDate.now());
+            userRepository.save(user);
+            clinicRepository.save(newClinic);
+            return "Clinic added successfully";
         }
-        else throw new ConflictException("This email already exist");
+        throw new ConflictException("The user email "+user.getEmail()+" already exist");
 
     }
       //TODO update
     @Override
-    public String updateClinic(ClinicDTO clinicDTO, Long clinicId) {
-        return null;
+    public String updateClinic(ClinicDTO updatedClinic, Long clinicId) {
+      if(clinicId>0){
+          Optional<Clinic> clinicOptional = clinicRepository.findById(clinicId);
+          if(clinicOptional.isPresent()){
+              Clinic clinic= clinicOptional.get();
+              clinic.setName(updatedClinic.getName());
+              clinic.setGoogleMapsLink(updatedClinic.getGoogleMapsLink());
+              clinic.setOwnerName(updatedClinic.getOwnerName());
+              clinic.setSpecialization(updatedClinic.getSpecialization());
+              clinic.setUpdatedAt(LocalDateTime.now());
+
+              //user
+              UserDTO updatedUser=updatedClinic.getUser();
+              if(updatedUser != null){
+                  User user =clinic.getUser();
+                  user.setEmail(updatedUser.getEmail());
+                  user.setPassword(updatedUser.getPassword());
+                  user.setRole(updatedUser.getRole());
+                  user.setEnabled(updatedUser.isEnabled());
+                  user.setUpdatedAt(LocalDate.now());
+
+                  userRepository.save(user);
+
+              }
+              clinicRepository.save(clinic);
+              return "Clinic updted sucessfully";
+          }
+          throw new RecordNotFoundException("No Clinic with id: " + clinicId);
+
+    }
+        throw new RecordNotFoundException("No lab with id: " + clinicId);
     }
 
     @Override
     public String deleteClinicById(Long clinicId) {
-        if (clinicRepository.existsById(clinicId)) {
-            clinicRepository.deleteById(clinicId);
+      Optional<Clinic> clinicOptional = clinicRepository.findById(clinicId);
+      if(clinicOptional.isPresent()){
+           Clinic clinic= clinicOptional.get();
+           clinicRepository.deleteById(clinicId);
+           userRepository.deleteById(clinic.getUser().getId());
             return "Clinic deleted successfully";
         }else
             throw new RecordNotFoundException("Clinic not found with ID: " + clinicId);
