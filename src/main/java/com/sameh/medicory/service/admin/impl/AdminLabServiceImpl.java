@@ -68,26 +68,7 @@ public class AdminLabServiceImpl implements AdminLabService {
         }
         throw new RecordNotFoundException("No labs with name : " +labName);
     }
-/*
     @Override
-    public String addLab(LabDTO newLab) {
-        Lab lab = labMap.toEntity(newLab);
-        User user = lab.getUser();
-        User existingUser = userRepo.findByEmail(user.getEmail());
-        if (existingUser == null){
-            LocalDateTime currentDateTime = LocalDateTime.now();
-            lab.setCreatedAt(currentDateTime);
-            lab.setUpdatedAt(currentDateTime);
-
-            user.setCreatedAt(currentDateTime.toLocalDate());
-            user.setUpdatedAt(currentDateTime.toLocalDate());
-            userRepo.save(user);
-            labRepo.save(lab);
-        return "lab inserted suceessfully ";
-    }
-        throw new ConflictException("The user  email "+user.getEmail()+" already exist");
-    }
-*/@Override
 public String addLab(LabDTO newLab) {
     Lab lab = labMap.toEntity(newLab);
     User user = lab.getUser();
@@ -96,8 +77,8 @@ public String addLab(LabDTO newLab) {
         LocalDateTime currentDateTime = LocalDateTime.now();
         lab.setCreatedAt(currentDateTime);
         lab.setUpdatedAt(currentDateTime);
-    LocalDate localDate=LocalDate.now();
-        System.out.println(localDate);
+
+        LocalDate localDate=LocalDate.now();
         user.setCreatedAt(localDate);
         user.setUpdatedAt(localDate);
         userRepo.save(user);
@@ -150,7 +131,10 @@ public String addLab(LabDTO newLab) {
         if (labId > 0) {
             Optional<Lab> lab = labRepo.findById(labId);
             if (lab.isPresent()) {
+                Lab l= lab.get();
                 labRepo.deleteById(labId);
+                userRepo.deleteById(l.getUser().getId());
+
                 return "Deleted successfully";
             } else {
                 throw new RecordNotFoundException("No lab with id: " + labId);
