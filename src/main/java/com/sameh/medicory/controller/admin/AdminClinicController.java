@@ -2,43 +2,44 @@ package com.sameh.medicory.controller.admin;
 
 import com.sameh.medicory.model.users.ClinicDTO;
 import com.sameh.medicory.service.admin.AdminClinicService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/clinic")
+@RequestMapping("/admin/clinics")
+@RequiredArgsConstructor
 public class AdminClinicController {
 
-    @Autowired
-   private  AdminClinicService clinicService;
 
-    @GetMapping("/clinicById/{clinicId}")
+   private final AdminClinicService clinicService;
+
+    @GetMapping("/clinicId/{clinicId}")
     public ClinicDTO findClinicById(@PathVariable Long clinicId){
 
         return clinicService.findClinicById(clinicId);
     }
 
-    //TODO ? entity or dto
 
-    @GetMapping("/clinicByName/{clinicName}")
+    @GetMapping("/clinicName/{clinicName}")
     public List<ClinicDTO> findClinicByName(@PathVariable String clinicName){
         return clinicService.findClinicsByName(clinicName);
     }
-    @GetMapping("/clinicByEmail/{email}")
+    @GetMapping("/clinicEmail/{email}")
     public ClinicDTO findClinicByEmail(@PathVariable String email){
         return clinicService.findClinicByUserEmail(email);
     }
-    @GetMapping("/allClinics")
+    @GetMapping("")
     public List<ClinicDTO> showAllClinics(){
        return clinicService.getAllClinics();
     }
-    @PostMapping
+    @PostMapping("/clinic")
     public String insertNewClinic(@RequestBody ClinicDTO newClinic){
        return clinicService.addNewClinic(newClinic);
     }
-    @PutMapping("/{clinicId}")
+    @PutMapping("/{clinicId}/changedClinic")
     public String updateClinic(@PathVariable Long clinicId ,@RequestBody ClinicDTO clinic){
 
         return clinicService.updateClinic(clinic,clinicId);
