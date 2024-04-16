@@ -4,6 +4,8 @@ import com.sameh.medicory.model.users.LabDTO;
 import com.sameh.medicory.service.admin.AdminLabService;
 import com.sameh.medicory.service.lab.LabService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,34 +16,42 @@ public class AdminLabController {
     @Autowired
    private AdminLabService labService;
     @GetMapping("")
-    public List<LabDTO> showAllLabs(){
-        List<LabDTO> lists = labService.showAllLabs();
-        System.out.println(lists.get(0).getUser());
-        return lists;
+    public ResponseEntity< List<LabDTO>> showAllLabs(){
+       List<LabDTO> labs = labService.showAllLabs();
+       return ResponseEntity.ok(labs);
     }
     @GetMapping("/labId/{labId}")
-    public LabDTO findLabById(@PathVariable Long labId){
-        return labService.findLabById(labId);
+    public ResponseEntity<LabDTO> findLabById(@PathVariable Long labId){
+
+        LabDTO lab= labService.findLabById(labId);
+        return ResponseEntity.ok(lab);
     }
     @GetMapping("/labName/{labName}")
-    public List<LabDTO> findLabByName(@PathVariable String labName){
-        return labService.findLabByName(labName);
+    public ResponseEntity<List<LabDTO>> findLabByName(@PathVariable String labName){
+        List<LabDTO> labs = labService.findLabByName(labName);
+       return ResponseEntity.ok(labs);
     }
     @GetMapping("/userEmail/{userEmail}")
-    public LabDTO findLabByEmail(@PathVariable String userEmail){
-        return labService.findLabByEmail(userEmail);
+    public ResponseEntity<LabDTO> findLabByEmail(@PathVariable String userEmail){
+        LabDTO lab = labService.findLabByEmail(userEmail);
+        return ResponseEntity.ok(lab);
     }
     @PostMapping("/lab")
-    public String addLab(@RequestBody LabDTO newLab){
-        return labService.addLab(newLab);
+    public ResponseEntity< String> addLab(@RequestBody LabDTO newLab){
+
+       String message=  labService.addLab(newLab);
+       return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
-    @PutMapping("/{labId}/changedLab")
-    public String updateLab(@RequestBody LabDTO updatedLab,@PathVariable Long labId){
-        return labService.updateLab(updatedLab,labId);
+    @PutMapping("/lab/{labId}")
+    public ResponseEntity<String> updateLab(@RequestBody LabDTO updatedLab,@PathVariable Long labId){
+        String message= labService.updateLab(updatedLab,labId);
+       return ResponseEntity.ok(message);
     }
-    @DeleteMapping("/{labId}")
-    public String deleteById(@PathVariable Long labId){
-        return labService.deleteLab(labId);
+    @DeleteMapping("/lab/{labId}")
+    public ResponseEntity<String> deleteById(@PathVariable Long labId){
+
+       String message =labService.deleteLab(labId);
+       return ResponseEntity.ok(message);
     }
 
 }
