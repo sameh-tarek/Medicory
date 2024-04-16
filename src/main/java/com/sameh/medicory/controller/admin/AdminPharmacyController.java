@@ -4,6 +4,8 @@ import com.sameh.medicory.model.users.PharmacyDTO;
 import com.sameh.medicory.service.admin.AdminPharmacyService;
 import com.sameh.medicory.service.pharmacy.PharmacyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,39 +14,48 @@ import java.util.List;
 @RequestMapping("/admin/pharmacies")
 @RequiredArgsConstructor
 public class AdminPharmacyController {
+
     private final AdminPharmacyService pharmacyService;
 
-    @GetMapping("")
-    public List<PharmacyDTO> showAllPharmaicies() {
-        return pharmacyService.showAllPhrmacies();
+    @GetMapping
+    public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
+        List<PharmacyDTO> pharmacies = pharmacyService.showAllPhrmacies();
+        return ResponseEntity.ok(pharmacies);
     }
 
-    @GetMapping("/phamacyId/{pharmaId}")
-    public PharmacyDTO findPharmacyById(@PathVariable Long pharmaId) {
-        return pharmacyService.findPharmacyById(pharmaId);
+    @GetMapping("/pharmacyId/{pharmacyId}")
+    public ResponseEntity<PharmacyDTO> getPharmacyById(@PathVariable Long pharmacyId) {
+        PharmacyDTO pharmacy = pharmacyService.findPharmacyById(pharmacyId);
+        return ResponseEntity.ok(pharmacy);
     }
 
-    @GetMapping("/phamacyName/{pharmaName}")
-    public List<PharmacyDTO> findPharmacyByName(@PathVariable String pharmaName) {
-        return pharmacyService.findPharmacyByName(pharmaName);
+    @GetMapping("/pharmacyName/{pharmacyName}")
+    public ResponseEntity<List<PharmacyDTO>> getPharmaciesByName(@PathVariable String pharmacyName) {
+        List<PharmacyDTO> pharmacies = pharmacyService.findPharmacyByName(pharmacyName);
+        return ResponseEntity.ok(pharmacies);
     }
 
     @GetMapping("/userEmail/{userEmail}")
-    public PharmacyDTO findPharmacyByEmail(@PathVariable String userEmail) {
-        return pharmacyService.findPharmcyByEmail(userEmail);
+    public ResponseEntity<PharmacyDTO> getPharmacyByEmail(@PathVariable String userEmail) {
+        PharmacyDTO pharmacy = pharmacyService.findPharmcyByEmail(userEmail);
+        return ResponseEntity.ok(pharmacy);
     }
 
     @PostMapping("/pharmacy")
-    public String addPharmacy(@RequestBody PharmacyDTO newPharmacy) {
-        return pharmacyService.addPharmacy(newPharmacy);
-    }
-    @PutMapping("/pharmacy/{pharmacyId}")
-    public String updatePharmacy (@PathVariable Long pharmacyId,@RequestBody PharmacyDTO updatedPharmacy){
-        return pharmacyService.UpdatePharmacy(updatedPharmacy,pharmacyId);
-    }
-    @DeleteMapping("/pharmacy/{pharmacyId}")
-    public String  deletePharmacy(@PathVariable Long pharmacyId){
-        return pharmacyService.deletePharmacy(pharmacyId);
+    public ResponseEntity<String> addPharmacy(@RequestBody PharmacyDTO newPharmacy) {
+        String message = pharmacyService.addPharmacy(newPharmacy);
+        return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
+    @PutMapping("/pharmacy/{pharmacyId}")
+    public ResponseEntity<String> updatePharmacy(@PathVariable Long pharmacyId, @RequestBody PharmacyDTO updatedPharmacy) {
+        String message = pharmacyService.UpdatePharmacy(updatedPharmacy, pharmacyId);
+        return ResponseEntity.ok(message);
+    }
+
+    @DeleteMapping("/pharmacy/{pharmacyId}")
+    public ResponseEntity<String> deletePharmacy(@PathVariable Long pharmacyId) {
+        String message = pharmacyService.deletePharmacy(pharmacyId);
+        return ResponseEntity.ok(message);
+    }
 }
