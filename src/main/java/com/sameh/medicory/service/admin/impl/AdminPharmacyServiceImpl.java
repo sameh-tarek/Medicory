@@ -50,7 +50,7 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
             }
             throw new RecordNotFoundException("No pharmacy with this id "+pharmacyId);
         }
-        throw new RuntimeException("Invalid Id : "+pharmacyId);
+        throw new IllegalArgumentException("Invalid Id : "+pharmacyId);
     }
 
     @Override
@@ -125,6 +125,7 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
              Pharmacy pharmacy= optionalPharmacy.get();
              pharmacyRepository.deleteById(pharmacyId);
              userRepository.deleteById(pharmacy.getUser().getId());
+             return "deleted sucessfully";
 
          }throw new RecordNotFoundException("No pharmacy with id "+pharmacyId);
      }

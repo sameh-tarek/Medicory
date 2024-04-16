@@ -16,7 +16,7 @@ public class AdminLabController {
     @GetMapping("")
     public List<LabDTO> showAllLabs(){
         List<LabDTO> lists = labService.showAllLabs();
-        System.out.println(lists.get(0).getUser());
+       // System.out.println(lists.get(0).getUser());
         return lists;
     }
     @GetMapping("/labId/{labId}")
