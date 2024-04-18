@@ -1,6 +1,8 @@
 package com.sameh.medicory.service.admin.impl;
 
 import com.sameh.medicory.entity.usersEntities.Admin;
+import com.sameh.medicory.entity.usersEntities.User;
+import com.sameh.medicory.exception.ConflictException;
 import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.mapper.AdminMapper;
 import com.sameh.medicory.mapper.UserMapper;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +50,11 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminDTO getAdminByEmail(String email) {
-        return null;
+        Admin admin = adminRepository.findByUserEmail(email);
+        if(admin !=null){
+           return adminMapper.toDTO(admin);
+        }throw new RecordNotFoundException("No admin with this email");
+
     }
     //TODO with fName and sName
     @Override
@@ -57,16 +64,63 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public String addAdmin(AdminDTO newAdmin) {
-        return null;
+         Admin admin = adminMapper.toEntity(newAdmin);
+         User user = admin.getUser();
+         User existing =userRepository.findByEmail(user.getEmail());
+         if(existing == null){
+             user.setCreatedAt(LocalDate.now());
+             user.setUpdatedAt(LocalDate.now());
+             userRepository.save(user);
+             adminRepository.save(admin);
+             return  "Admin added sucessfully";
+         }throw new ConflictException("User Email "+user.getEmail()+" already exist");
+
+
     }
 
     @Override
     public String updateAdmin(AdminDTO updatedAdminDTO, Long adminId) {
-        return null;
+        if(adminId>0){
+            Optional<Admin> optionalAdmin=adminRepository.findById(adminId);
+            if(optionalAdmin.isPresent()){
+                Admin oldAdmin=optionalAdmin.get();
+                oldAdmin.setFirstName(updatedAdminDTO.getFirstName());
+                oldAdmin.setLastName(updatedAdminDTO.getLastName());
+                oldAdmin.setMaritalStatus(updatedAdminDTO.getMaritalStatus());
+                oldAdmin.setGender(updatedAdminDTO.getGender());
+
+                User updatedUser =userMapper.toEntity(updatedAdminDTO.getUser());
+
+                if(updatedUser !=null){
+                    User oldUser = oldAdmin.getUser();
+                    oldUser.setEmail(updatedUser.getEmail());
+                    oldUser.setPassword(updatedUser.getPassword());
+                    oldUser.setEnabled(updatedUser.isEnabled());
+                    oldUser.setRole(updatedUser.getRole());
+                    oldUser.setUpdatedAt(LocalDate.now());
+                    userRepository.save(oldUser);
+
+                }
+                adminRepository.save(oldAdmin);
+                return "Admin updatd sucessfully";
+
+            }throw new RecordNotFoundException("No Admin in this id "+adminId);
+
+        }throw new IllegalArgumentException("Invalid id "+adminId);
     }
 
     @Override
     public String deleteAdmin(Long adminId) {
-        return null;
+     if(adminId>0){
+         Optional<Admin> opAdmin=adminRepository.findById(adminId);
+         if(opAdmin.isPresent()){
+             Admin admin = opAdmin.get();
+             adminRepository.deleteById(adminId);
+             userRepository.deleteById(admin.getUser().getId());
+             return "deleted sucessfully";
+         }
+         throw new RecordNotFoundException("No admin with this id "+adminId );
+     }
+     throw new IllegalArgumentException("Invalid id "+adminId);
     }
 }
