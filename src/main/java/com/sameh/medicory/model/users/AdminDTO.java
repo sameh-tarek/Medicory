@@ -19,6 +19,6 @@ public class AdminDTO {
     private MaritalStatus maritalStatus;
     private Gender gender;
 
-    UserDTO user;
+    private UserDTO user;
 
 }
