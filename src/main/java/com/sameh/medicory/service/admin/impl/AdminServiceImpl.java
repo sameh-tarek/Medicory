@@ -58,8 +58,31 @@ public class AdminServiceImpl implements AdminService {
     }
     //TODO with fName and sName
     @Override
-    public List<AdminDTO> getAdminByName(String fName, String lName) {
-        return null;
+    public List<AdminDTO> getAdminByName(String fullName) {
+
+        if(fullName !=null ||fullName.isBlank()) {
+            // if enter fname + lname
+            if (fullName.contains(" ")) {
+                String[] nameParts = fullName.split(" ");
+                String fName = nameParts[0];
+                String lName = nameParts[1];
+                List<Admin> admins = adminRepository.findAdminsByFirstNameAndLastName(fName, lName);
+                 if (!admins.isEmpty()) {
+                    return adminMapper.toDTOs(admins);
+                  }
+                throw new RecordNotFoundException("No admins in this name"+fullName);
+            }
+            else{
+                // if enter only fname
+                List<Admin> admins = adminRepository.findAdminsByFirstName(fullName);
+                if(!admins.isEmpty()){
+                        return adminMapper.toDTOs(admins);
+                }
+                throw new RecordNotFoundException("No admins in this name"+fullName);
+            }
+
+        }
+        throw new IllegalArgumentException("Invalid name ");
     }
 
     @Override

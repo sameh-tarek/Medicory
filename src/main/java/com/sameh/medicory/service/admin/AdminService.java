@@ -9,7 +9,7 @@ public interface AdminService {
     List<AdminDTO> showAllAdmins();
     AdminDTO getAdminById(Long adminId);
     AdminDTO getAdminByEmail(String email);
-    List<AdminDTO> getAdminByName(String fName,String lName);
+    List<AdminDTO> getAdminByName(String fullName);
     String addAdmin(AdminDTO newAdmin);
     String updateAdmin(AdminDTO updatedAdminDTO ,Long adminId);
     String deleteAdmin(Long adminId);
