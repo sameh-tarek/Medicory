@@ -75,12 +75,11 @@ public String addLab(LabDTO newLab) {
     User existingUser = userRepo.findByEmail(user.getEmail());
     if (existingUser == null) {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        lab.setCreatedAt(currentDateTime);
-        lab.setUpdatedAt(currentDateTime);
 
-        LocalDate localDate=LocalDate.now();
-        user.setCreatedAt(localDate);
-        user.setUpdatedAt(localDate);
+
+        LocalDateTime localDateTime=LocalDateTime.now();
+        user.setCreatedAt(localDateTime);
+        user.setUpdatedAt(localDateTime);
         userRepo.save(user);
         labRepo.save(lab);
         return "Lab inserted successfully";
@@ -98,7 +97,7 @@ public String addLab(LabDTO newLab) {
                 lab.setGoogleMapsLink(updatedLab.getGoogleMapsLink());
                 lab.setAddress(updatedLab.getAddress());
                 lab.setOwnerName(updatedLab.getOwnerName());
-                lab.setUpdatedAt(LocalDateTime.now());
+
 
                 UserDTO updatedUserDTO = updatedLab.getUser();
                 System.out.println(updatedUserDTO);
@@ -108,7 +107,7 @@ public String addLab(LabDTO newLab) {
                     user.setEnabled(updatedUserDTO.isEnabled());
                     user.setPassword(updatedUserDTO.getPassword());
                     user.setRole(updatedUserDTO.getRole());
-                    user.setUpdatedAt(LocalDateTime.now().toLocalDate());
+                    user.setUpdatedAt(LocalDateTime.now());
                     lab.setUser(user);
                     userRepo.save(user);
                 }

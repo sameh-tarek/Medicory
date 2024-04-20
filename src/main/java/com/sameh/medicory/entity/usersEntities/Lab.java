@@ -30,10 +30,6 @@ public class Lab {
     @Column(name = "owner_name")
     private String ownerName;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     @OneToOne
     @JoinColumn(name = "user_id")

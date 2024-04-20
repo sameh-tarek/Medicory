@@ -29,9 +29,6 @@ public class Pharmacy {
 
     private String ownerName;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     @OneToOne
     @JoinColumn(name = "user_id")

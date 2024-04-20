@@ -84,10 +84,9 @@ public class AdminClinicServiceImpl implements AdminClinicService {
         User user = newClinic.getUser();
         User exsistingUser =userRepository.findByEmail(user.getEmail());
         if(exsistingUser == null){
-            newClinic.setCreatedAt(LocalDateTime.now());
-            newClinic.setUpdatedAt(LocalDateTime.now());
-            user.setCreatedAt(LocalDate.now());
-            user.setUpdatedAt(LocalDate.now());
+
+            user.setCreatedAt(LocalDateTime.now());
+            user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);
             clinicRepository.save(newClinic);
             return "Clinic added successfully";
@@ -106,7 +105,7 @@ public class AdminClinicServiceImpl implements AdminClinicService {
               clinic.setGoogleMapsLink(updatedClinic.getGoogleMapsLink());
               clinic.setOwnerName(updatedClinic.getOwnerName());
               clinic.setSpecialization(updatedClinic.getSpecialization());
-              clinic.setUpdatedAt(LocalDateTime.now());
+
 
               //user
               UserDTO updatedUser=updatedClinic.getUser();
@@ -116,7 +115,7 @@ public class AdminClinicServiceImpl implements AdminClinicService {
                   user.setPassword(updatedUser.getPassword());
                   user.setRole(updatedUser.getRole());
                   user.setEnabled(updatedUser.isEnabled());
-                  user.setUpdatedAt(LocalDate.now());
+                  user.setUpdatedAt(LocalDateTime.now());
 
                   userRepository.save(user);
 

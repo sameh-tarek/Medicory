@@ -17,6 +17,6 @@ public class UserDTO {
     private String password;
     private Role role;
     private boolean isEnabled;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
