@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AdminRepository extends JpaRepository<Admin,Long> {
-    List<Admin> findAdminByFirstName(String fName);
+    List<Admin> findAdminsByFirstNameAndLastName(String fName,String lName);
+    List<Admin> findAdminsByFirstName(String fName);
     Admin findByUserEmail(String userEmail);
 
 }

@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,8 +59,31 @@ public class AdminServiceImpl implements AdminService {
     }
     //TODO with fName and sName
     @Override
-    public List<AdminDTO> getAdminByName(String fName, String lName) {
-        return null;
+    public List<AdminDTO> getAdminByName(String fullName) {
+
+        if(fullName !=null ||fullName.isBlank()) {
+            // if enter fname + lname
+            if (fullName.contains(" ")) {
+                String[] nameParts = fullName.split(" ");
+                String fName = nameParts[0];
+                String lName = nameParts[1];
+                List<Admin> admins = adminRepository.findAdminsByFirstNameAndLastName(fName, lName);
+                 if (!admins.isEmpty()) {
+                    return adminMapper.toDTOs(admins);
+                  }
+                throw new RecordNotFoundException("No admins in this name"+fullName);
+            }
+            else{
+                // if enter only fname
+                List<Admin> admins = adminRepository.findAdminsByFirstName(fullName);
+                if(!admins.isEmpty()){
+                        return adminMapper.toDTOs(admins);
+                }
+                throw new RecordNotFoundException("No admins in this name"+fullName);
+            }
+
+        }
+        throw new IllegalArgumentException("Invalid name ");
     }
 
     @Override
@@ -68,8 +92,8 @@ public class AdminServiceImpl implements AdminService {
          User user = admin.getUser();
          User existing =userRepository.findByEmail(user.getEmail());
          if(existing == null){
-             user.setCreatedAt(LocalDate.now());
-             user.setUpdatedAt(LocalDate.now());
+             user.setCreatedAt(LocalDateTime.now());
+             user.setUpdatedAt(LocalDateTime.now());
              userRepository.save(user);
              adminRepository.save(admin);
              return  "Admin added sucessfully";
@@ -97,7 +121,7 @@ public class AdminServiceImpl implements AdminService {
                     oldUser.setPassword(updatedUser.getPassword());
                     oldUser.setEnabled(updatedUser.isEnabled());
                     oldUser.setRole(updatedUser.getRole());
-                    oldUser.setUpdatedAt(LocalDate.now());
+                    oldUser.setUpdatedAt(LocalDateTime.now());
                     userRepository.save(oldUser);
 
                 }

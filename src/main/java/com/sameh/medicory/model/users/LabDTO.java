@@ -16,7 +16,5 @@ public class LabDTO {
     private String googleMapsLink;
     private String address;
     private String ownerName;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
     private  UserDTO user;
 }
