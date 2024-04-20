@@ -16,8 +16,7 @@ public class ClinicDTO {
     private String address;
     private String ownerName;
     private String specialization;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
     private UserDTO user;
 
 

@@ -50,7 +50,7 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
             }
             throw new RecordNotFoundException("No pharmacy with this id "+pharmacyId);
         }
-        throw new RuntimeException("Invalid Id : "+pharmacyId);
+        throw new IllegalArgumentException("Invalid Id : "+pharmacyId);
     }
 
     @Override
@@ -76,10 +76,9 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
         User newUser =newPharmacy.getUser();
         User existingUser =userRepository.findByEmail(newUser.getEmail());
         if(existingUser ==null){
-            newPharmacy.setCreatedAt(LocalDateTime.now());
-            newPharmacy.setUpdatedAt(LocalDateTime.now());
-            newUser.setCreatedAt(LocalDate.now());
-            newUser.setUpdatedAt(LocalDate.now());
+
+            newUser.setCreatedAt(LocalDateTime.now());
+            newUser.setUpdatedAt(LocalDateTime.now());
             userRepository.save(newUser);
             pharmacyRepository.save(newPharmacy);
             return "Pharmacy inserted sucessfully";
@@ -97,7 +96,6 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
              oldPharmacy.setAddress(updatedPharmacy.getAddress());
              oldPharmacy.setOwnerName(updatedPharmacy.getOwnerName());
              oldPharmacy.setGoogleMapsLink(updatedPharmacy.getGoogleMapsLink());
-             oldPharmacy.setUpdatedAt(LocalDateTime.now());
 
              User updatedUser =userMapper.toEntity(updatedPharmacy.getUser());
              if(updatedUser!=null){
@@ -106,7 +104,7 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
                  oldUser.setPassword(updatedUser.getPassword());
                  oldUser.setEnabled(updatedUser.isEnabled());
                  oldUser.setRole(updatedUser.getRole());
-                 oldUser.setUpdatedAt(LocalDate.now());
+                 oldUser.setUpdatedAt(LocalDateTime.now());
                  userRepository.save(oldUser);
 
              }
@@ -125,6 +123,7 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
              Pharmacy pharmacy= optionalPharmacy.get();
              pharmacyRepository.deleteById(pharmacyId);
              userRepository.deleteById(pharmacy.getUser().getId());
+             return "deleted sucessfully";
 
          }throw new RecordNotFoundException("No pharmacy with id "+pharmacyId);
      }

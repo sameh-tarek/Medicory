@@ -32,9 +32,6 @@ public class Clinic {
 
     private String specialization;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

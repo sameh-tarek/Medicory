@@ -40,9 +40,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<RelativePhoneNumber> relativePhoneNumbers;
     @Column(name = "created_at")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     @Column(name = "updated_at")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     @Override
     public String toString() {
