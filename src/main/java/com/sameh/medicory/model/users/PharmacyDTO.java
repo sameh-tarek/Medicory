@@ -1,23 +1,19 @@
 package com.sameh.medicory.model.users;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.sameh.medicory.entity.usersEntities.User;
+import lombok.*;
 
 import java.time.LocalDateTime;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class ClinicDTO {
+@AllArgsConstructor
+@Setter
+@Getter
+public class PharmacyDTO {
     private Long id;
     private String name;
     private String googleMapsLink;
     private String address;
     private String ownerName;
-    private String specialization;
-
     private UserDTO user;
-
-
 }

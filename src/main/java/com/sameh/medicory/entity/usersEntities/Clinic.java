@@ -31,6 +31,7 @@ public class Clinic {
     private String ownerName;
 
     private String specialization;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
