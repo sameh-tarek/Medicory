@@ -17,13 +17,12 @@ public class DoctorLabController {
     private final DoctorService doctorService;
 
     @GetMapping("/{ownerId}/tests")
-    public ResponseEntity<List<LabTestDTO>> getAllLabTestsForPatient(@PathVariable Long ownerId) {
-        List<LabTestDTO> labTests = doctorService.findAllLabTestsForPatient(ownerId);
-        return ResponseEntity.ok(labTests);
+    public List<LabTestDTO> getAllLabTestsForPatient(@PathVariable Long ownerId) {
+        return doctorService.findAllLabTestsForPatient(ownerId);
     }
 
     @DeleteMapping("tests/{testId}")
-    public ResponseEntity<String> deleteLabTestFromHistory(@PathVariable(name = "testId") Long testId){
-        return new ResponseEntity<>(doctorService.deleteLabTestFromHistory(testId), HttpStatus.OK);
+    public String deleteLabTestFromHistory(@PathVariable(name = "testId") Long testId){
+        return doctorService.deleteLabTestFromHistory(testId);
     }
 }
