@@ -38,6 +38,8 @@ public class Medication {
     @Column(name = "side_effects")
     private String sideEffects;
 
+    private String tips;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

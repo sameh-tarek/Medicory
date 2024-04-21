@@ -29,7 +29,6 @@ public class Pharmacy {
 
     private String ownerName;
 
-
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

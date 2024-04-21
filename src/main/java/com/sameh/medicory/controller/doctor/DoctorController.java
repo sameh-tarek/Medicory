@@ -15,9 +15,8 @@ public class DoctorController {
     private final DoctorService doctorService;
 
     @GetMapping("personal-information")
-    public ResponseEntity<PatientPersonalInformation> getPatientPersonalInformation(@PathVariable Long ownerId){
-        PatientPersonalInformation result = doctorService.getPatientPersonalInformation(ownerId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public PatientPersonalInformation getPatientPersonalInformation(@PathVariable Long ownerId){
+         return doctorService.getPatientPersonalInformation(ownerId);
     }
 
 }
