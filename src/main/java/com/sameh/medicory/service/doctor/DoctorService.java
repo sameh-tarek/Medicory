@@ -6,6 +6,7 @@ import com.sameh.medicory.model.allergies.AllergiesRequestDTO;
 import com.sameh.medicory.model.allergies.AllergiesResponseDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesRequestDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
+import com.sameh.medicory.model.prescription.PrescriptionRequestDTO;
 import com.sameh.medicory.model.surgery.SurgeryRequestDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
 import com.sameh.medicory.model.tests.LabTestDTO;
@@ -53,4 +54,5 @@ public interface DoctorService {
     List<LabTestDTO> findAllLabTestsForPatient(Long ownerId);
     String deleteLabTestFromHistory(Long testId);
 
+    boolean addNewPrescription(Long ownerId, PrescriptionRequestDTO prescriptionRequestDTO);
 }

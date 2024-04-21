@@ -1,5 +1,8 @@
 package com.sameh.medicory.service.doctor;
 
+import com.sameh.medicory.entity.medicationEntities.Medication;
+import com.sameh.medicory.entity.medicationEntities.Medicine;
+import com.sameh.medicory.entity.medicationEntities.Prescription;
 import com.sameh.medicory.entity.testsEntities.LabTest;
 import com.sameh.medicory.entity.otherEntities.Allergies;
 import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
@@ -15,6 +18,7 @@ import com.sameh.medicory.model.immunization.ImmunizationRequestDTO;
 import com.sameh.medicory.model.immunization.ImmunizationResponseDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesRequestDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
+import com.sameh.medicory.model.prescription.PrescriptionRequestDTO;
 import com.sameh.medicory.model.surgery.SurgeryRequestDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
 import com.sameh.medicory.model.allergies.AllergiesRequestDTO;
@@ -50,6 +54,9 @@ public class DoctorServiceImpl implements DoctorService {
     private final AllergiesRepository allergiesRepository;
     private final ImmunizationRepository immunizationRepository;
     private final SurgeryRepository surgeryRepository;
+    private final MedicationMapper medicationMapper;
+    private final MedicineRepository medicineRepository;
+    private final PrescriptionRepository prescriptionRepository;
 
     @Override
     public PatientPersonalInformation getPatientPersonalInformation(Long ownerId) {
@@ -358,6 +365,53 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElseThrow(() -> new RecordNotFoundException("This Lab test Already doesn't exists"));
         labTestRepository.delete(labTest);
         return "deleted successfully";
+    }
+
+
+
+
+
+    @Override
+    public boolean addNewPrescription(Long ownerId, PrescriptionRequestDTO prescriptionRequestDTO) {
+        log.trace("Doctor wants to add prescriptionRequestDTO {}, for owner with id {}",
+                prescriptionRequestDTO, ownerId);
+
+        Prescription newPrescription = new Prescription();
+        List<Medication> medications = prescriptionRequestDTO.getMedications().stream()
+                .map(medicationRequestDTO -> {
+                    Medicine medicine = getMedicineByName(medicationRequestDTO.getMedicineName());
+                    Medication medication = medicationMapper.toEntity(medicationRequestDTO);
+                    medication.setPrescription(newPrescription);
+                    medication.setCreatedAt(LocalDateTime.now());
+                    medication.setUpdatedAt(LocalDateTime.now());
+                    medication.setMedicine(medicine);
+                    return medication;
+                })
+                .collect(Collectors.toList());
+
+        newPrescription.setMedications(medications);
+        newPrescription.setStatus(true);
+        newPrescription.setCreatedAt(LocalDateTime.now());
+        newPrescription.setUpdatedAt(LocalDateTime.now());
+        prescriptionRepository.save(newPrescription);
+
+        log.info("Prescription Added successfully!");
+        return true;
+    }
+
+    private Medicine getMedicineByName(String name){
+        Medicine medicine = medicineRepository.findByName(name)
+                .orElse(null);
+
+        if (medicine == null){
+            Medicine newMedicine = new Medicine();
+            newMedicine.setName(name);
+            medicineRepository.save(newMedicine);
+            return newMedicine;
+        }
+
+        log.info("This medicine info: {}", medicine);
+        return medicine;
     }
 
     private Integer getCurrentAge(LocalDate dateOfBirth) {

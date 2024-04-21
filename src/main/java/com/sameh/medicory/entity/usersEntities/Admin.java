@@ -23,8 +23,4 @@ public class Admin {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 }
