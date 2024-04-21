@@ -6,6 +6,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface LabTestMapper {
-    public LabTest toEntity(LabTestDTO labTestDTO);
-    public LabTestDTO toDTO(LabTest labTest);
+    LabTest toEntity(LabTestDTO labTestDTO);
+    LabTestDTO toDTO(LabTest labTest);
 }

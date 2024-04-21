@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SurgeryResponseDTO {
     private Long id;
+    private String name;
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
