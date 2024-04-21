@@ -7,6 +7,7 @@ import com.sameh.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
 import com.sameh.medicory.model.immunization.ImmunizationResponseDTO;
 import com.sameh.medicory.model.owner.OwnerDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
+import com.sameh.medicory.model.tests.ImagingTestDTO;
 import com.sameh.medicory.model.tests.LabTestDTO;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +36,10 @@ public interface OwnerService {
     List<LabTestDTO> getOwnerLabTests(long userId);
 
     LabTestDTO getOwnerLabTestByTestId(long testId, long userId);
+
+    List<ImagingTestDTO> getOwnerImagingTests(long userId);
+
+    ImagingTestDTO getOwnerImagingTestByTestId(long testId, long userId);
+
 
 }

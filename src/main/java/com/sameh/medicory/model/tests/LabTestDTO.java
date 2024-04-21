@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class LabTestDTO {
     private Long id;
-    private Long name;
+    private String name;
     private String description;
     private String imageResult;
     private String resultNotes;

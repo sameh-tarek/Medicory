@@ -10,6 +10,7 @@ import com.sameh.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
 import com.sameh.medicory.model.immunization.ImmunizationResponseDTO;
 import com.sameh.medicory.model.owner.OwnerDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
+import com.sameh.medicory.model.tests.ImagingTestDTO;
 import com.sameh.medicory.model.tests.LabTestDTO;
 import com.sameh.medicory.repository.OwnerRepository;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,7 @@ public class OwnerServiceImpl implements OwnerService {
     private final ImmunizationMapper immunizationMapper;
     private final SurgeryMapper surgeryMapper;
     private final LabTestMapper labTestMapper;
+    private final ImagingTestMapper imagingTestMapper;
 
 
     @Override
@@ -159,6 +161,32 @@ public class OwnerServiceImpl implements OwnerService {
                 .findFirst()
                 .orElseThrow(
                         () -> new RecordNotFoundException("User with id " + userId + " not have a test with id " + testId)
+                );
+    }
+
+    @Override
+    public List<ImagingTestDTO> getOwnerImagingTests(long userId) {
+        return ownerRepository.findById(userId).orElseThrow(
+                () -> new RecordNotFoundException("owner with id "+ userId + " not found!")
+        )
+                .getImagingTests()
+                .stream()
+                .map(imagingTestMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ImagingTestDTO getOwnerImagingTestByTestId(long testId, long userId) {
+        return ownerRepository.findById(userId).orElseThrow(
+                () -> new RecordNotFoundException("owner with id "+ userId + " not found!")
+        )
+                .getImagingTests()
+                .stream()
+                .filter(imagingTest -> imagingTest.getId() == testId)
+                .map(imagingTestMapper::toDTO)
+                .findFirst()
+                .orElseThrow(
+                        () -> new RecordNotFoundException("User with id " + userId + " not have an imaging test with id " + testId)
                 );
     }
 
