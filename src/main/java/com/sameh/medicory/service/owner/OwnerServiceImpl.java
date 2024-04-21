@@ -1,6 +1,7 @@
 package com.sameh.medicory.service.owner;
 
 import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
+import com.sameh.medicory.entity.testsEntities.LabTest;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.mapper.*;
@@ -9,6 +10,7 @@ import com.sameh.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
 import com.sameh.medicory.model.immunization.ImmunizationResponseDTO;
 import com.sameh.medicory.model.owner.OwnerDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
+import com.sameh.medicory.model.tests.LabTestDTO;
 import com.sameh.medicory.repository.OwnerRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -28,6 +30,8 @@ public class OwnerServiceImpl implements OwnerService {
     private final AllergiesMapper allergiesMapper;
     private final ImmunizationMapper immunizationMapper;
     private final SurgeryMapper surgeryMapper;
+    private final LabTestMapper labTestMapper;
+
 
     @Override
     public OwnerDTO getOwnerPersonalInformation(long id) {
@@ -130,6 +134,32 @@ public class OwnerServiceImpl implements OwnerService {
                 .findFirst()
                 .orElseThrow(() -> new RecordNotFoundException("User with id: "+ userId + " not have a surgery with id: " + diseaseId));
 
+    }
+
+    @Override
+    public List<LabTestDTO> getOwnerLabTests(long userId) {
+        return ownerRepository.findById(userId).orElseThrow(
+                () -> new RecordNotFoundException("owner with id "+ userId + " not found!")
+        )
+                .getLabTests()
+                .stream()
+                .map(labTestMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public LabTestDTO getOwnerLabTestByTestId(long testId, long userId) {
+        return ownerRepository.findById(userId).orElseThrow(
+                () -> new RecordNotFoundException("Owner with id: " + userId+ " not exist!")
+        )
+                .getLabTests()
+                .stream()
+                .filter(labTest -> labTest.getId() == testId)
+                .map(labTestMapper::toDTO)
+                .findFirst()
+                .orElseThrow(
+                        () -> new RecordNotFoundException("User with id " + userId + " not have a test with id " + testId)
+                );
     }
 
 }
