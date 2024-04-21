@@ -1,7 +1,8 @@
-package com.sameh.medicory.mapper;
+package com.sameh.medicory.mapper.impl;
 
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.entity.usersEntities.User;
+import com.sameh.medicory.mapper.OwnerMapper;
 import com.sameh.medicory.model.owner.OwnerDTO;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class OwnerMapperImpl implements OwnerMapper{
+public class OwnerMapperImpl implements OwnerMapper {
 
     @Override
     public OwnerDTO toDTO(Owner owner) {

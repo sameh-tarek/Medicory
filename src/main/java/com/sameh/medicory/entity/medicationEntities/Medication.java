@@ -1,7 +1,9 @@
 package com.sameh.medicory.entity.medicationEntities;
 
+import com.sameh.medicory.entity.usersEntities.Owner;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,18 +19,6 @@ public class Medication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "prescription_id")
-    private Prescription prescription;
-
-    @ManyToOne
-    @JoinColumn(name = "current_schedule_id")
-    private CurrentSchedule currentSchedule;
-
-    @ManyToOne
-    @JoinColumn(name = "medicine_id")
-    private Medicine medicine;
-
     @Column(nullable = false)
     private String dose;
 
@@ -43,4 +33,20 @@ public class Medication {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "prescription_id")
+    private Prescription prescription;
+
+    @ManyToOne
+    @JoinColumn(name = "current_schedule_id")
+    private CurrentSchedule currentSchedule;
+
+    @ManyToOne
+    @JoinColumn(name = "medicine_id")
+    private Medicine medicine;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
 }
