@@ -6,5 +6,4 @@ import com.sameh.medicory.model.medication.MedicationDTO;
 public interface MedicationMapper {
     Medication toEntity(MedicationDTO medicationDTO);
     MedicationDTO toDTO(Medication medication);
-
 }
