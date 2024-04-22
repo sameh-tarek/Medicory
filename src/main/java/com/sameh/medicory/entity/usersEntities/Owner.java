@@ -80,11 +80,7 @@ public class Owner {
     private List<ImagingTest> imagingTests;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Medication> medications;
-
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Prescription> prescriptions;
-
 
     @OneToOne
     @JoinColumn(name = "user_id")

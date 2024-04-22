@@ -1,24 +1,20 @@
 package com.sameh.medicory.service.owner;
 
-import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
-import com.sameh.medicory.entity.testsEntities.LabTest;
+import com.sameh.medicory.entity.medicationEntities.Medication;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.mapper.*;
 import com.sameh.medicory.model.allergies.AllergiesResponseDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
 import com.sameh.medicory.model.immunization.ImmunizationResponseDTO;
-import com.sameh.medicory.model.medication.MedicationScheduleDTO;
+import com.sameh.medicory.model.medication.MedicationDTO;
 import com.sameh.medicory.model.owner.OwnerDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
 import com.sameh.medicory.model.tests.ImagingTestDTO;
 import com.sameh.medicory.model.tests.LabTestDTO;
 import com.sameh.medicory.repository.OwnerRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,8 +32,7 @@ public class OwnerServiceImpl implements OwnerService {
     private final SurgeryMapper surgeryMapper;
     private final LabTestMapper labTestMapper;
     private final ImagingTestMapper imagingTestMapper;
-    private final MedicationScheduleMapper medicationScheduleMapper;
-
+    private final MedicationMapper medicationMapper;
 
     @Override
     public OwnerDTO getOwnerPersonalInformation(long id) {
@@ -195,16 +190,19 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public List<MedicationScheduleDTO> getMedicationSchedule(long userId) {
-        List<MedicationScheduleDTO> medicationScheduleDTOS = ownerRepository.findById(userId).orElseThrow(
+    public List<MedicationDTO> getMedicationSchedule(long userId) {
+        List<MedicationDTO> medicationDTOS = ownerRepository.findById(userId).orElseThrow(
                 () -> new RecordNotFoundException("owner with id "+ userId + " not found!")
         )
+                .getCurrentSchedule()
                 .getMedications()
                 .stream()
-                .map(medicationScheduleMapper::toDTO)
+                .filter(Medication::isStatus)
+                .map(medicationMapper::toDTO)
                 .collect(Collectors.toList());
-        log.info("Medication schedule for owner with id {} is {}", userId, medicationScheduleDTOS);
-        return medicationScheduleDTOS;
+
+        log.info("Medication schedule for owner with id {} is {}", userId, medicationDTOS);
+        return medicationDTOS;
     }
 
 }

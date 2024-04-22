@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "medications")
 public class Medication {
     @Id
@@ -25,8 +26,7 @@ public class Medication {
     @Column(nullable = false)
     private int frequency;
 
-    @Column(name = "side_effects")
-    private String sideEffects;
+    private boolean status;
 
     private String tips;
 

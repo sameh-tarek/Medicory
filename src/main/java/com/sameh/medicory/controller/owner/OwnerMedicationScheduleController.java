@@ -1,6 +1,6 @@
 package com.sameh.medicory.controller.owner;
 
-import com.sameh.medicory.model.medication.MedicationScheduleDTO;
+import com.sameh.medicory.model.medication.MedicationDTO;
 import com.sameh.medicory.service.owner.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ public class OwnerMedicationScheduleController {
     private OwnerService ownerService;
 
     @GetMapping
-    public List<MedicationScheduleDTO> getMedicationSchedule(@PathVariable long ownerId){
+    public List<MedicationDTO> getMedicationSchedule(@PathVariable long ownerId){
         return ownerService.getMedicationSchedule(ownerId);
     }
 
