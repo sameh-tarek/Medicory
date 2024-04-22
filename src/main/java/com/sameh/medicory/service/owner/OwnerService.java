@@ -7,7 +7,7 @@ import com.sameh.medicory.model.medication.MedicationDTO;
 import com.sameh.medicory.model.owner.OwnerDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
 import com.sameh.medicory.model.tests.ImagingTestDTO;
-import com.sameh.medicory.model.tests.LabTestDTO;
+import com.sameh.medicory.model.tests.LabTestResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,9 +32,9 @@ public interface OwnerService {
 
     SurgeryResponseDTO getOwnerSurgeryById(long diseaseId, long userId);
 
-    List<LabTestDTO> getOwnerLabTests(long userId);
+    List<LabTestResponseDTO> getOwnerLabTests(long userId);
 
-    LabTestDTO getOwnerLabTestByTestId(long testId, long userId);
+    LabTestResponseDTO getOwnerLabTestByTestId(long testId, long userId);
 
     List<ImagingTestDTO> getOwnerImagingTests(long userId);
 

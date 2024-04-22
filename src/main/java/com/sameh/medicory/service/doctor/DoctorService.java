@@ -10,7 +10,8 @@ import com.sameh.medicory.model.prescription.PrescriptionRequestDTO;
 import com.sameh.medicory.model.prescription.PrescriptionResponseDTO;
 import com.sameh.medicory.model.surgery.SurgeryRequestDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
-import com.sameh.medicory.model.tests.LabTestDTO;
+import com.sameh.medicory.model.tests.LabTestRequestDTO;
+import com.sameh.medicory.model.tests.LabTestResponseDTO;
 import com.sameh.medicory.model.patient.PatientPersonalInformation;
 
 import java.util.List;
@@ -52,7 +53,7 @@ public interface DoctorService {
     String deleteSurgery(Long surgeryId);
 
 
-    List<LabTestDTO> findAllLabTestsForPatient(Long ownerId);
+    List<LabTestResponseDTO> findAllLabTestsForPatient(Long ownerId);
     String deleteLabTestFromHistory(Long testId);
 
     boolean addNewPrescription(Long ownerId, PrescriptionRequestDTO prescriptionRequestDTO);
@@ -60,4 +61,8 @@ public interface DoctorService {
     PrescriptionResponseDTO findPrescriptionById(Long prescriptionId);
 
     List<PrescriptionResponseDTO> getAllPrescriptions(Long ownerId);
+
+    boolean addLabTestsForPatientThatRequiredNow(Long ownerId, List<LabTestRequestDTO> requiredTests);
+
+    List<LabTestResponseDTO> getActiveLabTests(Long ownerId);
 }

@@ -11,7 +11,7 @@ import com.sameh.medicory.model.medication.MedicationDTO;
 import com.sameh.medicory.model.owner.OwnerDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
 import com.sameh.medicory.model.tests.ImagingTestDTO;
-import com.sameh.medicory.model.tests.LabTestDTO;
+import com.sameh.medicory.model.tests.LabTestResponseDTO;
 import com.sameh.medicory.repository.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -138,7 +138,7 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public List<LabTestDTO> getOwnerLabTests(long userId) {
+    public List<LabTestResponseDTO> getOwnerLabTests(long userId) {
         return ownerRepository.findById(userId).orElseThrow(
                 () -> new RecordNotFoundException("owner with id "+ userId + " not found!")
         )
@@ -149,7 +149,7 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public LabTestDTO getOwnerLabTestByTestId(long testId, long userId) {
+    public LabTestResponseDTO getOwnerLabTestByTestId(long testId, long userId) {
         return ownerRepository.findById(userId).orElseThrow(
                 () -> new RecordNotFoundException("Owner with id: " + userId+ " not exist!")
         )

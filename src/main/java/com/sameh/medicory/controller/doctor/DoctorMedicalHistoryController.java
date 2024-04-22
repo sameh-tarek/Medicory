@@ -159,6 +159,7 @@ public class DoctorMedicalHistoryController {
 
 
 
+
     @GetMapping("{ownerId}/prescriptions")
     public List<PrescriptionResponseDTO> getAllPatientPrescriptions(@PathVariable Long ownerId){
         return doctorService.getAllPrescriptions(ownerId);
