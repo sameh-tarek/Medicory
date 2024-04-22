@@ -8,6 +8,7 @@ import com.sameh.medicory.model.allergies.AllergiesResponseDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesRequestDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
 import com.sameh.medicory.model.prescription.PrescriptionRequestDTO;
+import com.sameh.medicory.model.prescription.PrescriptionResponseDTO;
 import com.sameh.medicory.model.surgery.SurgeryRequestDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
 import com.sameh.medicory.service.doctor.DoctorService;
@@ -136,6 +137,7 @@ public class DoctorMedicalHistoryController {
                                           @PathVariable Long ownerId) {
         return doctorService.addNewSurgeryForPatient(surgeryRequestDTO, ownerId);
     }
+
     @GetMapping("surgeries/{surgeryId}")
     public SurgeryResponseDTO findSurgeryById(@PathVariable Long surgeryId){
         return doctorService.findSurgeryById(surgeryId);
@@ -155,9 +157,21 @@ public class DoctorMedicalHistoryController {
     }
 
 
+
+
+    @GetMapping("{ownerId}/prescriptions")
+    public List<PrescriptionResponseDTO> getAllPatientPrescriptions(@PathVariable Long ownerId){
+        return doctorService.getAllPrescriptions(ownerId);
+    }
+
     @PostMapping("{ownerId}/prescriptions")
     public boolean addNewPrescription (@PathVariable Long ownerId,
                                        @RequestBody PrescriptionRequestDTO prescriptionRequestDTO) {
         return doctorService.addNewPrescription(ownerId, prescriptionRequestDTO);
+    }
+
+    @GetMapping("prescriptions")
+    public PrescriptionResponseDTO findPrescriptionById (@RequestParam Long prescriptionId) {
+        return doctorService.findPrescriptionById(prescriptionId);
     }
 }

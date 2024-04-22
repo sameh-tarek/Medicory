@@ -2,6 +2,7 @@ package com.sameh.medicory.entity.usersEntities;
 
 import com.sameh.medicory.entity.enums.MaritalStatus;
 import com.sameh.medicory.entity.medicationEntities.Medication;
+import com.sameh.medicory.entity.medicationEntities.Prescription;
 import com.sameh.medicory.entity.testsEntities.ImagingTest;
 import com.sameh.medicory.entity.testsEntities.LabTest;
 import com.sameh.medicory.entity.medicationEntities.CurrentSchedule;
@@ -80,6 +81,10 @@ public class Owner {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Medication> medications;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Prescription> prescriptions;
+
 
     @OneToOne
     @JoinColumn(name = "user_id")
