@@ -414,7 +414,7 @@ public class DoctorServiceImpl implements DoctorService {
                 .orElseThrow(() -> new RecordNotFoundException("This prescription with id " + prescriptionId + " doesn't exist"));
         List<MedicationResponseDTO> medicationResponseDTOS = prescription.getMedications()
                 .stream()
-                .map(medicationMapper::toDTO)
+                .map(medicationMapper::toDTo)
                 .collect(Collectors.toList());
 
         PrescriptionResponseDTO prescriptionResponseDTO = PrescriptionResponseDTO
@@ -439,7 +439,7 @@ public class DoctorServiceImpl implements DoctorService {
                     List<MedicationResponseDTO> medicationResponseDTOs = prescription.getMedications()
                             .stream()
                             .map(medication -> {
-                                MedicationResponseDTO medicationResponseDTO = medicationMapper.toDTO(medication);
+                                MedicationResponseDTO medicationResponseDTO = medicationMapper.toDTo(medication);
                                 return medicationResponseDTO;
                             })
                             .collect(Collectors.toList());
