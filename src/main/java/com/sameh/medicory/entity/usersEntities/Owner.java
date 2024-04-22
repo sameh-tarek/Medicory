@@ -78,9 +78,6 @@ public class Owner {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImagingTest> imagingTests;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Medication> medications;
-
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
