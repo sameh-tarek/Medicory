@@ -1,4 +1,4 @@
-package com.sameh.medicory.service.admin.impl;
+package com.sameh.medicory.service.admin.users.impl;
 
 import com.sameh.medicory.entity.usersEntities.Clinic;
 import com.sameh.medicory.entity.usersEntities.User;
@@ -9,7 +9,7 @@ import com.sameh.medicory.model.users.ClinicDTO;
 import com.sameh.medicory.model.users.UserDTO;
 import com.sameh.medicory.repository.ClinicRepository;
 import com.sameh.medicory.repository.UserRepository;
-import com.sameh.medicory.service.admin.AdminClinicService;
+import com.sameh.medicory.service.admin.users.AdminClinicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

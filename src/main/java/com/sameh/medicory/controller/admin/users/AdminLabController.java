@@ -1,8 +1,7 @@
-package com.sameh.medicory.controller.admin;
+package com.sameh.medicory.controller.admin.users;
 
 import com.sameh.medicory.model.users.LabDTO;
-import com.sameh.medicory.service.admin.AdminLabService;
-import com.sameh.medicory.service.lab.LabService;
+import com.sameh.medicory.service.admin.users.AdminLabService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +19,18 @@ public class AdminLabController {
        List<LabDTO> labs = labService.showAllLabs();
        return ResponseEntity.ok(labs);
     }
-    @GetMapping("/labId/{labId}")
+    @GetMapping("/id/{labId}")
     public ResponseEntity<LabDTO> findLabById(@PathVariable Long labId){
 
         LabDTO lab= labService.findLabById(labId);
         return ResponseEntity.ok(lab);
     }
-    @GetMapping("/labName/{labName}")
+    @GetMapping("/name/{labName}")
     public ResponseEntity<List<LabDTO>> findLabByName(@PathVariable String labName){
         List<LabDTO> labs = labService.findLabByName(labName);
        return ResponseEntity.ok(labs);
     }
-    @GetMapping("/userEmail/{userEmail}")
+    @GetMapping("/email/{userEmail}")
     public ResponseEntity<LabDTO> findLabByEmail(@PathVariable String userEmail){
         LabDTO lab = labService.findLabByEmail(userEmail);
         return ResponseEntity.ok(lab);
