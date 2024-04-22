@@ -114,17 +114,17 @@ public class AdminServiceImpl implements AdminService {
                 oldAdmin.setGender(updatedAdminDTO.getGender());
 
                 User updatedUser =userMapper.toEntity(updatedAdminDTO.getUser());
+                User oldUser = oldAdmin.getUser();
 
                 if(updatedUser !=null){
-                    User oldUser = oldAdmin.getUser();
                     oldUser.setEmail(updatedUser.getEmail());
                     oldUser.setPassword(updatedUser.getPassword());
                     oldUser.setEnabled(updatedUser.isEnabled());
                     oldUser.setRole(updatedUser.getRole());
                     oldUser.setUpdatedAt(LocalDateTime.now());
-                    userRepository.save(oldUser);
 
                 }
+                userRepository.save(oldUser);
                 adminRepository.save(oldAdmin);
                 return "Admin updatd sucessfully";
 
