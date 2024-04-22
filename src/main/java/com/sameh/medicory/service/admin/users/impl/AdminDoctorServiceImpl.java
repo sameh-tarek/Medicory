@@ -1,6 +1,5 @@
-package com.sameh.medicory.service.admin.impl;
+package com.sameh.medicory.service.admin.users.impl;
 
-import com.sameh.medicory.entity.usersEntities.Admin;
 import com.sameh.medicory.entity.usersEntities.Doctor;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.ConflictException;
@@ -10,13 +9,11 @@ import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.users.DoctorDTO;
 import com.sameh.medicory.repository.DoctorRepository;
 import com.sameh.medicory.repository.UserRepository;
-import com.sameh.medicory.service.admin.AdminDoctorService;
+import com.sameh.medicory.service.admin.users.AdminDoctorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.ap.shaded.freemarker.core.ReturnInstruction;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.sameh.medicory.service.admin;
+package com.sameh.medicory.service.admin.users;
 
 
 

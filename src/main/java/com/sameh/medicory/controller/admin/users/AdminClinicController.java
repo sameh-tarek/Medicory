@@ -1,9 +1,8 @@
-package com.sameh.medicory.controller.admin;
+package com.sameh.medicory.controller.admin.users;
 
 import com.sameh.medicory.model.users.ClinicDTO;
-import com.sameh.medicory.service.admin.AdminClinicService;
+import com.sameh.medicory.service.admin.users.AdminClinicService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

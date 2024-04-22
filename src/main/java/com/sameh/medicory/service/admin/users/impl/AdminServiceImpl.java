@@ -1,4 +1,4 @@
-package com.sameh.medicory.service.admin.impl;
+package com.sameh.medicory.service.admin.users.impl;
 
 import com.sameh.medicory.entity.usersEntities.Admin;
 import com.sameh.medicory.entity.usersEntities.User;
@@ -9,12 +9,11 @@ import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.users.AdminDTO;
 import com.sameh.medicory.repository.AdminRepository;
 import com.sameh.medicory.repository.UserRepository;
-import com.sameh.medicory.service.admin.AdminService;
+import com.sameh.medicory.service.admin.users.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

@@ -2,9 +2,7 @@ package com.sameh.medicory.entity.otherEntities;
 
 import com.sameh.medicory.entity.usersEntities.Owner;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
