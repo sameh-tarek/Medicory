@@ -1,7 +1,6 @@
 package com.sameh.medicory.entity.medicationEntities;
 
-import com.sameh.medicory.entity.usersEntities.Clinic;
-import com.sameh.medicory.entity.usersEntities.Hospital;
+import com.sameh.medicory.entity.usersEntities.Doctor;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,12 +28,8 @@ public class Prescription {
     private Owner owner;
 
     @ManyToOne
-    @JoinColumn(name = "clinic_id")
-    private Clinic clinic;
-
-    @ManyToOne
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospital;
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
 
     @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL)
     private List<Medication> medications;

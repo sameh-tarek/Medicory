@@ -18,7 +18,9 @@ import com.sameh.medicory.model.immunization.ImmunizationRequestDTO;
 import com.sameh.medicory.model.immunization.ImmunizationResponseDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesRequestDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
+import com.sameh.medicory.model.medication.MedicationResponseDTO;
 import com.sameh.medicory.model.prescription.PrescriptionRequestDTO;
+import com.sameh.medicory.model.prescription.PrescriptionResponseDTO;
 import com.sameh.medicory.model.surgery.SurgeryRequestDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
 import com.sameh.medicory.model.allergies.AllergiesRequestDTO;
@@ -375,6 +377,9 @@ public class DoctorServiceImpl implements DoctorService {
     public boolean addNewPrescription(Long ownerId, PrescriptionRequestDTO prescriptionRequestDTO) {
         log.trace("Doctor wants to add prescriptionRequestDTO {}, for owner with id {}",
                 prescriptionRequestDTO, ownerId);
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(() -> new RecordNotFoundException("This owner with id " + ownerId + " doesn't exist"));
+
 
         Prescription newPrescription = new Prescription();
         List<Medication> medications = prescriptionRequestDTO.getMedications().stream()
@@ -384,6 +389,7 @@ public class DoctorServiceImpl implements DoctorService {
                     medication.setPrescription(newPrescription);
                     medication.setCreatedAt(LocalDateTime.now());
                     medication.setUpdatedAt(LocalDateTime.now());
+                    medication.setOwner(owner);
                     medication.setMedicine(medicine);
                     return medication;
                 })
@@ -393,11 +399,56 @@ public class DoctorServiceImpl implements DoctorService {
         newPrescription.setStatus(true);
         newPrescription.setCreatedAt(LocalDateTime.now());
         newPrescription.setUpdatedAt(LocalDateTime.now());
+        newPrescription.setOwner(owner);
         prescriptionRepository.save(newPrescription);
 
         log.info("Prescription Added successfully!");
         return true;
     }
+
+    @Override
+    public PrescriptionResponseDTO findPrescriptionById(Long prescriptionId) {
+        log.info("Doctor want to find Prescription By Id {}", prescriptionId);
+
+        Prescription prescription = prescriptionRepository.findById(prescriptionId)
+                .orElseThrow(() -> new RecordNotFoundException("This prescription with id " + prescriptionId + " doesn't exist"));
+        List<MedicationResponseDTO> medicationResponseDTOS = prescription.getMedications()
+                .stream()
+                .map(medicationMapper::toDTO)
+                .collect(Collectors.toList());
+
+        PrescriptionResponseDTO prescriptionResponseDTO = PrescriptionResponseDTO
+                .builder()
+                .medications(medicationResponseDTOS)
+                .build();
+
+        log.trace("this the prescription {}", prescriptionResponseDTO);
+        return prescriptionResponseDTO;
+    }
+
+    @Override
+    public List<PrescriptionResponseDTO> getAllPrescriptions(Long ownerId) {
+        log.info("Doctor wants to get all Prescriptions for owner with id {}", ownerId);
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(() -> new RecordNotFoundException("This owner with id " + ownerId + " doesn't exist"));
+
+        return owner.getPrescriptions()
+                .stream()
+                .map(prescription -> {
+                    PrescriptionResponseDTO prescriptionResponseDTO = PrescriptionResponseDTO.builder().build();
+                    List<MedicationResponseDTO> medicationResponseDTOs = prescription.getMedications()
+                            .stream()
+                            .map(medication -> {
+                                MedicationResponseDTO medicationResponseDTO = medicationMapper.toDTO(medication);
+                                return medicationResponseDTO;
+                            })
+                            .collect(Collectors.toList());
+                    prescriptionResponseDTO.setMedications(medicationResponseDTOs);
+                    return prescriptionResponseDTO;
+                })
+                .collect(Collectors.toList());
+    }
+
 
     private Medicine getMedicineByName(String name){
         Medicine medicine = medicineRepository.findByName(name)
