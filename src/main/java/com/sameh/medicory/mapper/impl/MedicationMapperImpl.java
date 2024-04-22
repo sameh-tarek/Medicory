@@ -5,7 +5,6 @@ import com.sameh.medicory.mapper.MedicationMapper;
 import com.sameh.medicory.model.medication.MedicationDTO;
 import com.sameh.medicory.model.medication.MedicationResponseDTO;
 import org.springframework.stereotype.Component;
-
 @Component
 public class MedicationMapperImpl implements MedicationMapper {
     @Override
