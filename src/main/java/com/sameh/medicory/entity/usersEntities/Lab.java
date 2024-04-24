@@ -1,12 +1,8 @@
 package com.sameh.medicory.entity.usersEntities;
-
-import com.sameh.medicory.entity.usersEntities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Data

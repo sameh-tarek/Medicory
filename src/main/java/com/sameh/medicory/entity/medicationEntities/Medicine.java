@@ -21,7 +21,9 @@ public class Medicine {
     @Column(nullable = false)
     private String name;
 
-    //general description
+    @Column(name = "side_effects")
+    private String sideEffects;
+
     private String description;
 
     private LocalDateTime createdAt;

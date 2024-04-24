@@ -20,6 +20,8 @@ public class Surgery {
     private Long id;
 
     @Column(nullable = false)
+    private String name;
+
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)

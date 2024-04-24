@@ -1,8 +1,7 @@
-package com.sameh.medicory.controller.admin;
+package com.sameh.medicory.controller.admin.users;
 
 import com.sameh.medicory.model.users.PharmacyDTO;
-import com.sameh.medicory.service.admin.AdminPharmacyService;
-import com.sameh.medicory.service.pharmacy.PharmacyService;
+import com.sameh.medicory.service.admin.users.AdminPharmacyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

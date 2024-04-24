@@ -27,7 +27,10 @@ public class CardServiceImpl implements CardService {
             if (authenticatedUserRole == Role.CLINIC ||
                     authenticatedUserRole == Role.HOSPITAL ||
                     authenticatedUserRole == Role.LAB ||
-                    authenticatedUserRole == Role.PHARMACY) {
+                    authenticatedUserRole == Role.PHARMACY ||
+                    authenticatedUserRole == Role.DOCTOR ||
+                    authenticatedUserRole ==Role.ADMIN
+            ) {
                 return authenticatedUserRole;
             } else {
                 return Role.EMERGENCY;

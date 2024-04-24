@@ -9,13 +9,16 @@ import lombok.*;
 @AllArgsConstructor
 @Setter
 @Getter
-public class AdminDTO {
+public class DoctorDTO {
     private Long id;
     private String firstName;
+    private String middleName;
     private String lastName;
+    private String specialization;
+    private String licenceNumber;
+    private String nationalId ;
     private MaritalStatus maritalStatus;
     private Gender gender;
 
-    private UserDTO user;
-
+    private UserDTO user ;
 }

@@ -10,6 +10,7 @@ import com.sameh.medicory.entity.otherEntities.Immunization;
 import com.sameh.medicory.entity.otherEntities.Surgery;
 import com.sameh.medicory.entity.phoneEntities.OwnerPhoneNumber;
 import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
+import com.sameh.medicory.entity.usersEntities.Doctor;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.RecordNotFoundException;
@@ -18,15 +19,19 @@ import com.sameh.medicory.model.immunization.ImmunizationRequestDTO;
 import com.sameh.medicory.model.immunization.ImmunizationResponseDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesRequestDTO;
 import com.sameh.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
+import com.sameh.medicory.model.medication.MedicationResponseDTO;
 import com.sameh.medicory.model.prescription.PrescriptionRequestDTO;
+import com.sameh.medicory.model.prescription.PrescriptionResponseDTO;
 import com.sameh.medicory.model.surgery.SurgeryRequestDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
 import com.sameh.medicory.model.allergies.AllergiesRequestDTO;
 import com.sameh.medicory.model.allergies.AllergiesResponseDTO;
-import com.sameh.medicory.model.tests.LabTestDTO;
+import com.sameh.medicory.model.tests.LabTestRequestDTO;
+import com.sameh.medicory.model.tests.LabTestResponseDTO;
 import com.sameh.medicory.model.patient.PatientPersonalInformation;
 import com.sameh.medicory.repository.*;
 import com.sameh.medicory.utils.OwnerContext;
+import com.sameh.medicory.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -57,6 +62,9 @@ public class DoctorServiceImpl implements DoctorService {
     private final MedicationMapper medicationMapper;
     private final MedicineRepository medicineRepository;
     private final PrescriptionRepository prescriptionRepository;
+    private final SecurityUtils securityUtils;
+    private final DoctorRepository doctorRepository;
+    private final UserRepository userRepository;
 
     @Override
     public PatientPersonalInformation getPatientPersonalInformation(Long ownerId) {
@@ -330,7 +338,8 @@ public class DoctorServiceImpl implements DoctorService {
         updatedSurgery.setUpdatedAt(LocalDateTime.now());
         updatedSurgery.setId(surgeryId);
         surgeryRepository.save(updatedSurgery);
-        log.info("Surgery updated successfully this before update {} and This after update {}", existSurgery, updatedSurgery);
+        log.info("Surgery updated successfully this before update {} and This after update {}",
+                existSurgery, updatedSurgery);
         return "Success";
     }
 
@@ -338,7 +347,8 @@ public class DoctorServiceImpl implements DoctorService {
     public String deleteSurgery(Long surgeryId) {
         log.info("Doctor want to delete Surgery disease with id {}", surgeryId);
         Surgery surgery = surgeryRepository.findById(surgeryId)
-                .orElseThrow(() -> new RecordNotFoundException("This Surgery with id "+surgeryId+" Already doesn't exist"));
+                .orElseThrow(() ->
+                        new RecordNotFoundException("This Surgery with id "+surgeryId+" Already doesn't exist"));
         surgeryRepository.delete(surgery);
         log.info("Surgery deleted successfully");
         return "success";
@@ -348,15 +358,15 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public List<LabTestDTO> findAllLabTestsForPatient(Long ownerId) {
+    public List<LabTestResponseDTO> findAllLabTestsForPatient(Long ownerId) {
         Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
         log.info("Doctor want to get all Lab Tests for owner with id {}", patientOwner.getId());
-        List<LabTestDTO> labTestDTOS = patientOwner.getLabTests()
+        List<LabTestResponseDTO> labTestResponseDTOS = patientOwner.getLabTests()
                 .stream()
                 .map(labTestMapper::toDTO)
                 .collect(Collectors.toList());
-        log.info("Patient Lab Tests {}", labTestDTOS);
-        return labTestDTOS;
+        log.info("Patient Lab Tests {}", labTestResponseDTOS);
+        return labTestResponseDTOS;
     }
 
     @Override
@@ -375,20 +385,20 @@ public class DoctorServiceImpl implements DoctorService {
     public boolean addNewPrescription(Long ownerId, PrescriptionRequestDTO prescriptionRequestDTO) {
         log.trace("Doctor wants to add prescriptionRequestDTO {}, for owner with id {}",
                 prescriptionRequestDTO, ownerId);
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(() -> new RecordNotFoundException("This owner with id " + ownerId + " doesn't exist"));
+
 
         Prescription newPrescription = new Prescription();
-
-        List<Medication> medications = prescriptionRequestDTO
-                .getMedications()
-                .stream()
+        List<Medication> medications = prescriptionRequestDTO.getMedications().stream()
                 .map(medicationRequestDTO -> {
                     Medicine medicine = getMedicineByName(medicationRequestDTO.getMedicineName());
-
                     Medication medication = medicationMapper.toEntity(medicationRequestDTO);
                     medication.setPrescription(newPrescription);
-
+                    medication.setCreatedAt(LocalDateTime.now());
+                    medication.setUpdatedAt(LocalDateTime.now());
+                    medication.setOwner(owner);
                     medication.setMedicine(medicine);
-
                     return medication;
                 })
                 .collect(Collectors.toList());
@@ -397,12 +407,89 @@ public class DoctorServiceImpl implements DoctorService {
         newPrescription.setStatus(true);
         newPrescription.setCreatedAt(LocalDateTime.now());
         newPrescription.setUpdatedAt(LocalDateTime.now());
+        newPrescription.setOwner(owner);
+        newPrescription.setDoctor(getCurrentDoctor());
         prescriptionRepository.save(newPrescription);
 
         log.info("Prescription Added successfully!");
         return true;
     }
 
+    @Override
+    public PrescriptionResponseDTO findPrescriptionById(Long prescriptionId) {
+        log.info("Doctor want to find Prescription By Id {}", prescriptionId);
+
+        Prescription prescription = prescriptionRepository.findById(prescriptionId)
+                .orElseThrow(() ->
+                        new RecordNotFoundException("This prescription with id " + prescriptionId + " doesn't exist"));
+        List<MedicationResponseDTO> medicationResponseDTOS = prescription.getMedications()
+                .stream()
+                .map(medicationMapper::toDTo)
+                .collect(Collectors.toList());
+
+        PrescriptionResponseDTO prescriptionResponseDTO = PrescriptionResponseDTO
+                .builder()
+                .medications(medicationResponseDTOS)
+                .build();
+
+        log.trace("this the prescription {}", prescriptionResponseDTO);
+        return prescriptionResponseDTO;
+    }
+
+    @Override
+    public List<PrescriptionResponseDTO> getAllPrescriptions(Long ownerId) {
+        log.info("Doctor wants to get all Prescriptions for owner with id {}", ownerId);
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(() -> new RecordNotFoundException("This owner with id " + ownerId + " doesn't exist"));
+
+        return owner.getPrescriptions()
+                .stream()
+                .map(prescription -> {
+                    PrescriptionResponseDTO prescriptionResponseDTO = PrescriptionResponseDTO.builder().build();
+                    List<MedicationResponseDTO> medicationResponseDTOs = prescription.getMedications()
+                            .stream()
+                            .map(medication -> {
+                                MedicationResponseDTO medicationResponseDTO = medicationMapper.toDTo(medication);
+                                return medicationResponseDTO;
+                            })
+                            .collect(Collectors.toList());
+                    prescriptionResponseDTO.setMedications(medicationResponseDTOs);
+                    return prescriptionResponseDTO;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean addLabTestsForPatientThatRequiredNow(Long ownerId, List<LabTestRequestDTO> requiredTests) {
+        log.info("Doctor need to ask patient with id {}, for this lab tests {}", ownerId, requiredTests);
+
+        Owner owner = ownerContext.getCurrentOwner(ownerId);
+        List<LabTest> labTests = requiredTests.stream()
+                .map(labTestMapper::toEntity)
+                .map(labTest -> {
+                    labTest.setStatus(true);
+                    labTest.setOwner(owner);
+                    return labTest;
+                })
+                .collect(Collectors.toList());
+
+        owner.getLabTests().addAll(labTests);
+        ownerRepository.save(owner);
+        log.info("lab tests after add {}", owner.getLabTests());
+        return true;
+    }
+
+    @Override
+    public List<LabTestResponseDTO> getActiveLabTests(Long ownerId) {
+        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+        log.info("Doctor want to get Active Lab Tests for owner with id {}", patientOwner.getId());
+        List<LabTestResponseDTO> labTestResponseDTOS = patientOwner.getLabTests().stream()
+                .filter(labTest -> labTest.isStatus())
+                .map(labTestMapper::toDTO)
+                .collect(Collectors.toList());
+        log.info("All active lab tests {}", labTestResponseDTOS);
+        return labTestResponseDTOS;
+    }
 
 
     private Medicine getMedicineByName(String name){
@@ -418,6 +505,12 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info("This medicine info: {}", medicine);
         return medicine;
+    }
+
+    private Doctor getCurrentDoctor () {
+        String currentUserEmail = securityUtils.getCurrentAuthenticatedUserEmail();
+        Doctor doctor = doctorRepository.findDoctorByUserEmail(currentUserEmail);
+        return doctor;
     }
 
     private Integer getCurrentAge(LocalDate dateOfBirth) {

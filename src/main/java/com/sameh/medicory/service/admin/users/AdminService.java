@@ -1,4 +1,4 @@
-package com.sameh.medicory.service.admin;
+package com.sameh.medicory.service.admin.users;
 
 import com.sameh.medicory.entity.usersEntities.Admin;
 import com.sameh.medicory.model.users.AdminDTO;
