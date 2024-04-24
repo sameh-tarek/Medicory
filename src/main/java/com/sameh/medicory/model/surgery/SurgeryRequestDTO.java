@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SurgeryRequestDTO {
-
+    private String name;
     private String description;
 }

@@ -20,22 +20,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/doctor/patient")
+@RequestMapping("/doctors/patients")
 @RequiredArgsConstructor
 public class DoctorMedicalHistoryController {
 
     private final DoctorService doctorService;
 
-    @GetMapping("/{ownerId}/chronic-diseases")
-    public List<ChronicDiseasesResponseDTO> getPatientChronicDiseases(@PathVariable Long ownerId){
-        return doctorService.getPatientChronicDiseases(ownerId);
+    @GetMapping("/{userCode}/chronic-diseases")
+    public List<ChronicDiseasesResponseDTO> getPatientChronicDiseases(@PathVariable String userCode){
+        return doctorService.getPatientChronicDiseases(userCode);
     }
 
-    @PostMapping("/{ownerId}/chronic-diseases")
+    @PostMapping("/{userCode}/chronic-diseases")
     @ResponseStatus(HttpStatus.CREATED)
     public String addNewChronicDiseasesForPatient(@RequestBody ChronicDiseasesRequestDTO chronicDiseasesRequestDTO,
-                                                  @PathVariable Long ownerId){
-        return doctorService.addNewChronicDiseasesForPatient(chronicDiseasesRequestDTO, ownerId);
+                                                  @PathVariable String userCode){
+        return doctorService.addNewChronicDiseasesForPatient(chronicDiseasesRequestDTO, userCode);
     }
 
     @GetMapping("chronic-diseases/{diseasesId}")
@@ -43,11 +43,11 @@ public class DoctorMedicalHistoryController {
         return doctorService.findChronicDiseasesById(diseasesId);
     }
 
-    @PutMapping("{ownerId}/chronic-diseases/{diseasesId}")
+    @PutMapping("{userCode}/chronic-diseases/{diseasesId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateChronicDisease(@RequestBody ChronicDiseasesRequestDTO chronicDiseasesRequestDTO,
-                                       @PathVariable Long diseasesId, @PathVariable Long ownerId){
-        return doctorService.updateChronicDisease(chronicDiseasesRequestDTO, diseasesId, ownerId);
+                                       @PathVariable Long diseasesId, @PathVariable String userCode){
+        return doctorService.updateChronicDisease(chronicDiseasesRequestDTO, diseasesId, userCode);
     }
 
     @DeleteMapping("chronic-diseases/{diseasesId}")
@@ -59,16 +59,16 @@ public class DoctorMedicalHistoryController {
 
 
 
-    @GetMapping("{ownerId}/allergies")
-    public List<AllergiesResponseDTO> getPatientAllergies(@PathVariable Long ownerId){
-       return doctorService.getPatientAllergies(ownerId);
+    @GetMapping("{userCode}/allergies")
+    public List<AllergiesResponseDTO> getPatientAllergies(@PathVariable String userCode){
+       return doctorService.getPatientAllergies(userCode);
     }
 
-    @PostMapping("{ownerId}/allergies")
+    @PostMapping("{userCode}/allergies")
     @ResponseStatus(HttpStatus.CREATED)
     public String addNewAllergiesForPatient(@RequestBody AllergiesRequestDTO allergiesRequestDTO,
-                                            @PathVariable Long ownerId) {
-        return doctorService.addNewAllergiesForPatient(allergiesRequestDTO, ownerId);
+                                            @PathVariable String userCode) {
+        return doctorService.addNewAllergiesForPatient(allergiesRequestDTO, userCode);
     }
 
     @GetMapping("allergies/{allergiesId}")
@@ -76,11 +76,11 @@ public class DoctorMedicalHistoryController {
         return doctorService.findAllergiesById(allergiesId);
     }
 
-    @PutMapping("{ownerId}/allergies/{allergiesId}")
+    @PutMapping("{userCode}/allergies/{allergiesId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateAllergies(@RequestBody AllergiesRequestDTO allergiesRequestDTO,
-                                  @PathVariable Long allergiesId, @PathVariable Long ownerId){
-        return doctorService.updateAllergies(allergiesRequestDTO, allergiesId, ownerId);
+                                  @PathVariable Long allergiesId, @PathVariable String userCode){
+        return doctorService.updateAllergies(allergiesRequestDTO, allergiesId, userCode);
     }
 
     @DeleteMapping("allergies/{allergiesId}")
@@ -93,16 +93,16 @@ public class DoctorMedicalHistoryController {
 
 
 
-    @GetMapping("{ownerId}/immunizations")
-    public List<ImmunizationResponseDTO> getaAllPatientImmunizations(@PathVariable Long ownerId){
-       return doctorService.getaAllPatientImmunizations(ownerId);
+    @GetMapping("{userCode}/immunizations")
+    public List<ImmunizationResponseDTO> getaAllPatientImmunizations(@PathVariable String userCode){
+       return doctorService.getaAllPatientImmunizations(userCode);
     }
 
-    @PostMapping("{ownerId}/immunizations")
+    @PostMapping("{userCode}/immunizations")
     @ResponseStatus(HttpStatus.CREATED)
     public String addNewImmunizationForPatient(@RequestBody ImmunizationRequestDTO immunizationRequestDTO,
-                                               @PathVariable Long ownerId) {
-        return doctorService.addNewImmunizationForPatient(immunizationRequestDTO, ownerId);
+                                               @PathVariable String userCode) {
+        return doctorService.addNewImmunizationForPatient(immunizationRequestDTO, userCode);
     }
 
     @GetMapping("immunizations/{immunizationId}")
@@ -110,11 +110,11 @@ public class DoctorMedicalHistoryController {
         return doctorService.findImmunizationById(immunizationId);
     }
 
-    @PutMapping("{ownerId}/immunizations/{immunizationId}")
+    @PutMapping("{userCode}/immunizations/{immunizationId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateImmunization(@RequestBody ImmunizationRequestDTO immunizationRequestDTO,
-                                     @PathVariable Long immunizationId, @PathVariable Long ownerId){
-        return doctorService.updateImmunization(immunizationRequestDTO, immunizationId, ownerId);
+                                     @PathVariable Long immunizationId, @PathVariable String userCode){
+        return doctorService.updateImmunization(immunizationRequestDTO, immunizationId, userCode);
     }
 
     @DeleteMapping("immunizations/{immunizationId}")
@@ -126,16 +126,16 @@ public class DoctorMedicalHistoryController {
 
 
 
-    @GetMapping("{ownerId}/surgeries")
-    public List<SurgeryResponseDTO> getPatientSurgicalHistory(@PathVariable Long ownerId){
-        return doctorService.getPatientSurgicalHistory(ownerId);
+    @GetMapping("{userCode}/surgeries")
+    public List<SurgeryResponseDTO> getPatientSurgicalHistory(@PathVariable String userCode){
+        return doctorService.getPatientSurgicalHistory(userCode);
     }
 
-    @PostMapping("{ownerId}/surgeries")
+    @PostMapping("{userCode}/surgeries")
     @ResponseStatus(HttpStatus.CREATED)
     public String addNewSurgeryForPatient(@RequestBody SurgeryRequestDTO surgeryRequestDTO,
-                                          @PathVariable Long ownerId) {
-        return doctorService.addNewSurgeryForPatient(surgeryRequestDTO, ownerId);
+                                          @PathVariable String userCode) {
+        return doctorService.addNewSurgeryForPatient(surgeryRequestDTO, userCode);
     }
 
     @GetMapping("surgeries/{surgeryId}")
@@ -143,11 +143,11 @@ public class DoctorMedicalHistoryController {
         return doctorService.findSurgeryById(surgeryId);
     }
 
-    @PutMapping("{ownerId}/surgeries/{surgeryId}")
+    @PutMapping("{userCode}/surgeries/{surgeryId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateSurgery(@RequestBody SurgeryRequestDTO surgeryRequestDTO,
-                                @PathVariable Long surgeryId, @PathVariable Long ownerId){
-        return doctorService.updateSurgery(surgeryRequestDTO, surgeryId, ownerId);
+                                @PathVariable Long surgeryId, @PathVariable String userCode){
+        return doctorService.updateSurgery(surgeryRequestDTO, surgeryId, userCode);
     }
 
     @DeleteMapping("surgeries/{surgeryId}")
@@ -160,15 +160,15 @@ public class DoctorMedicalHistoryController {
 
 
 
-    @GetMapping("{ownerId}/prescriptions")
-    public List<PrescriptionResponseDTO> getAllPatientPrescriptions(@PathVariable Long ownerId){
-        return doctorService.getAllPrescriptions(ownerId);
+    @GetMapping("{userCode}/prescriptions")
+    public List<PrescriptionResponseDTO> getAllPatientPrescriptions(@PathVariable String userCode){
+        return doctorService.getAllPrescriptions(userCode);
     }
 
-    @PostMapping("{ownerId}/prescriptions")
-    public boolean addNewPrescription (@PathVariable Long ownerId,
+    @PostMapping("{userCode}/prescriptions")
+    public boolean addNewPrescription (@PathVariable String userCode,
                                        @RequestBody PrescriptionRequestDTO prescriptionRequestDTO) {
-        return doctorService.addNewPrescription(ownerId, prescriptionRequestDTO);
+        return doctorService.addNewPrescription(userCode, prescriptionRequestDTO);
     }
 
     @GetMapping("prescriptions")

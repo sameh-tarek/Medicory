@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/doctor/patient")
+@RequestMapping("/doctors/patients")
 @RequiredArgsConstructor
 public class DoctorLabController {
 
     private final DoctorService doctorService;
 
-    @GetMapping("/{ownerId}/tests")
-    public List<LabTestResponseDTO> getAllLabTestsForPatient(@PathVariable Long ownerId) {
-        return doctorService.findAllLabTestsForPatient(ownerId);
+    @GetMapping("/{userCode}/tests")
+    public List<LabTestResponseDTO> getAllLabTestsForPatient(@PathVariable String userCode) {
+        return doctorService.findAllLabTestsForPatient(userCode);
     }
 
     @DeleteMapping("tests/{testId}")
@@ -27,15 +27,15 @@ public class DoctorLabController {
         return doctorService.deleteLabTestFromHistory(testId);
     }
 
-    @PostMapping("{ownerId}/tests")
+    @PostMapping("{userCode}/tests")
     @ResponseStatus(HttpStatus.CREATED)
-    public boolean addLabTestsForPatientThatRequiredNow (@PathVariable Long ownerId,
+    public boolean addLabTestsForPatientThatRequiredNow (@PathVariable String userCode,
                                                          @RequestBody List<LabTestRequestDTO> requiredTests) {
-        return doctorService.addLabTestsForPatientThatRequiredNow(ownerId, requiredTests);
+        return doctorService.addLabTestsForPatientThatRequiredNow(userCode, requiredTests);
     }
 
-    @GetMapping("{ownerId}/tests/active")
-    public List<LabTestResponseDTO> getActiveLabTests (@PathVariable Long ownerId) {
-        return doctorService.getActiveLabTests(ownerId);
+    @GetMapping("{userCode}/active-tests")
+    public List<LabTestResponseDTO> getActiveLabTests (@PathVariable String userCode) {
+        return doctorService.getActiveLabTests(userCode);
     }
 }

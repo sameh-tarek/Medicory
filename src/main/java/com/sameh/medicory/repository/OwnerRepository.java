@@ -9,4 +9,6 @@ public interface OwnerRepository extends
         JpaRepository<Owner, Long> {
 
     Optional<Owner> findAllByUserId(Long userId);
+
+    Optional<Owner> findByUserCode(String userCode);
 }
