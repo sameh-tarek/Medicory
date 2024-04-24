@@ -17,52 +17,52 @@ import com.sameh.medicory.model.patient.PatientPersonalInformation;
 import java.util.List;
 
 public interface DoctorService {
-    PatientPersonalInformation getPatientPersonalInformation(Long ownerId);
+    PatientPersonalInformation getPatientPersonalInformation(String userCode);
 
 
 
-    List<ChronicDiseasesResponseDTO> getPatientChronicDiseases(Long ownerId);
-    String addNewChronicDiseasesForPatient(ChronicDiseasesRequestDTO chronicDiseasesRequestDTO, Long ownerId);
+    List<ChronicDiseasesResponseDTO> getPatientChronicDiseases(String userCode);
+    String addNewChronicDiseasesForPatient(ChronicDiseasesRequestDTO chronicDiseasesRequestDTO, String userCode);
     ChronicDiseasesResponseDTO findChronicDiseasesById(Long diseasesId);
-    String updateChronicDisease(ChronicDiseasesRequestDTO chronicDiseasesRequestDTO, Long diseasesId, Long ownerId);
+    String updateChronicDisease(ChronicDiseasesRequestDTO chronicDiseasesRequestDTO, Long diseasesId, String userCode);
     String deleteChronicDiseases(Long diseasesId);
 
 
 
-    List<AllergiesResponseDTO> getPatientAllergies(Long ownerId);
-    String addNewAllergiesForPatient(AllergiesRequestDTO allergiesRequestDTO, Long ownerId);
+    List<AllergiesResponseDTO> getPatientAllergies(String userCode);
+    String addNewAllergiesForPatient(AllergiesRequestDTO allergiesRequestDTO, String userCode);
     AllergiesResponseDTO findAllergiesById(Long allergiesId);
-    String updateAllergies(AllergiesRequestDTO allergiesRequestDTO, Long allergiesId, Long ownerId);
+    String updateAllergies(AllergiesRequestDTO allergiesRequestDTO, Long allergiesId, String userCode);
     String deleteAllergies(Long allergiesId);
 
 
 
-    List<ImmunizationResponseDTO> getaAllPatientImmunizations(Long ownerId);
-    String addNewImmunizationForPatient(ImmunizationRequestDTO immunizationRequestDTO, Long ownerId);
+    List<ImmunizationResponseDTO> getaAllPatientImmunizations(String userCode);
+    String addNewImmunizationForPatient(ImmunizationRequestDTO immunizationRequestDTO, String userCode);
     ImmunizationResponseDTO findImmunizationById(Long immunizationId);
-    String updateImmunization(ImmunizationRequestDTO allergiesRequestDTO, Long immunizationId, Long ownerId);
+    String updateImmunization(ImmunizationRequestDTO allergiesRequestDTO, Long immunizationId, String userCode);
     String deleteImmunization(Long immunizationId);
 
 
 
 
-    List<SurgeryResponseDTO> getPatientSurgicalHistory(Long ownerId);
-    String addNewSurgeryForPatient(SurgeryRequestDTO surgeryRequestDTO, Long ownerId);
+    List<SurgeryResponseDTO> getPatientSurgicalHistory(String userCode);
+    String addNewSurgeryForPatient(SurgeryRequestDTO surgeryRequestDTO, String userCode);
     SurgeryResponseDTO findSurgeryById(Long surgeryId);
-    String updateSurgery(SurgeryRequestDTO surgeryRequestDTO, Long surgeryId, Long ownerId);
+    String updateSurgery(SurgeryRequestDTO surgeryRequestDTO, Long surgeryId, String userCode);
     String deleteSurgery(Long surgeryId);
 
 
-    List<LabTestResponseDTO> findAllLabTestsForPatient(Long ownerId);
+    List<LabTestResponseDTO> findAllLabTestsForPatient(String userCode);
     String deleteLabTestFromHistory(Long testId);
 
-    boolean addNewPrescription(Long ownerId, PrescriptionRequestDTO prescriptionRequestDTO);
+    boolean addNewPrescription(String userCode, PrescriptionRequestDTO prescriptionRequestDTO);
 
     PrescriptionResponseDTO findPrescriptionById(Long prescriptionId);
 
-    List<PrescriptionResponseDTO> getAllPrescriptions(Long ownerId);
+    List<PrescriptionResponseDTO> getAllPrescriptions(String userCode);
 
-    boolean addLabTestsForPatientThatRequiredNow(Long ownerId, List<LabTestRequestDTO> requiredTests);
+    boolean addLabTestsForPatientThatRequiredNow(String userCode, List<LabTestRequestDTO> requiredTests);
 
-    List<LabTestResponseDTO> getActiveLabTests(Long ownerId);
+    List<LabTestResponseDTO> getActiveLabTests(String userCode);
 }

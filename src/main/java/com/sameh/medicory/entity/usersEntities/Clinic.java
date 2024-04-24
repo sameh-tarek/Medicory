@@ -19,7 +19,7 @@ public class Clinic {
     @Column(nullable = false)
     private String name;
 
-    @Column(name="google_maps_link",nullable = true)
+    @Column(name="google_maps_link")
     private String googleMapsLink;
 
     @Column(nullable = false)

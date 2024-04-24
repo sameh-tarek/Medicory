@@ -197,7 +197,7 @@ public class OwnerServiceImpl implements OwnerService {
                 .getCurrentSchedule()
                 .getMedications()
                 .stream()
-                .filter(Medication::isStatus)
+                .filter(Medication::isMedicationStatus)
                 .map(medicationMapper::toDTO)
                 .collect(Collectors.toList());
 

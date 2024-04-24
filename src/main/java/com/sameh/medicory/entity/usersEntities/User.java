@@ -7,7 +7,6 @@ import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,6 +22,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String code;
+
     @Column(unique = true)
     private String email;
 
@@ -31,8 +32,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "is_enabled")
-    private boolean isEnabled;
+    @Column(name = "enabled")
+    private boolean enabled;
 
     @OneToMany(mappedBy = "user")
     private List<OwnerPhoneNumber> ownerPhoneNumbers;
@@ -51,7 +52,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
-                ", isEnabled=" + isEnabled +
+                ", isEnabled=" + enabled +
                 '}';
     }
 }
