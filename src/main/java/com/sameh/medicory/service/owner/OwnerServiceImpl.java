@@ -196,9 +196,8 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     public List<MedicationScheduleDTO> getMedicationSchedule(long userId) {
-        List<MedicationScheduleDTO> medicationScheduleDTOS = ownerRepository.findById(userId).orElseThrow(
-                () -> new RecordNotFoundException("owner with id "+ userId + " not found!")
-        )
+        List<MedicationScheduleDTO> medicationScheduleDTOS = ownerRepository.findById(userId)
+                .orElseThrow(() -> new RecordNotFoundException("owner with id "+ userId + " not found!"))
                 .getMedications()
                 .stream()
                 .map(medicationScheduleMapper::toDTO)

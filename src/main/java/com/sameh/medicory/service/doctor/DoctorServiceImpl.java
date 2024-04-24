@@ -377,14 +377,18 @@ public class DoctorServiceImpl implements DoctorService {
                 prescriptionRequestDTO, ownerId);
 
         Prescription newPrescription = new Prescription();
-        List<Medication> medications = prescriptionRequestDTO.getMedications().stream()
+
+        List<Medication> medications = prescriptionRequestDTO
+                .getMedications()
+                .stream()
                 .map(medicationRequestDTO -> {
                     Medicine medicine = getMedicineByName(medicationRequestDTO.getMedicineName());
+
                     Medication medication = medicationMapper.toEntity(medicationRequestDTO);
                     medication.setPrescription(newPrescription);
-                    medication.setCreatedAt(LocalDateTime.now());
-                    medication.setUpdatedAt(LocalDateTime.now());
+
                     medication.setMedicine(medicine);
+
                     return medication;
                 })
                 .collect(Collectors.toList());
@@ -398,6 +402,8 @@ public class DoctorServiceImpl implements DoctorService {
         log.info("Prescription Added successfully!");
         return true;
     }
+
+
 
     private Medicine getMedicineByName(String name){
         Medicine medicine = medicineRepository.findByName(name)
