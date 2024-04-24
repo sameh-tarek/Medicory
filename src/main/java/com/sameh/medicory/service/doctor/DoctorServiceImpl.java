@@ -67,12 +67,13 @@ public class DoctorServiceImpl implements DoctorService {
     private final UserRepository userRepository;
 
     @Override
-    public PatientPersonalInformation getPatientPersonalInformation(Long ownerId) {
-        User patientUser = ownerContext.getCurrentUser(ownerId);
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public PatientPersonalInformation getPatientPersonalInformation(String userCode) {
+        User patientUser = ownerContext.getCurrentUser(userCode);
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor Wants to get patient personal information for owner with id {}", patientOwner.getId());
         PatientPersonalInformation patientPersonalInformation = new PatientPersonalInformation(
-                patientOwner.getFirstName() + " " + patientOwner.getMiddleName() + " " + patientOwner.getLastName(),
+                patientOwner.getFirstName() + " " + patientOwner.getMiddleName() + " "
+                        + patientOwner.getLastName(),
                 getCurrentAge(patientOwner.getDateOfBirth()),
                 patientOwner.getGender().name(),
                 getPatientPhoneNumbers(patientUser),
@@ -81,13 +82,14 @@ public class DoctorServiceImpl implements DoctorService {
                 patientUser.getEmail(),
                 patientOwner.getBloodType().name()
         );
-        log.info("patient personal information for owner with id: {} is {}", patientOwner.getId(), patientPersonalInformation);
+        log.info("patient personal information for owner with id: {} is {}",
+                patientOwner.getId(), patientPersonalInformation);
         return patientPersonalInformation;
     }
 
     @Override
-    public List<ChronicDiseasesResponseDTO> getPatientChronicDiseases(Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public List<ChronicDiseasesResponseDTO> getPatientChronicDiseases(String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor Wants to get patient Chronic Diseases for owner with id {}", patientOwner.getId());
         List<ChronicDiseases> chronicDiseases = patientOwner.getChronicDiseases();
         List<ChronicDiseasesResponseDTO> chronicDiseasesResponseDTOS = chronicDiseases
@@ -99,8 +101,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public String addNewChronicDiseasesForPatient(ChronicDiseasesRequestDTO chronicDiseasesRequestDTO, Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public String addNewChronicDiseasesForPatient(ChronicDiseasesRequestDTO chronicDiseasesRequestDTO, String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor wants to add a new chronic disease: {} for patient with owner id: {}", chronicDiseasesRequestDTO, patientOwner.getId());
 
         ChronicDiseases newChronicDisease = chronicDiseasesMapper.toEntity(chronicDiseasesRequestDTO);
@@ -127,8 +129,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public String updateChronicDisease(ChronicDiseasesRequestDTO chronicDiseasesRequestDTO, Long diseasesId, Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public String updateChronicDisease(ChronicDiseasesRequestDTO chronicDiseasesRequestDTO, Long diseasesId, String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor want to update chronic disease with id {}", diseasesId);
         ChronicDiseases existChronicDiseases = chronicDiseasesRepository.findById(diseasesId)
                 .orElseThrow(() -> new RecordNotFoundException("This Chronic Disease with id "+diseasesId+" doesn't exist"));
@@ -156,8 +158,8 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public List<AllergiesResponseDTO> getPatientAllergies(Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public List<AllergiesResponseDTO> getPatientAllergies(String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor want to get patient Allergies owner with id: {}", patientOwner.getAllergies());
         List<AllergiesResponseDTO> allergiesResponseDTOS = patientOwner.getAllergies()
                 .stream()
@@ -168,8 +170,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public String addNewAllergiesForPatient(AllergiesRequestDTO allergiesRequestDTO, Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public String addNewAllergiesForPatient(AllergiesRequestDTO allergiesRequestDTO, String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor want to add new Allergies: {} for patient owner his ID: {}", allergiesRequestDTO,patientOwner.getId());
         Allergies allergies = allergiesMapper.toEntity(allergiesRequestDTO);
         allergies.setOwner(patientOwner);
@@ -193,8 +195,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public String updateAllergies(AllergiesRequestDTO allergiesRequestDTO, Long allergiesId, Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public String updateAllergies(AllergiesRequestDTO allergiesRequestDTO, Long allergiesId, String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor want to update Allergies with id {}", allergiesId);
         Allergies existAllergies = allergiesRepository.findById(allergiesId)
                 .orElseThrow(() -> new RecordNotFoundException("This Allergies with id "+allergiesId+" doesn't exist"));
@@ -223,8 +225,8 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public List<ImmunizationResponseDTO> getaAllPatientImmunizations(Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public List<ImmunizationResponseDTO> getaAllPatientImmunizations(String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor want to get All Immunizations for patient owner with id {}", patientOwner.getId());
         List<ImmunizationResponseDTO> immunizationResponseDTOS = patientOwner.getImmunizations()
                 .stream()
@@ -235,8 +237,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public String addNewImmunizationForPatient(ImmunizationRequestDTO immunizationRequestDTO, Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public String addNewImmunizationForPatient(ImmunizationRequestDTO immunizationRequestDTO, String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor want to add this new Immunization {}, for owner with id {}", immunizationRequestDTO, patientOwner.getId());
         Immunization newImmunization = immunizationMapper.toEntity(immunizationRequestDTO);
         newImmunization.setOwner(patientOwner);
@@ -260,8 +262,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public String updateImmunization(ImmunizationRequestDTO immunizationRequestDTO, Long immunizationId, Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public String updateImmunization(ImmunizationRequestDTO immunizationRequestDTO, Long immunizationId, String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor want to update Immunization with id {}", immunizationId);
         Immunization existImmunization = immunizationRepository.findById(immunizationId)
                 .orElseThrow(() -> new RecordNotFoundException("This Immunization with id "+immunizationId+" doesn't exist"));
@@ -290,8 +292,8 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public List<SurgeryResponseDTO> getPatientSurgicalHistory(Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public List<SurgeryResponseDTO> getPatientSurgicalHistory(String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor want to Surgical History for patient owner with id {}", patientOwner.getId());
         List<SurgeryResponseDTO> surgeryResponseDTOS = patientOwner.getSurgeries()
                 .stream()
@@ -302,8 +304,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public String addNewSurgeryForPatient(SurgeryRequestDTO surgeryRequestDTO, Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public String addNewSurgeryForPatient(SurgeryRequestDTO surgeryRequestDTO, String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor want to add this new SurgeryRepository {}, for owner with id {}", surgeryRequestDTO, patientOwner.getId());
         Surgery surgery = surgeryMapper.toEntity(surgeryRequestDTO);
         surgery.setOwner(patientOwner);
@@ -327,8 +329,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public String updateSurgery(SurgeryRequestDTO surgeryRequestDTO, Long surgeryId, Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public String updateSurgery(SurgeryRequestDTO surgeryRequestDTO, Long surgeryId, String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor want to update Surgery with id {}", surgeryId);
         Surgery existSurgery = surgeryRepository.findById(surgeryId)
                 .orElseThrow(() -> new RecordNotFoundException("This Surgery with id "+surgeryId+" doesn't exist"));
@@ -358,8 +360,8 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public List<LabTestResponseDTO> findAllLabTestsForPatient(Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public List<LabTestResponseDTO> findAllLabTestsForPatient(String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor want to get all Lab Tests for owner with id {}", patientOwner.getId());
         List<LabTestResponseDTO> labTestResponseDTOS = patientOwner.getLabTests()
                 .stream()
@@ -382,11 +384,11 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public boolean addNewPrescription(Long ownerId, PrescriptionRequestDTO prescriptionRequestDTO) {
+    public boolean addNewPrescription(String userCode, PrescriptionRequestDTO prescriptionRequestDTO) {
         log.trace("Doctor wants to add prescriptionRequestDTO {}, for owner with id {}",
-                prescriptionRequestDTO, ownerId);
-        Owner owner = ownerRepository.findById(ownerId)
-                .orElseThrow(() -> new RecordNotFoundException("This owner with id " + ownerId + " doesn't exist"));
+                prescriptionRequestDTO, userCode);
+        Owner owner = ownerRepository.findByUserCode(userCode)
+                .orElseThrow(() -> new RecordNotFoundException("This owner with id " + userCode + " doesn't exist"));
 
 
         Prescription newPrescription = new Prescription();
@@ -404,7 +406,7 @@ public class DoctorServiceImpl implements DoctorService {
                 .collect(Collectors.toList());
 
         newPrescription.setMedications(medications);
-        newPrescription.setStatus(true);
+        newPrescription.setMedicationStatus(true);
         newPrescription.setCreatedAt(LocalDateTime.now());
         newPrescription.setUpdatedAt(LocalDateTime.now());
         newPrescription.setOwner(owner);
@@ -437,10 +439,10 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<PrescriptionResponseDTO> getAllPrescriptions(Long ownerId) {
-        log.info("Doctor wants to get all Prescriptions for owner with id {}", ownerId);
-        Owner owner = ownerRepository.findById(ownerId)
-                .orElseThrow(() -> new RecordNotFoundException("This owner with id " + ownerId + " doesn't exist"));
+    public List<PrescriptionResponseDTO> getAllPrescriptions(String userCode) {
+        log.info("Doctor wants to get all Prescriptions for owner with id {}", userCode);
+        Owner owner = ownerRepository.findByUserCode(userCode)
+                .orElseThrow(() -> new RecordNotFoundException("This owner with code " + userCode + " doesn't exist"));
 
         return owner.getPrescriptions()
                 .stream()
@@ -460,10 +462,10 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public boolean addLabTestsForPatientThatRequiredNow(Long ownerId, List<LabTestRequestDTO> requiredTests) {
-        log.info("Doctor need to ask patient with id {}, for this lab tests {}", ownerId, requiredTests);
+    public boolean addLabTestsForPatientThatRequiredNow(String userCode, List<LabTestRequestDTO> requiredTests) {
+        log.info("Doctor need to ask patient with id {}, for this lab tests {}", userCode, requiredTests);
 
-        Owner owner = ownerContext.getCurrentOwner(ownerId);
+        Owner owner = ownerContext.getCurrentOwner(userCode);
         List<LabTest> labTests = requiredTests.stream()
                 .map(labTestMapper::toEntity)
                 .map(labTest -> {
@@ -480,8 +482,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<LabTestResponseDTO> getActiveLabTests(Long ownerId) {
-        Owner patientOwner = ownerContext.getCurrentOwner(ownerId);
+    public List<LabTestResponseDTO> getActiveLabTests(String userCode) {
+        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
         log.info("Doctor want to get Active Lab Tests for owner with id {}", patientOwner.getId());
         List<LabTestResponseDTO> labTestResponseDTOS = patientOwner.getLabTests().stream()
                 .filter(labTest -> labTest.isStatus())

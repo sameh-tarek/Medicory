@@ -20,8 +20,11 @@ public class Prescription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "status")
-    private boolean status;
+    @Column(name = "medication_status")
+    private boolean medicationStatus;
+
+    @Column(name = "prescription_status")
+    private boolean prescriptionStatus;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")

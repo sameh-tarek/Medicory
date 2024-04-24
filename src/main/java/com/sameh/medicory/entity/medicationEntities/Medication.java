@@ -26,7 +26,11 @@ public class Medication {
     @Column(nullable = false)
     private int frequency;
 
-    private boolean status;
+    @Column(name = "medication_status")
+    private boolean medicationStatus;
+
+    @Column(name = "prescription_status")
+    private boolean prescriptionStatus;
 
     private String tips;
 

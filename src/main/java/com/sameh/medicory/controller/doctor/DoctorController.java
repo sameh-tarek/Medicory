@@ -8,15 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/doctor/patient/{ownerId}")
+@RequestMapping("/doctors/patients/{userCode}")
 @RequiredArgsConstructor
 public class DoctorController {
 
     private final DoctorService doctorService;
 
     @GetMapping("personal-information")
-    public PatientPersonalInformation getPatientPersonalInformation(@PathVariable Long ownerId){
-         return doctorService.getPatientPersonalInformation(ownerId);
+    public PatientPersonalInformation getPatientPersonalInformation(@PathVariable String userCode){
+         return doctorService.getPatientPersonalInformation(userCode);
     }
 
 }
