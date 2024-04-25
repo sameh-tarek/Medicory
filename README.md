@@ -2,9 +2,7 @@
 - [API DOC](http://localhost:7777/v3/api-docs)
 - [Swagger UI](http://localhost:7777/swagger-ui//index.html)
 
-<a href="https://interstellar-capsule-619026.postman.co/collection/28660393-3250146c-3baa-4035-9ebe-837a4e7a0ce0?source=rip_html">
-	<img alt="Run in Postman" src="https://run.pstmn.io/button.svg">
-</a>
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://interstellar-capsule-619026.postman.co/collection/28660393-3250146c-3baa-4035-9ebe-837a4e7a0ce0?source=rip_html)
 
 # Requirements
 - Java Development Kit (JDK) 17 or above
@@ -16,7 +14,12 @@
 3. Import the project into your favorite Java IDE (e.g., IntelliJ, Eclipse, etc.).
 4. Build the project to resolve dependencies.
 
-## [Click here to Discover All Features](doc#readme)
+## Explore All Features
+
+Click the link below to discover all the available features:
+
+[Discover Now](doc#readme)
+
 
 # ERD
 
