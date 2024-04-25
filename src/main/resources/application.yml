@@ -10,6 +10,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-app:
-  uploads:
-    labtests: classpath:/uploads/labtests/
+rsa:
+  private-key: classpath:certs/private.pem
+  public-key: classpath:certs/public.pem
