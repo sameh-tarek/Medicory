@@ -1,6 +1,7 @@
 package com.sameh.medicory.model.prescription;
 
-import com.sameh.medicory.model.medication.MedicationScheduleDTO;
+import com.sameh.medicory.model.medication.CurrentScheduleRequest;
+import com.sameh.medicory.model.medication.MedicationDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,8 +14,8 @@ import java.util.List;
 @Builder
 public class PrescriptionResponse {
     private Long prescriptionId;
+    private String doctorName;
     private boolean status;
-    private List<MedicationScheduleDTO> medications;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

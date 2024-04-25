@@ -29,6 +29,5 @@ public class CurrentSchedule {
     @OneToMany(mappedBy = "currentSchedule", cascade = CascadeType.ALL)
     private List<Medication> medications;
 
-
     private LocalDateTime updatedAt;
 }

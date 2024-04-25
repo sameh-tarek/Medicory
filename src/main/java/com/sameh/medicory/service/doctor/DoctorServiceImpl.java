@@ -392,7 +392,9 @@ public class DoctorServiceImpl implements DoctorService {
 
 
         Prescription newPrescription = new Prescription();
-        List<Medication> medications = prescriptionRequestDTO.getMedications().stream()
+
+        List<Medication> medications = prescriptionRequestDTO.getMedications()
+                .stream()
                 .map(medicationRequestDTO -> {
                     Medicine medicine = getMedicineByName(medicationRequestDTO.getMedicineName());
                     Medication medication = medicationMapper.toEntity(medicationRequestDTO);

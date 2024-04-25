@@ -19,6 +19,7 @@ public class MedicationMapperImpl implements MedicationMapper {
     @Override
     public MedicationDTO toDTO(Medication medication) {
         return MedicationDTO.builder()
+                .id(medication.getId())
                 .medicineName(medication.getMedicine().getName())
                 .dose(medication.getDose())
                 .frequency(medication.getFrequency())
