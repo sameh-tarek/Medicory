@@ -4,6 +4,7 @@ import com.sameh.medicory.entity.usersEntities.Lab;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.ConflictException;
 import com.sameh.medicory.exception.RecordNotFoundException;
+import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.LabMapper;
 import com.sameh.medicory.model.users.LabDTO;
 import com.sameh.medicory.model.users.UserDTO;
@@ -124,16 +125,18 @@ public String addLab(LabDTO newLab) {
     @Override
     public String deleteLab(Long labId) {
         if (labId > 0) {
-            Optional<Lab> lab = labRepo.findById(labId);
-            if (lab.isPresent()) {
-                Lab l= lab.get();
-                labRepo.deleteById(labId);
-                userRepo.deleteById(l.getUser().getId());
+            Lab lab = labRepo.findById(labId)
+                    .orElseThrow(()-> new RecordNotFoundException("No lab with id "+labId));
 
-                return "Deleted successfully";
-            } else {
-                throw new RecordNotFoundException("No lab with id: " + labId);
-            }
+         User unEnabledUser= lab.getUser();
+         if(unEnabledUser.isEnabled()){
+         unEnabledUser.setEnabled(false);
+         unEnabledUser.setUpdatedAt(LocalDateTime.now());
+         
+         userRepo.save(unEnabledUser);
+         return "Deleted successfully";
+        }
+            throw new UserDisabledException("This user is unEnabled already");
         }
         throw new IllegalArgumentException("Invalid id: " + labId);
     }

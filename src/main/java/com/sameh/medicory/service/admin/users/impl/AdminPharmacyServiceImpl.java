@@ -4,6 +4,7 @@ import com.sameh.medicory.entity.usersEntities.Pharmacy;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.ConflictException;
 import com.sameh.medicory.exception.RecordNotFoundException;
+import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.PharmacyMpper;
 import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.users.PharmacyDTO;
@@ -117,14 +118,18 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
     @Override
     public String deletePharmacy(Long pharmacyId) {
      if(pharmacyId>0){
-         Optional<Pharmacy> optionalPharmacy=pharmacyRepository.findById(pharmacyId);
-         if(optionalPharmacy.isPresent()){
-             Pharmacy pharmacy= optionalPharmacy.get();
-             pharmacyRepository.deleteById(pharmacyId);
-             userRepository.deleteById(pharmacy.getUser().getId());
-             return "deleted sucessfully";
+         Pharmacy pharmacy=pharmacyRepository.findById(pharmacyId)
+                 .orElseThrow(()-> new RecordNotFoundException("No pharmacy with id " +pharmacyId));
 
-         }throw new RecordNotFoundException("No pharmacy with id "+pharmacyId);
+           User unEnabledUser = pharmacy.getUser();
+           if(unEnabledUser.isEnabled()){
+           unEnabledUser.setUpdatedAt(LocalDateTime.now());
+           unEnabledUser.setEnabled(false);
+
+           userRepository.save(unEnabledUser);
+           return "deleted sucessfully";
+           }
+         throw new UserDisabledException("This user is unEnabled already");
      }
      throw new IllegalArgumentException("Invalid id "+pharmacyId);
     }

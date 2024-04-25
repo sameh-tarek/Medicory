@@ -17,7 +17,7 @@ public class AdminClinicController {
 
    private final AdminClinicService clinicService;
 
-    @GetMapping("/clinicId/{clinicId}")
+    @GetMapping("/id/{clinicId}")
     public ResponseEntity< ClinicDTO> findClinicById(@PathVariable Long clinicId){
         ClinicDTO clinic = clinicService.findClinicById(clinicId);
         return ResponseEntity.ok(clinic);
@@ -49,7 +49,7 @@ public class AdminClinicController {
         String message= clinicService.updateClinic(clinic,clinicId);
         return ResponseEntity.ok(message);
     }
-    @DeleteMapping("/clinic/{clinicId}")
+    @DeleteMapping("/id/{clinicId}")
     public ResponseEntity< String> deleteClinic(@PathVariable Long clinicId ){
         String message= clinicService.deleteClinicById(clinicId);
       return ResponseEntity.ok(message);

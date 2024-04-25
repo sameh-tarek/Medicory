@@ -4,6 +4,7 @@ import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.ConflictException;
 import com.sameh.medicory.exception.RecordNotFoundException;
+import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.OwnerMapper;
 import com.sameh.medicory.model.users.owner.OwnerRequestDTO;
 import com.sameh.medicory.model.users.owner.OwnerResponseDTO;
@@ -100,13 +101,18 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
 
     @Override
     public String deleteOwnerById(long id) {
-        Owner owner =ownerRepository.findById(id)
-                .orElseThrow(()-> new RecordNotFoundException("No owner with id "+id));
-        User user = owner.getUser();
-        user.setUpdatedAt(LocalDateTime.now());
-        user.setEnabled(false);
-        userRepository.save(user);
-
-       return "deleted sucessfully";
+        if(id>0) {
+            Owner owner = ownerRepository.findById(id)
+                    .orElseThrow(() -> new RecordNotFoundException("No owner with id " + id));
+            User user = owner.getUser();
+            if (user.isEnabled()) {
+                user.setUpdatedAt(LocalDateTime.now());
+                user.setEnabled(false);
+                userRepository.save(user);
+                return "deleted sucessfully";
+            }
+            throw new UserDisabledException("This user is unEnabled already");
+        }
+        throw new IllegalArgumentException("Invalid id "+id);
     }
 }
