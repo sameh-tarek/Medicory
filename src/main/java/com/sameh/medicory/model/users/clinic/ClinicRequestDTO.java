@@ -1,15 +1,14 @@
-package com.sameh.medicory.model.users;
+package com.sameh.medicory.model.users.clinic;
 
+import com.sameh.medicory.model.users.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClinicDTO {
+public class ClinicRequestDTO {
     private Long id;
     private String name;
     private String googleMapsLink;

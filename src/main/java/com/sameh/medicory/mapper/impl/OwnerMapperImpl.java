@@ -5,7 +5,6 @@ import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.mapper.OwnerMapper;
 import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.owner.OwnerDTO;
-import com.sameh.medicory.model.users.UserDTO;
 import com.sameh.medicory.model.users.owner.OwnerRequestDTO;
 import com.sameh.medicory.model.users.owner.OwnerResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;

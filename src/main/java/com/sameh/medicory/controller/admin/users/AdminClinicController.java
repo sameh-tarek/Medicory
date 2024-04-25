@@ -1,10 +1,13 @@
 package com.sameh.medicory.controller.admin.users;
 
-import com.sameh.medicory.model.users.ClinicDTO;
+import com.sameh.medicory.model.users.clinic.ClinicRequestDTO;
+import com.sameh.medicory.model.users.clinic.ClinicResponseDTO;
 import com.sameh.medicory.service.admin.users.AdminClinicService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,43 +18,47 @@ import java.util.List;
 public class AdminClinicController {
 
 
-   private final AdminClinicService clinicService;
+    private final AdminClinicService clinicService;
 
-    @GetMapping("/id/{clinicId}")
-    public ResponseEntity< ClinicDTO> findClinicById(@PathVariable Long clinicId){
-        ClinicDTO clinic = clinicService.findClinicById(clinicId);
-        return ResponseEntity.ok(clinic);
+    @GetMapping("/code/{code}")
+    public ResponseEntity<ClinicResponseDTO> findClinicByCode(@PathVariable String code) {
+        ClinicResponseDTO clinic = clinicService.findClinicByUserCode(code);
+        return new ResponseEntity<>(clinic, HttpStatus.OK);
     }
 
+    @GetMapping("/email/{userEmail}")
+    public ResponseEntity<ClinicResponseDTO> findClinicByUserEmail(@PathVariable String userEmail) {
+        ClinicResponseDTO clinic = clinicService.findClinicByUserEmail(userEmail);
+        return new ResponseEntity<>(clinic, HttpStatus.OK);
+    }
 
-    @GetMapping("/clinicName/{clinicName}")
-    public ResponseEntity<List<ClinicDTO>> findClinicByName(@PathVariable String clinicName){
-       List<ClinicDTO> clinics= clinicService.findClinicsByName(clinicName);
-        return ResponseEntity.ok(clinics);
+    @GetMapping("/name/{clinicName}")
+    public ResponseEntity<List<ClinicResponseDTO>> findClinicByClinicName(@PathVariable String clinicName) {
+        List<ClinicResponseDTO> clinics = clinicService.findClinicsByName(clinicName);
+        return new ResponseEntity<>(clinics, HttpStatus.OK);
     }
-    @GetMapping("/clinicEmail/{email}")
-    public ResponseEntity< ClinicDTO> findClinicByEmail(@PathVariable String email){
-        ClinicDTO clinic= clinicService.findClinicByUserEmail(email);
-        return ResponseEntity.ok(clinic);
+
+    @GetMapping("/id/{clinicId}/clinic")
+    public ResponseEntity<ClinicRequestDTO> getAllDataOfClinicById(@PathVariable long clinicId) {
+       ClinicRequestDTO clinic = clinicService.showAllDataOfClinicByClinicId(clinicId);
+       return new ResponseEntity<>(clinic,HttpStatus.OK);
     }
-    @GetMapping("")
-    public ResponseEntity<List<ClinicDTO>> showAllClinics(){
-       List<ClinicDTO> clinics = clinicService.getAllClinics();
-       return ResponseEntity.ok(clinics);
-    }
+
     @PostMapping("/clinic")
-    public ResponseEntity<String> insertNewClinic(@RequestBody ClinicDTO newClinic){
-       String message= clinicService.addNewClinic(newClinic);
-       return ResponseEntity.status(HttpStatus.CREATED).body(message);
+    public ResponseEntity<String> addClinic(@RequestBody ClinicRequestDTO newClinic){
+        String message = clinicService.addNewClinic(newClinic);
+        return new ResponseEntity<>(message,HttpStatus.CREATED);
     }
-    @PutMapping("/clinic/{clinicId}")
-    public ResponseEntity< String> updateClinic(@PathVariable Long clinicId ,@RequestBody ClinicDTO clinic){
-        String message= clinicService.updateClinic(clinic,clinicId);
-        return ResponseEntity.ok(message);
+    @PutMapping("/id/{clinicId}/clinic")
+    public ResponseEntity<String> updateClinic(@PathVariable long clinicId,@RequestBody ClinicRequestDTO updatedClinic){
+        String message = clinicService.updateClinic(updatedClinic,clinicId);
+        return new ResponseEntity<>(message,HttpStatus.OK);
     }
+
     @DeleteMapping("/id/{clinicId}")
-    public ResponseEntity< String> deleteClinic(@PathVariable Long clinicId ){
-        String message= clinicService.deleteClinicById(clinicId);
-      return ResponseEntity.ok(message);
+    public ResponseEntity<String> deleteClinic(@PathVariable long clinicId){
+        String  message = clinicService.deleteClinicById(clinicId);
+        return new ResponseEntity<>(message,HttpStatus.OK);
     }
+
 }

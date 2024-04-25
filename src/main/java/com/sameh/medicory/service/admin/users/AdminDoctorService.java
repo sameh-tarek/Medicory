@@ -1,22 +1,21 @@
 package com.sameh.medicory.service.admin.users;
 
-import com.sameh.medicory.model.users.DoctorDTO;
+import com.sameh.medicory.model.users.Doctor.DoctorRequestDTO;
+import com.sameh.medicory.model.users.Doctor.DoctorResponseDTO;
 
 import java.util.List;
 
 public interface AdminDoctorService {
 
-    List<DoctorDTO> findAllDoctors();
+    DoctorRequestDTO showAllDoctorDataById(Long  doctorId);
     
-    DoctorDTO findDoctorById(Long  doctorId);
-    
-    DoctorDTO findDoctoByUserEmail(String userEmail);
-    
-    List<DoctorDTO> findDoctorbyFullName(String fullName);
+    DoctorResponseDTO findDoctoByUserEmail(String userEmail);
+    DoctorResponseDTO findDoctorByUserCode(String userCode);
+    List<DoctorResponseDTO> findDoctorbyFullName(String fullName);
 
-    String addNewDoctor(DoctorDTO newDoctorDTO);
+    String addNewDoctor(DoctorRequestDTO newDoctorRequestDTO);
 
-    String updateDoctor(DoctorDTO updatedDoctorDTO ,Long doctorId);
+    String updateDoctor(DoctorRequestDTO updatedDoctorRequestDTO, Long doctorId);
 
     String deleteDoctorById(Long doctorId);
 }

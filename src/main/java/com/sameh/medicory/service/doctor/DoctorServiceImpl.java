@@ -43,6 +43,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -616,7 +617,9 @@ public class DoctorServiceImpl implements DoctorService {
 
     private Doctor getCurrentDoctor () {
         String currentUserEmail = securityUtils.getCurrentAuthenticatedUserEmail();
-        Doctor doctor = doctorRepository.findDoctorByUserEmail(currentUserEmail);
+        Doctor doctor = doctorRepository.
+                findDoctorByUserEmail(currentUserEmail)
+                .orElse(null);
         return doctor;
     }
 

@@ -3,7 +3,6 @@ package com.sameh.medicory.model.users;
 import com.sameh.medicory.entity.enums.Role;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
