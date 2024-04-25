@@ -1,4 +1,4 @@
-package org.example.bankapi.model.auth;
+package com.sameh.medicory.model.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 public class AuthenticationResponse {
     private Long id;
     private String token;
-    private String name;
     private String email;
 }

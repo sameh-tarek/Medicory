@@ -1,4 +1,4 @@
-package org.example.bankapi.model.auth;
+package com.sameh.medicory.model.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

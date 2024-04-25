@@ -1,4 +1,4 @@
-package org.example.bankapi.security;
+package com.sameh.medicory.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
