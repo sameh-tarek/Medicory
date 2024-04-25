@@ -30,11 +30,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
 
-        User user = userRepository.findByEmail(authenticationRequest.getEmail());
-        if(user == null){
-            throw new UsernameNotFoundException("Not found This user");
-        }
-
+        User user = userRepository.findByEmail(authenticationRequest.getEmail())
+                .orElseThrow(()-> new UsernameNotFoundException("This user not found"));
+      
         var jwtToken = jwtService.generateToken(authentication);
         log.info("The user has login successfully");
         return AuthenticationResponse.builder()
