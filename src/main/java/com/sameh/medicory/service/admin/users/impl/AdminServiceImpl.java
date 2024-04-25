@@ -4,6 +4,7 @@ import com.sameh.medicory.entity.usersEntities.Admin;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.ConflictException;
 import com.sameh.medicory.exception.RecordNotFoundException;
+import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.AdminMapper;
 import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.users.AdminDTO;
@@ -135,14 +136,17 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public String deleteAdmin(Long adminId) {
      if(adminId>0){
-         Optional<Admin> opAdmin=adminRepository.findById(adminId);
-         if(opAdmin.isPresent()){
-             Admin admin = opAdmin.get();
-             adminRepository.deleteById(adminId);
-             userRepository.deleteById(admin.getUser().getId());
-             return "deleted sucessfully";
+         Admin admin =adminRepository
+                 .findById(adminId)
+                 .orElseThrow(()-> new RecordNotFoundException("NO admin with id "+adminId));
+         User unEnabledUser= admin.getUser();
+         if(unEnabledUser.isEnabled()){
+         unEnabledUser.setEnabled(false);
+         unEnabledUser.setUpdatedAt(LocalDateTime.now());
+         userRepository.save(unEnabledUser);
+         return "admin deleted ";
          }
-         throw new RecordNotFoundException("No admin with this id "+adminId );
+         throw new UserDisabledException("This user is unEnabled already");
      }
      throw new IllegalArgumentException("Invalid id "+adminId);
     }

@@ -4,6 +4,7 @@ import com.sameh.medicory.entity.usersEntities.Clinic;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.ConflictException;
 import com.sameh.medicory.exception.RecordNotFoundException;
+import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.ClinicMapper;
 import com.sameh.medicory.model.users.ClinicDTO;
 import com.sameh.medicory.model.users.UserDTO;
@@ -127,14 +128,20 @@ public class AdminClinicServiceImpl implements AdminClinicService {
 
     @Override
     public String deleteClinicById(Long clinicId) {
-      Optional<Clinic> clinicOptional = clinicRepository.findById(clinicId);
-      if(clinicOptional.isPresent()){
-           Clinic clinic= clinicOptional.get();
-           clinicRepository.deleteById(clinicId);
-           userRepository.deleteById(clinic.getUser().getId());
+        if(clinicId>0) {
+            Clinic clinic = clinicRepository.findById(clinicId)
+                    .orElseThrow(()-> new RecordNotFoundException("No Clinic with id "+clinicId));
+
+           User unEnabledUser= clinic.getUser();
+        if(unEnabledUser.isEnabled()) {
+            unEnabledUser.setEnabled(false);
+            unEnabledUser.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(unEnabledUser);
             return "Clinic deleted successfully";
-        }else
-            throw new RecordNotFoundException("Clinic not found with ID: " + clinicId);
+        }
+        throw new UserDisabledException("This user is unEnabled already");
+        }
+        throw new IllegalArgumentException("Invalid id");
 
 
     }

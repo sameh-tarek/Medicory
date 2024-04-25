@@ -4,6 +4,7 @@ import com.sameh.medicory.entity.usersEntities.Doctor;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.ConflictException;
 import com.sameh.medicory.exception.RecordNotFoundException;
+import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.DoctorMapper;
 import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.users.DoctorDTO;
@@ -129,15 +130,18 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
     @Override
     public String deleteDoctorById(Long doctorId) {
        if(doctorId>0){
-           Optional<Doctor> optionalDoctor= doctorRepository.findById(doctorId);
-           if(optionalDoctor.isPresent()) {
-                Doctor doctor= optionalDoctor.get();
-                doctorRepository.deleteById(doctorId);
-                userRepository.deleteById(doctor.getUser().getId());
+           Doctor doctor= doctorRepository.findById(doctorId)
+                   .orElseThrow(()-> new RecordNotFoundException("No doctor with id "+doctorId));
+
+           User unEnabledUser = doctor.getUser();
+           if(unEnabledUser.isEnabled()) {
+               unEnabledUser.setUpdatedAt(LocalDateTime.now());
+               unEnabledUser.setEnabled(false);
+               userRepository.save(unEnabledUser);
                return "Doctor deleted successfully";
-           }else
-               throw new RecordNotFoundException("No doctor with id "+doctorId);
-       }else
+           }
+           throw new UserDisabledException("This user is unEnabled already");
+           }
            throw new IllegalArgumentException("Invalid id "+doctorId +".....");
     }
 }

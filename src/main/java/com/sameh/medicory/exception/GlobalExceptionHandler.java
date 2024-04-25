@@ -31,4 +31,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(UserDisabledException.class)
+    public ResponseEntity<ErrorDetails>handleUserDisabledException(UserDisabledException  exception){
+        ErrorDetails details=new ErrorDetails(
+                exception.getMessage(),
+                HttpStatus.CONFLICT.value(),
+                new Date()
+        );
+        return new ResponseEntity<>(details,HttpStatus.CONFLICT);
+    }
+
 }
