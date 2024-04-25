@@ -7,7 +7,8 @@ import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.DoctorMapper;
 import com.sameh.medicory.mapper.UserMapper;
-import com.sameh.medicory.model.users.DoctorDTO;
+import com.sameh.medicory.model.users.Doctor.DoctorRequestDTO;
+import com.sameh.medicory.model.users.Doctor.DoctorResponseDTO;
 import com.sameh.medicory.repository.DoctorRepository;
 import com.sameh.medicory.repository.UserRepository;
 import com.sameh.medicory.service.admin.users.AdminDoctorService;
@@ -31,81 +32,70 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
     private final DoctorMapper doctorMapper;
     private final UserMapper userMapper;
 
-
     @Override
-    public List<DoctorDTO> findAllDoctors() {
-        List<Doctor> allDoctors =doctorRepository.findAll();
-        if(!allDoctors.isEmpty()){
-           return allDoctors.stream()
-                    .map(doctorMapper::toDTO)
-                    .collect(Collectors.toList());
-        }else
-           throw new RecordNotFoundException("NO doctors found");
-
-        }
-
-
-    @Override
-    public DoctorDTO findDoctorById(Long doctorId) {
+    public DoctorRequestDTO showAllDoctorDataById(Long doctorId) {
        if(doctorId>0){
-           Optional<Doctor> optionalDoctor =  doctorRepository.findById(doctorId);
-           if(optionalDoctor.isPresent()){
-               Doctor doctor =optionalDoctor.get();
-               return doctorMapper.toDTO(doctor);
-           }
-           else
-               throw new RecordNotFoundException("No doctor with id "+doctorId);
-       }else
+          Doctor doctor = doctorRepository.findById(doctorId)
+                  .orElseThrow(()-> new RecordNotFoundException("No doctor  with id "+doctorId));
+          return doctorMapper.toDTO(doctor);
+       }
            throw new IllegalArgumentException("Invalid id "+doctorId +".....");
     }
 
     @Override
-    public DoctorDTO findDoctoByUserEmail(String userEmail) {
-        Doctor doctor = doctorRepository.findDoctorByUserEmail(userEmail);
-         if(doctor !=null){
-             return doctorMapper.toDTO(doctor);
-         }
-         else
-             throw  new RecordNotFoundException("No user *DOCTOR* with this email "+ userEmail);
-    }
-    //TODO find by name handle all cases :)
-    @Override
-    public List<DoctorDTO> findDoctorbyFullName(String fullName) {
-        return null;
+    public DoctorResponseDTO findDoctoByUserEmail(String userEmail) {
+        Doctor doctor = doctorRepository
+                .findDoctorByUserEmail(userEmail)
+                .orElseThrow(()-> new RecordNotFoundException("No user *DOCTOR* with this email "+ userEmail));
+              return doctorMapper.toResponseDTO(doctor);
     }
 
     @Override
-    public String addNewDoctor(DoctorDTO newDoctorDTO) {
-        Doctor newDoctor =doctorMapper.toEntity(newDoctorDTO);
+    public DoctorResponseDTO findDoctorByUserCode(String userCode) {
+        Doctor doctor = doctorRepository
+                .findDoctorByUserCode(userCode)
+                .orElseThrow(()-> new RecordNotFoundException("No user *DOCTOR* with code : "+userCode));
+        return doctorMapper.toResponseDTO(doctor);
+    }
+
+    //TODO find by name handle all cases :)
+    @Override
+    public List<DoctorResponseDTO> findDoctorbyFullName(String fullName) {
+        return  null;
+    }
+    @Override
+    public String addNewDoctor(DoctorRequestDTO newDoctorRequestDTO) {
+        Doctor newDoctor =doctorMapper.toEntity(newDoctorRequestDTO);
         User newUser = newDoctor.getUser();
        Optional< User> existing = userRepository.findByEmail(newUser.getEmail());
-        if(existing.isPresent()){
+        if(!existing.isPresent()){
             newUser.setUpdatedAt(LocalDateTime.now());
             newUser.setCreatedAt(LocalDateTime.now());
+
             userRepository.save(newUser);
             doctorRepository.save(newDoctor);
             return  "Doctor added successfully";
-        } else
+        }
             throw new ConflictException("User with this email "+ newUser.getEmail()+" already exist ");
     }
+
    //TODO enhance update function for all users
     @Override
-    public String updateDoctor(DoctorDTO updatedDoctorDTO, Long doctorId) {
+    public String updateDoctor(DoctorRequestDTO updatedDoctorRequestDTO, Long doctorId) {
     if(doctorId>0){
-    Optional<Doctor> optionalDoctor=doctorRepository.findById(doctorId);
-    if(optionalDoctor.isPresent()){
-        Doctor oldDoctor =  optionalDoctor.get();
-        oldDoctor.setFirstName(updatedDoctorDTO.getFirstName());
-        oldDoctor.setMiddleName(updatedDoctorDTO.getMiddleName());
-        oldDoctor.setLastName(updatedDoctorDTO.getLastName());
-        oldDoctor.setSpecialization(updatedDoctorDTO.getSpecialization());
-        oldDoctor.setLicenceNumber(updatedDoctorDTO.getLicenceNumber());
-        oldDoctor.setNationalId(updatedDoctorDTO.getNationalId());
-        oldDoctor.setMaritalStatus(updatedDoctorDTO.getMaritalStatus());
-        oldDoctor.setGender(updatedDoctorDTO.getGender());
+     Doctor oldDoctor =doctorRepository.findById(doctorId)
+                     .orElseThrow(()-> new RecordNotFoundException("No doctor with id "+ doctorId));
 
+        oldDoctor.setFirstName(updatedDoctorRequestDTO.getFirstName());
+        oldDoctor.setMiddleName(updatedDoctorRequestDTO.getMiddleName());
+        oldDoctor.setLastName(updatedDoctorRequestDTO.getLastName());
+        oldDoctor.setSpecialization(updatedDoctorRequestDTO.getSpecialization());
+        oldDoctor.setLicenceNumber(updatedDoctorRequestDTO.getLicenceNumber());
+        oldDoctor.setNationalId(updatedDoctorRequestDTO.getNationalId());
+        oldDoctor.setMaritalStatus(updatedDoctorRequestDTO.getMaritalStatus());
+        oldDoctor.setGender(updatedDoctorRequestDTO.getGender());
 
-        User updatedUser=  userMapper.toEntity(updatedDoctorDTO.getUser());
+        User updatedUser=  userMapper.toEntity(updatedDoctorRequestDTO.getUser());
         User oldUser = oldDoctor.getUser();
 
           if(updatedUser !=null){
@@ -119,9 +109,6 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
          userRepository.save(oldUser);
          doctorRepository.save(oldDoctor);
         return "Doctor updated  successfully";
-
-    }else
-        throw new RecordNotFoundException("No doctor with id "+ doctorId);
 
     } else
         throw new IllegalArgumentException("Invalid id "+doctorId +".....");
