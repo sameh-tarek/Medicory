@@ -10,7 +10,7 @@ import com.sameh.medicory.model.immunization.ImmunizationResponseDTO;
 import com.sameh.medicory.model.medication.MedicationDTO;
 import com.sameh.medicory.model.owner.OwnerDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
-import com.sameh.medicory.model.tests.ImagingTestDTO;
+import com.sameh.medicory.model.tests.ImagingTestResponseDTO;
 import com.sameh.medicory.model.tests.LabTestResponseDTO;
 import com.sameh.medicory.repository.OwnerRepository;
 import lombok.RequiredArgsConstructor;
@@ -164,7 +164,7 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public List<ImagingTestDTO> getOwnerImagingTests(long userId) {
+    public List<ImagingTestResponseDTO> getOwnerImagingTests(long userId) {
         return ownerRepository.findById(userId).orElseThrow(
                 () -> new RecordNotFoundException("owner with id "+ userId + " not found!")
         )
@@ -175,7 +175,7 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public ImagingTestDTO getOwnerImagingTestByTestId(long testId, long userId) {
+    public ImagingTestResponseDTO getOwnerImagingTestByTestId(long testId, long userId) {
         return ownerRepository.findById(userId).orElseThrow(
                 () -> new RecordNotFoundException("owner with id "+ userId + " not found!")
         )

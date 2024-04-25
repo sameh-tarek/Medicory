@@ -62,7 +62,7 @@ public class EmergencyServiceImpl implements EmergencyService {
 
                 EmergencyDTO emergencyInfo = new EmergencyDTO();
                 emergencyInfo.setOwnerName(owner.getFirstName() + " " + owner.getMiddleName() + " " + owner.getLastName());
-                emergencyInfo.setBloodType(owner.getBloodType());
+                emergencyInfo.setBloodType(owner.getBloodType().name());
                 emergencyInfo.setAllergies(allergyNames);
                 emergencyInfo.setSurgeries(surgeriesNames);
                 emergencyInfo.setChronicDiseases(chronicDiseasesNames);

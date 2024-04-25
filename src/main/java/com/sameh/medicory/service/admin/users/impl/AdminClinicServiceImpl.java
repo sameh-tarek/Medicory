@@ -78,8 +78,8 @@ public class AdminClinicServiceImpl implements AdminClinicService {
     public String addNewClinic(ClinicDTO clinicDTO) {
         Clinic newClinic = map.toEntity(clinicDTO);
         User user = newClinic.getUser();
-        User exsistingUser =userRepository.findByEmail(user.getEmail());
-        if(exsistingUser == null){
+       Optional< User> exsistingUser =userRepository.findByEmail(user.getEmail());
+        if(exsistingUser.isPresent()){
 
             user.setCreatedAt(LocalDateTime.now());
             user.setUpdatedAt(LocalDateTime.now());

@@ -1,5 +1,6 @@
 package com.sameh.medicory.model.owner;
 
+import com.sameh.medicory.model.users.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -24,5 +25,6 @@ public class OwnerDTO {
     private String job;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
 
 }

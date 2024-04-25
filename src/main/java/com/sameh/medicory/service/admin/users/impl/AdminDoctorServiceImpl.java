@@ -77,8 +77,8 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
     public String addNewDoctor(DoctorDTO newDoctorDTO) {
         Doctor newDoctor =doctorMapper.toEntity(newDoctorDTO);
         User newUser = newDoctor.getUser();
-        User existing = userRepository.findByEmail(newUser.getEmail());
-        if(existing == null){
+       Optional< User> existing = userRepository.findByEmail(newUser.getEmail());
+        if(existing.isPresent()){
             newUser.setUpdatedAt(LocalDateTime.now());
             newUser.setCreatedAt(LocalDateTime.now());
             userRepository.save(newUser);

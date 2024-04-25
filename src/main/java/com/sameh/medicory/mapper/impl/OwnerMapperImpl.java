@@ -3,7 +3,12 @@ package com.sameh.medicory.mapper.impl;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.mapper.OwnerMapper;
+import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.owner.OwnerDTO;
+import com.sameh.medicory.model.users.UserDTO;
+import com.sameh.medicory.model.users.owner.OwnerRequestDTO;
+import com.sameh.medicory.model.users.owner.OwnerResponseDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -35,6 +40,61 @@ public class OwnerMapperImpl implements OwnerMapper {
         );
     }
 
+    @Autowired
+    UserMapper userMapper;
+    @Override
+    public OwnerRequestDTO toRequestDTO(Owner owner) {
+        return  new OwnerRequestDTO(
+                owner.getId(),
+                owner.getFirstName(),
+                owner.getMiddleName(),
+                owner.getLastName(),
+                owner.getGender(),
+                owner.getDateOfBirth(),
+                owner.getAddress(),
+                owner.getBloodType(),
+                owner.getNationalId(),
+                owner.getMaritalStatus(),
+                owner.getJob(),
+                userMapper.toDto(
+                        owner.getUser()
+                )
+
+        );
+    }
+
+    @Override
+    public OwnerResponseDTO toResponseDTO(Owner owner) {
+        return  new OwnerResponseDTO(
+                 owner.getUser().getId()
+                ,owner.getFirstName()+" "
+                +owner.getMiddleName()+" "
+                +owner.getLastName()
+        );
+    }
+
+    @Override
+    public Owner toEntity(OwnerRequestDTO owner) {
+        return new Owner(
+                owner.getId(),
+                owner.getFirstName(),
+                owner.getMiddleName(),
+                owner.getLastName(),
+                owner.getGender(),
+                owner.getDateOfBirth(),
+                owner.getAddress(),
+                owner.getBloodType(),
+                owner.getNationalId(),
+                owner.getMaritalStatus(),
+                owner.getJob(),
+                null,
+                null,
+                null
+                ,null,null,null,null,
+                userMapper.toEntity(owner.getUser()),
+                null);
+    }
+
     private int calculateAge(LocalDate date) {
         LocalDate currentDate = LocalDate.now();
         if(date!=null){
@@ -56,5 +116,6 @@ public class OwnerMapperImpl implements OwnerMapper {
                 .collect(Collectors.toList());
         return phoneNumbers;
     }
+
 
 }

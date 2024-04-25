@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class ImagingTestDTO {
+public class ImagingTestResponseDTO {
     private Long id;
     private String name;
     private String description;

@@ -89,8 +89,8 @@ public class AdminServiceImpl implements AdminService {
     public String addAdmin(AdminDTO newAdmin) {
          Admin admin = adminMapper.toEntity(newAdmin);
          User user = admin.getUser();
-         User existing =userRepository.findByEmail(user.getEmail());
-         if(existing == null){
+         Optional<User> existing =userRepository.findByEmail(user.getEmail());
+         if(existing.isPresent()){
              user.setCreatedAt(LocalDateTime.now());
              user.setUpdatedAt(LocalDateTime.now());
              userRepository.save(user);

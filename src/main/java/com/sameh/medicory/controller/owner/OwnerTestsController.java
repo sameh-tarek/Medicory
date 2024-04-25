@@ -1,6 +1,6 @@
 package com.sameh.medicory.controller.owner;
 
-import com.sameh.medicory.model.tests.ImagingTestDTO;
+import com.sameh.medicory.model.tests.ImagingTestResponseDTO;
 import com.sameh.medicory.model.tests.LabTestResponseDTO;
 import com.sameh.medicory.service.owner.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +25,12 @@ public class OwnerTestsController {
     }
 
     @GetMapping("/imaging-tests")
-    public List<ImagingTestDTO> getImagingTests(@PathVariable long ownerId){
+    public List<ImagingTestResponseDTO> getImagingTests(@PathVariable long ownerId){
         return ownerService.getOwnerImagingTests(ownerId);
     }
 
     @GetMapping("/imaging-tests/{testId}")
-    public ImagingTestDTO getImagingTestById(@PathVariable long ownerId, @PathVariable long testId){
+    public ImagingTestResponseDTO getImagingTestById(@PathVariable long ownerId, @PathVariable long testId){
         return ownerService.getOwnerImagingTestByTestId(testId, ownerId);
     }
 

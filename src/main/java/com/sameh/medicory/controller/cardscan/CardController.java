@@ -15,8 +15,8 @@ public class CardController {
     private final CardService cardService;
 
     @PostMapping("/scan")
-    public ResponseEntity<Long> scanCard(@RequestParam("ownerId") Long ownerId) {
-        return ResponseEntity.ok(ownerId);
+    public String scanCard(@RequestParam("userCode") String userCode) {
+        return userCode;
     }
 
     @PostMapping("/interacting-role/{ownerId}")
