@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class EmergencyDTO {
     private String ownerName;
-    private BloodType bloodType;
+    private String bloodType;
     private List< String> chronicDiseases;
     private List<String> allergies;
     private List<String> surgeries;

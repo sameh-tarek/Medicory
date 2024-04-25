@@ -1,7 +1,6 @@
 package com.sameh.medicory.entity.usersEntities;
 
 import com.sameh.medicory.entity.enums.MaritalStatus;
-import com.sameh.medicory.entity.medicationEntities.Medication;
 import com.sameh.medicory.entity.medicationEntities.Prescription;
 import com.sameh.medicory.entity.testsEntities.ImagingTest;
 import com.sameh.medicory.entity.testsEntities.LabTest;
@@ -18,7 +17,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity

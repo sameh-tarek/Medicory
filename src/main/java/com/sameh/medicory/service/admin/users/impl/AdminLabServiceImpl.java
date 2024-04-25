@@ -70,11 +70,9 @@ public class AdminLabServiceImpl implements AdminLabService {
 public String addLab(LabDTO newLab) {
     Lab lab = labMap.toEntity(newLab);
     User user = lab.getUser();
-    User existingUser = userRepo.findByEmail(user.getEmail());
-    if (existingUser == null) {
+    Optional<User> existingUser = userRepo.findByEmail(user.getEmail());
+    if (existingUser.isPresent()) {
         LocalDateTime currentDateTime = LocalDateTime.now();
-
-
         LocalDateTime localDateTime=LocalDateTime.now();
         user.setCreatedAt(localDateTime);
         user.setUpdatedAt(localDateTime);
