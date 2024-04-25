@@ -1,9 +1,7 @@
 package com.sameh.medicory.model.users;
 
-import com.sameh.medicory.entity.usersEntities.User;
 import lombok.*;
 
-import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

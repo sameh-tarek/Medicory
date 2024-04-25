@@ -1,18 +1,18 @@
 package com.sameh.medicory.mapper;
 
 import com.sameh.medicory.entity.usersEntities.Clinic;
-import com.sameh.medicory.model.users.ClinicDTO;
+import com.sameh.medicory.model.users.clinic.ClinicRequestDTO;
+import com.sameh.medicory.model.users.clinic.ClinicResponseDTO;
+import com.sameh.medicory.model.users.owner.OwnerResponseDTO;
 import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
-public interface ClinicMapper {
-    Clinic toEntity(ClinicDTO clinicDTO);
-    ClinicDTO toDto(Clinic clinic);
-    List<Clinic> toEntity(List<ClinicDTO> clinicDTOs);
-    List<ClinicDTO> toDto(List<Clinic> clinics);
 
+public interface ClinicMapper {
+    Clinic toEntity(ClinicRequestDTO clinicRequestDTO);
+    ClinicRequestDTO toDto(Clinic clinic);
+    ClinicResponseDTO toResponseDTO(Clinic clinic);
 
 
 }
