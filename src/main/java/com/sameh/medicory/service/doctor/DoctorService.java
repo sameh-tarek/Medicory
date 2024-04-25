@@ -10,6 +10,8 @@ import com.sameh.medicory.model.prescription.PrescriptionRequestDTO;
 import com.sameh.medicory.model.prescription.PrescriptionResponseDTO;
 import com.sameh.medicory.model.surgery.SurgeryRequestDTO;
 import com.sameh.medicory.model.surgery.SurgeryResponseDTO;
+import com.sameh.medicory.model.tests.ImagingTestRequestDTO;
+import com.sameh.medicory.model.tests.ImagingTestResponseDTO;
 import com.sameh.medicory.model.tests.LabTestRequestDTO;
 import com.sameh.medicory.model.tests.LabTestResponseDTO;
 import com.sameh.medicory.model.patient.PatientPersonalInformation;
@@ -53,16 +55,29 @@ public interface DoctorService {
     String deleteSurgery(Long surgeryId);
 
 
+
+
     List<LabTestResponseDTO> findAllLabTestsForPatient(String userCode);
     String deleteLabTestFromHistory(Long testId);
+    boolean updateLabTest(Long testId, LabTestRequestDTO labTestRequestDTO);
+    boolean addLabTestsForPatientThatRequiredNow(String userCode, List<LabTestRequestDTO> requiredTests);
+    List<LabTestResponseDTO> getActiveLabTests(String userCode);
+    LabTestResponseDTO findLabTestById(Long testId);
+
+
+
+
+    List<ImagingTestResponseDTO> getAllImagingTestForPatient(String userCode);
+    boolean deleteImagingTestFromHistory(Long testId);
+    boolean updateImagingTest(Long testId, ImagingTestRequestDTO imagingTestRequestDTO);
+    boolean addImagingTestForPatientThatRequiredNow(String userCode, List<ImagingTestRequestDTO> requiredTests);
+    List<ImagingTestResponseDTO> getActiveImagingTest(String userCode);
+    ImagingTestResponseDTO findImagingTestById(Long testId);
+
+
 
     boolean addNewPrescription(String userCode, PrescriptionRequestDTO prescriptionRequestDTO);
-
     PrescriptionResponseDTO findPrescriptionById(Long prescriptionId);
-
     List<PrescriptionResponseDTO> getAllPrescriptions(String userCode);
 
-    boolean addLabTestsForPatientThatRequiredNow(String userCode, List<LabTestRequestDTO> requiredTests);
-
-    List<LabTestResponseDTO> getActiveLabTests(String userCode);
 }

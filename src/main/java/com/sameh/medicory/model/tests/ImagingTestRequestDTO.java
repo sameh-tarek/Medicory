@@ -3,7 +3,7 @@ package com.sameh.medicory.model.tests;
 import lombok.Data;
 
 @Data
-public class LabTestRequestDTO {
+public class ImagingTestRequestDTO {
     String name;
     String description;
     private String imageResult;
