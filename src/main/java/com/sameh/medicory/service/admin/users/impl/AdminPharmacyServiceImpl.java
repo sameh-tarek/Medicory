@@ -73,8 +73,8 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
     public String addPharmacy(PharmacyDTO newPharmacyDTO) {
         Pharmacy newPharmacy =pharmacyMpper.toEntity(newPharmacyDTO);
         User newUser =newPharmacy.getUser();
-        User existingUser =userRepository.findByEmail(newUser.getEmail());
-        if(existingUser ==null){
+        Optional<User> existingUser =userRepository.findByEmail(newUser.getEmail());
+        if(existingUser.isPresent()){
 
             newUser.setCreatedAt(LocalDateTime.now());
             newUser.setUpdatedAt(LocalDateTime.now());
