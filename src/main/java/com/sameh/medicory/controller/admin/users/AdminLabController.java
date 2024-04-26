@@ -36,6 +36,12 @@ public class AdminLabController {
         return ResponseEntity.ok(lab);
     }
 
+    @GetMapping("code/{code}")
+    public ResponseEntity<LabResponseDTO> findLabByCode(@PathVariable String code){
+        LabResponseDTO lab = labService.findLabByUserCode(code);
+        return ResponseEntity.ok(lab);
+    }
+
     @PostMapping("/lab")
     public ResponseEntity<String> addLab(@RequestBody LabRequestDTO newLab) {
         String message = labService.addLab(newLab);

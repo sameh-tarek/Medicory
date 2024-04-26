@@ -6,6 +6,7 @@ import com.sameh.medicory.service.admin.users.AdminPharmacyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,11 @@ public class AdminPharmacyController {
         return ResponseEntity.ok(pharmacies);
     }
 
+    @GetMapping("code/{code}")
+    public ResponseEntity<PharmacyResponseDTO> findPharmacyByCode(@PathVariable String code){
+        PharmacyResponseDTO pharmacy = pharmacyService.findPharmacyByUserCode(code);
+        return new ResponseEntity<>(pharmacy,HttpStatus.OK);
+    }
 
     @GetMapping("/email/{userEmail}")
     public ResponseEntity<PharmacyResponseDTO> findPharmacyByEmail(@PathVariable String userEmail) {
