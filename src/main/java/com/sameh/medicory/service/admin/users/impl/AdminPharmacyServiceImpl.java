@@ -7,7 +7,8 @@ import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.PharmacyMpper;
 import com.sameh.medicory.mapper.UserMapper;
-import com.sameh.medicory.model.users.PharmacyDTO;
+import com.sameh.medicory.model.users.pharmacy.PharmacyRequestDTO;
+import com.sameh.medicory.model.users.pharmacy.PharmacyResponseDTO;
 import com.sameh.medicory.repository.PharmacyRepository;
 import com.sameh.medicory.repository.UserRepository;
 import com.sameh.medicory.service.admin.users.AdminPharmacyService;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 //TODO logs
 @Slf4j
 @Service
@@ -31,51 +34,40 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
 
 
     @Override
-    public List<PharmacyDTO> showAllPhrmacies() {
-        List<Pharmacy> allPharmacies =pharmacyRepository.findAll();
-        if(!allPharmacies.isEmpty()){
-            return pharmacyMpper.toDTOs(allPharmacies);
-        }
-        throw new RecordNotFoundException("No pharmacies");
-
+    public PharmacyResponseDTO findPharmacyByUserCode(String userCode) {
+        Pharmacy pharmacy = pharmacyRepository.findByUserCode(userCode)
+                .orElseThrow(()-> new RecordNotFoundException("No Pharmacy with code "+userCode));
+        return pharmacyMpper.toResponseDTO(pharmacy);
     }
 
     @Override
-    public PharmacyDTO findPharmacyById(Long pharmacyId) {
-        if (pharmacyId>0){
-            Optional<Pharmacy> optionalPharmacy =pharmacyRepository.findById(pharmacyId);
-            if(optionalPharmacy.isPresent()){
-                Pharmacy pharmacy=optionalPharmacy.get();
-                return pharmacyMpper.toDTO(pharmacy);
-            }
-            throw new RecordNotFoundException("No pharmacy with this id "+pharmacyId);
-        }
-        throw new IllegalArgumentException("Invalid Id : "+pharmacyId);
+    public PharmacyResponseDTO findPharmacyByUserEmail(String email) {
+        Pharmacy pharmacy = pharmacyRepository.findByUserEmail(email)
+                .orElseThrow(()-> new RecordNotFoundException("No User *PHARMACY* with email "+email));
+        return pharmacyMpper.toResponseDTO(pharmacy);
     }
 
     @Override
-    public PharmacyDTO findPharmcyByEmail(String userEmail) {
-       Pharmacy pharmacy = pharmacyRepository.findByUserEmail(userEmail);
-       if(pharmacy !=null){
-           return pharmacyMpper.toDTO(pharmacy);
-       }
-       throw new RecordNotFoundException("No user *Pharmacy* with this email "+userEmail);
-    }
-
-    @Override
-    public List<PharmacyDTO> findPharmacyByName(String pharmacyName) {
+    public List<PharmacyResponseDTO> findPharmacyByName(String pharmacyName) {
      List<Pharmacy> pharmacies =pharmacyRepository.findByName(pharmacyName);
        if(!pharmacies.isEmpty()){
-           return pharmacyMpper.toDTOs(pharmacies);
+           return pharmacies.stream()
+                   .map(pharmacyMpper ::toResponseDTO)
+                   .collect(Collectors.toList());
        }throw new RecordNotFoundException("No pharmacies with name "+pharmacyName);
     }
 
     @Override
-    public String addPharmacy(PharmacyDTO newPharmacyDTO) {
-        Pharmacy newPharmacy =pharmacyMpper.toEntity(newPharmacyDTO);
+    public PharmacyRequestDTO showAllDataOfPharmacyById(long id) {
+        return null;
+    }
+
+    @Override
+    public String addPharmacy(PharmacyRequestDTO newPharmacyRequestDTO) {
+        Pharmacy newPharmacy =pharmacyMpper.toEntity(newPharmacyRequestDTO);
         User newUser =newPharmacy.getUser();
         Optional<User> existingUser =userRepository.findByEmail(newUser.getEmail());
-        if(existingUser.isPresent()){
+        if( !existingUser.isPresent()){
 
             newUser.setCreatedAt(LocalDateTime.now());
             newUser.setUpdatedAt(LocalDateTime.now());
@@ -87,31 +79,29 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
     }
 
     @Override
-    public String UpdatePharmacy(PharmacyDTO updatedPharmacy, Long pharmacyId) {
+    public String updatePharmacy(PharmacyRequestDTO updatedPharmacy, Long pharmacyId) {
         if(pharmacyId>0){
-         Optional<Pharmacy> optionalPharmacy=pharmacyRepository.findById(pharmacyId);
-         if(optionalPharmacy.isPresent()){
-             Pharmacy oldPharmacy =optionalPharmacy.get();
+         Pharmacy oldPharmacy =pharmacyRepository.findById(pharmacyId)
+                         .orElseThrow(()-> new RecordNotFoundException("No pharmacy with id "+pharmacyId));
              oldPharmacy.setName(updatedPharmacy.getName());
              oldPharmacy.setAddress(updatedPharmacy.getAddress());
              oldPharmacy.setOwnerName(updatedPharmacy.getOwnerName());
              oldPharmacy.setGoogleMapsLink(updatedPharmacy.getGoogleMapsLink());
 
              User updatedUser =userMapper.toEntity(updatedPharmacy.getUser());
-             if(updatedUser!=null){
-                 User oldUser =oldPharmacy.getUser();
+             User oldUser =oldPharmacy.getUser();
+
+            if(updatedUser!=null){
                  oldUser.setEmail(updatedUser.getEmail());
                  oldUser.setPassword(updatedUser.getPassword());
                  oldUser.setEnabled(updatedUser.isEnabled());
                  oldUser.setRole(updatedUser.getRole());
                  oldUser.setUpdatedAt(LocalDateTime.now());
-                 userRepository.save(oldUser);
-
              }
+             userRepository.save(oldUser);
              pharmacyRepository.save(oldPharmacy);
              return "Pharmacy updated sucessfully";
-         }
-         throw new RecordNotFoundException("No pharmacy with id "+pharmacyId);
+
         }throw  new IllegalArgumentException("Invalid id "+ pharmacyId);
     }
 
