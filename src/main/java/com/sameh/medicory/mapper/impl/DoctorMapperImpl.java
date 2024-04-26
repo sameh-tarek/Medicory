@@ -3,8 +3,8 @@ package com.sameh.medicory.mapper.impl;
 import com.sameh.medicory.entity.usersEntities.Doctor;
 import com.sameh.medicory.mapper.DoctorMapper;
 import com.sameh.medicory.mapper.UserMapper;
-import com.sameh.medicory.model.users.Doctor.DoctorRequestDTO;
-import com.sameh.medicory.model.users.Doctor.DoctorResponseDTO;
+import com.sameh.medicory.model.users.doctor.DoctorRequestDTO;
+import com.sameh.medicory.model.users.doctor.DoctorResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

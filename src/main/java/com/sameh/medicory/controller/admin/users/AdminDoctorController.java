@@ -1,9 +1,7 @@
 package com.sameh.medicory.controller.admin.users;
 
-import com.sameh.medicory.model.users.Doctor.DoctorRequestDTO;
-import com.sameh.medicory.model.users.Doctor.DoctorResponseDTO;
-import com.sameh.medicory.model.users.clinic.ClinicRequestDTO;
-import com.sameh.medicory.model.users.clinic.ClinicResponseDTO;
+import com.sameh.medicory.model.users.doctor.DoctorRequestDTO;
+import com.sameh.medicory.model.users.doctor.DoctorResponseDTO;
 import com.sameh.medicory.service.admin.users.AdminDoctorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

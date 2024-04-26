@@ -7,8 +7,8 @@ import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.DoctorMapper;
 import com.sameh.medicory.mapper.UserMapper;
-import com.sameh.medicory.model.users.Doctor.DoctorRequestDTO;
-import com.sameh.medicory.model.users.Doctor.DoctorResponseDTO;
+import com.sameh.medicory.model.users.doctor.DoctorRequestDTO;
+import com.sameh.medicory.model.users.doctor.DoctorResponseDTO;
 import com.sameh.medicory.repository.DoctorRepository;
 import com.sameh.medicory.repository.UserRepository;
 import com.sameh.medicory.service.admin.users.AdminDoctorService;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

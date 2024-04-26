@@ -2,10 +2,8 @@ package com.sameh.medicory.mapper;
 
 
 import com.sameh.medicory.entity.usersEntities.Doctor;
-import com.sameh.medicory.model.users.Doctor.DoctorRequestDTO;
-import com.sameh.medicory.model.users.Doctor.DoctorResponseDTO;
-import org.mapstruct.Mapper;
-
+import com.sameh.medicory.model.users.doctor.DoctorRequestDTO;
+import com.sameh.medicory.model.users.doctor.DoctorResponseDTO;
 
 
 public interface DoctorMapper {

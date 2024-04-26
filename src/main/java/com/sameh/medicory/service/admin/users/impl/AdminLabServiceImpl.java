@@ -6,8 +6,9 @@ import com.sameh.medicory.exception.ConflictException;
 import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.LabMapper;
-import com.sameh.medicory.model.users.LabDTO;
+import com.sameh.medicory.model.users.lab.LabRequestDTO;
 import com.sameh.medicory.model.users.UserDTO;
+import com.sameh.medicory.model.users.lab.LabResponseDTO;
 import com.sameh.medicory.repository.LabRepository;
 import com.sameh.medicory.repository.UserRepository;
 import com.sameh.medicory.service.admin.users.AdminLabService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -29,94 +31,83 @@ public class AdminLabServiceImpl implements AdminLabService {
 
 //TODO add logs
 
+
     @Override
-    public List<LabDTO> showAllLabs() {
-       List<Lab> labs = labRepo.findAll();
-       if(!labs.isEmpty()){
-           return labMap.toDTOs(labs);
-       }
-       throw new RecordNotFoundException("No labs");
-    }
-    @Override
-    public LabDTO findLabById(Long labId) {
+    public LabResponseDTO showAllLabDataById(Long labId) {
         if(labId>0) {
-            Optional<Lab> labOptional= labRepo.findById(labId);
-            if(labOptional.isPresent()){
-                Lab lab = labOptional.get();
-                return labMap.toDTO(lab);
+           Lab lab = labRepo.findById(labId)
+                   .orElseThrow(()-> new RecordNotFoundException("No lab with id "+labId));
+           return labMap.toResponseDTO(lab);
             }
-            throw new RecordNotFoundException("There is no Lab With this ID "+labId);
-        }
+
         throw new RuntimeException("Invalid id"+labId);
     }
 
     @Override
-    public LabDTO findLabByEmail(String userEmail) {
-       Lab lab = labRepo.findByUserEmail(userEmail);
-       if (lab !=null){
-           return labMap.toDTO(lab);
-       }
-       throw new RecordNotFoundException("No Lab with this email "+ userEmail);
+    public LabResponseDTO findLabByEmail(String userEmail) {
+        Lab lab = labRepo.findByUserEmail(userEmail)
+                .orElseThrow(()-> new RecordNotFoundException("No user *LAB* with email "+userEmail));
+        return labMap.toResponseDTO(lab);
     }
 
     @Override
-    public List<LabDTO> findLabByName(String labName) {
+    public LabResponseDTO dindLabByUserCode(String userCode) {
+        Lab lab = labRepo.findByUserCode(userCode)
+                .orElseThrow(()-> new RecordNotFoundException("No lab with code "+userCode));
+        return labMap.toResponseDTO(lab);
+    }
+
+    @Override
+    public List<LabResponseDTO> findLabByName(String labName) {
         List<Lab> labs = labRepo.findByName(labName);
-        if(! labs.isEmpty()){
-            return labMap.toDTOs(labs);
-        }
-        throw new RecordNotFoundException("No labs with name : " +labName);
+        if(!labs.isEmpty()){
+            return labs.stream()
+                    .map(labMap :: toResponseDTO)
+                    .collect(Collectors.toList());
+        }throw new RecordNotFoundException("No labs with name "+labName);
     }
     @Override
-public String addLab(LabDTO newLab) {
-    Lab lab = labMap.toEntity(newLab);
-    User user = lab.getUser();
-    Optional<User> existingUser = userRepo.findByEmail(user.getEmail());
-    if (existingUser.isPresent()) {
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        LocalDateTime localDateTime=LocalDateTime.now();
-        user.setCreatedAt(localDateTime);
-        user.setUpdatedAt(localDateTime);
+    public String addLab(LabRequestDTO newLab) {
+       Lab lab = labMap.toEntity(newLab);
+        User user = lab.getUser();
+        Optional<User> existingUser = userRepo.findByEmail(user.getEmail());
+       if ( !existingUser.isPresent()) {
+
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
         userRepo.save(user);
         labRepo.save(lab);
         return "Lab inserted successfully";
-    }
+     }
     throw new ConflictException("The user email " + user.getEmail() + " already exists");
 }
     @Override
-    public String updateLab(LabDTO updatedLab, Long labId) {
+    public String updateLab(LabRequestDTO updatedLab, Long labId) {
         log.info("Updating lab with id: {}", labId);
         if (labId > 0) {
-            Optional<Lab> labOptional = labRepo.findById(labId);
-            if (labOptional.isPresent()) {
-                Lab lab = labOptional.get();
-                lab.setName(updatedLab.getName());
-                lab.setGoogleMapsLink(updatedLab.getGoogleMapsLink());
-                lab.setAddress(updatedLab.getAddress());
-                lab.setOwnerName(updatedLab.getOwnerName());
-
+          Lab oldLab = labRepo.findById(labId)
+                  .orElseThrow(()-> new RecordNotFoundException("No lab with id "+labId));
+                oldLab.setName(updatedLab.getName());
+                oldLab.setGoogleMapsLink(updatedLab.getGoogleMapsLink());
+                oldLab.setAddress(updatedLab.getAddress());
+                oldLab.setOwnerName(updatedLab.getOwnerName());
 
                 UserDTO updatedUserDTO = updatedLab.getUser();
-                System.out.println(updatedUserDTO);
+
+                  User user = oldLab.getUser();
                 if (updatedUserDTO != null) {
-                    User user = lab.getUser();
                     user.setEmail(updatedUserDTO.getEmail());
                     user.setEnabled(updatedUserDTO.isEnabled());
                     user.setPassword(updatedUserDTO.getPassword());
                     user.setRole(updatedUserDTO.getRole());
                     user.setUpdatedAt(LocalDateTime.now());
-                    lab.setUser(user);
-                    userRepo.save(user);
+                    oldLab.setUser(user);
                 }
-
-                labRepo.save(lab);
+                 userRepo.save(user);
+                labRepo.save(oldLab);
                 log.info("Lab with id {} updated successfully", labId);
                 return "Lab updated successfully";
-            } else {
-                log.warn("No lab found with id: {}", labId);
-                throw new RecordNotFoundException("No lab with id: " + labId);
             }
-        }
         log.error("Invalid lab id: {}", labId);
         throw new IllegalArgumentException("Invalid id: " + labId);
     }

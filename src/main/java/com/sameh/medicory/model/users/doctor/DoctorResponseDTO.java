@@ -1,4 +1,4 @@
-package com.sameh.medicory.model.users.Doctor;
+package com.sameh.medicory.model.users.doctor;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

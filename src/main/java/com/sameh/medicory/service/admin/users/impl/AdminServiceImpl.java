@@ -7,7 +7,8 @@ import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.AdminMapper;
 import com.sameh.medicory.mapper.UserMapper;
-import com.sameh.medicory.model.users.AdminDTO;
+import com.sameh.medicory.model.users.admin.AdminRequestDTO;
+import com.sameh.medicory.model.users.admin.AdminResponseDTO;
 import com.sameh.medicory.repository.AdminRepository;
 import com.sameh.medicory.repository.UserRepository;
 import com.sameh.medicory.service.admin.users.AdminService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,39 +29,27 @@ public class AdminServiceImpl implements AdminService {
    private final UserRepository userRepository;
    private final AdminMapper adminMapper;
    private final UserMapper  userMapper;
-    @Override
-    public List<AdminDTO> showAllAdmins() {
-       List<Admin> allAdmins= adminRepository.findAll();
-       if(!allAdmins.isEmpty()){
-           return adminMapper.toDTOs(allAdmins);
-       }
-       throw  new RecordNotFoundException("No admins in the system");
-    }
+
 
     @Override
-    public AdminDTO getAdminById(Long adminId) {
-        if(adminId>0){
-            Optional<Admin> optAdmin=adminRepository.findById(adminId);
-            if(optAdmin.isPresent()){
-                Admin admin =optAdmin.get();
-                return adminMapper.toDTO(admin);
-            }
-            throw new RecordNotFoundException("No Admin with this id "+adminId );
+    public AdminRequestDTO showAllAdminDataById(Long adminId) {
+        if (adminId > 0) {
+            Admin admin = adminRepository.findById(adminId)
+                    .orElseThrow(() -> new RecordNotFoundException("No admin with id " + adminId));
+            return adminMapper.toDTO(admin);
         }
-        throw new IllegalArgumentException("Invalid id : "+adminId);
+        throw new IllegalArgumentException("Invalid id " + adminId);
     }
 
     @Override
-    public AdminDTO getAdminByEmail(String email) {
-        Admin admin = adminRepository.findByUserEmail(email);
-        if(admin !=null){
-           return adminMapper.toDTO(admin);
-        }throw new RecordNotFoundException("No admin with this email");
-
+    public AdminResponseDTO findAdminByEmail(String email) {
+        Admin admin =adminRepository.findByUserEmail(email)
+                .orElseThrow(()-> new RecordNotFoundException("No admin with email "+email));
+        return adminMapper.toResponseDTO(admin);
     }
-    //TODO with fName and sName
+
     @Override
-    public List<AdminDTO> getAdminByName(String fullName) {
+    public List<AdminResponseDTO> findAdminByName(String fullName) {
 
         if(fullName !=null ||fullName.isBlank()) {
             // if enter fname + lname
@@ -69,7 +59,9 @@ public class AdminServiceImpl implements AdminService {
                 String lName = nameParts[1];
                 List<Admin> admins = adminRepository.findAdminsByFirstNameAndLastName(fName, lName);
                  if (!admins.isEmpty()) {
-                    return adminMapper.toDTOs(admins);
+                    return admins.stream()
+                            .map(adminMapper :: toResponseDTO)
+                            .collect(Collectors.toList());
                   }
                 throw new RecordNotFoundException("No admins in this name"+fullName);
             }
@@ -77,7 +69,9 @@ public class AdminServiceImpl implements AdminService {
                 // if enter only fname
                 List<Admin> admins = adminRepository.findAdminsByFirstName(fullName);
                 if(!admins.isEmpty()){
-                        return adminMapper.toDTOs(admins);
+                        return admins.stream()
+                                .map(adminMapper :: toResponseDTO)
+                                .collect(Collectors.toList());
                 }
                 throw new RecordNotFoundException("No admins in this name"+fullName);
             }
@@ -87,11 +81,18 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String addAdmin(AdminDTO newAdmin) {
+    public AdminResponseDTO findAdminByUserCode(String userCode) {
+        Admin admin =adminRepository.findByUserCode(userCode)
+                .orElseThrow(()-> new RecordNotFoundException("No admin with code "+userCode));
+        return adminMapper.toResponseDTO(admin);
+    }
+
+    @Override
+    public String addAdmin(AdminRequestDTO newAdmin) {
          Admin admin = adminMapper.toEntity(newAdmin);
          User user = admin.getUser();
          Optional<User> existing =userRepository.findByEmail(user.getEmail());
-         if(existing.isPresent()){
+         if( !existing.isPresent()){
              user.setCreatedAt(LocalDateTime.now());
              user.setUpdatedAt(LocalDateTime.now());
              userRepository.save(user);
@@ -103,34 +104,31 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String updateAdmin(AdminDTO updatedAdminDTO, Long adminId) {
-        if(adminId>0){
-            Optional<Admin> optionalAdmin=adminRepository.findById(adminId);
-            if(optionalAdmin.isPresent()){
-                Admin oldAdmin=optionalAdmin.get();
-                oldAdmin.setFirstName(updatedAdminDTO.getFirstName());
-                oldAdmin.setLastName(updatedAdminDTO.getLastName());
-                oldAdmin.setMaritalStatus(updatedAdminDTO.getMaritalStatus());
-                oldAdmin.setGender(updatedAdminDTO.getGender());
+    public String updateAdmin(AdminRequestDTO updatedAdminRequestDTO, Long adminId) {
+        if (adminId > 0) {
+            Admin oldAdmin = adminRepository.findById(adminId)
+                    .orElseThrow(() -> new RecordNotFoundException("No admin with id " + adminId));
+            oldAdmin.setFirstName(updatedAdminRequestDTO.getFirstName());
+            oldAdmin.setLastName(updatedAdminRequestDTO.getLastName());
+            oldAdmin.setMaritalStatus(updatedAdminRequestDTO.getMaritalStatus());
+            oldAdmin.setGender(updatedAdminRequestDTO.getGender());
 
-                User updatedUser =userMapper.toEntity(updatedAdminDTO.getUser());
-                User oldUser = oldAdmin.getUser();
+            User updatedUser = userMapper.toEntity(updatedAdminRequestDTO.getUser());
+            User oldUser = oldAdmin.getUser();
 
-                if(updatedUser !=null){
-                    oldUser.setEmail(updatedUser.getEmail());
-                    oldUser.setPassword(updatedUser.getPassword());
-                    oldUser.setEnabled(updatedUser.isEnabled());
-                    oldUser.setRole(updatedUser.getRole());
-                    oldUser.setUpdatedAt(LocalDateTime.now());
+            if (updatedUser != null) {
+                oldUser.setEmail(updatedUser.getEmail());
+                oldUser.setPassword(updatedUser.getPassword());
+                oldUser.setEnabled(updatedUser.isEnabled());
+                oldUser.setRole(updatedUser.getRole());
+                oldUser.setUpdatedAt(LocalDateTime.now());
 
-                }
-                userRepository.save(oldUser);
-                adminRepository.save(oldAdmin);
-                return "Admin updatd sucessfully";
-
-            }throw new RecordNotFoundException("No Admin in this id "+adminId);
-
-        }throw new IllegalArgumentException("Invalid id "+adminId);
+            }
+            userRepository.save(oldUser);
+            adminRepository.save(oldAdmin);
+            return "Admin updatd sucessfully";
+        }
+        throw new IllegalArgumentException("Invalid id " + adminId);
     }
 
     @Override
