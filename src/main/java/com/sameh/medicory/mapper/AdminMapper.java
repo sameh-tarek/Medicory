@@ -1,15 +1,15 @@
 package com.sameh.medicory.mapper;
 
 import com.sameh.medicory.entity.usersEntities.Admin;
-import com.sameh.medicory.model.users.AdminDTO;
+import com.sameh.medicory.model.users.admin.AdminRequestDTO;
+import com.sameh.medicory.model.users.admin.AdminResponseDTO;
 import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
 public interface AdminMapper {
-    Admin toEntity(AdminDTO adminDTO);
-    AdminDTO toDTO(Admin admin );
-    List<Admin> toEntities(List<AdminDTO> adminDTOs);
-    List<AdminDTO> toDTOs(List<Admin> admins);
+    Admin toEntity(AdminRequestDTO adminRequestDTO);
+    AdminRequestDTO toDTO(Admin admin );
+    AdminResponseDTO toResponseDTO(Admin admin);
+
 }

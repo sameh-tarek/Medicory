@@ -1,4 +1,4 @@
-package com.sameh.medicory.model.users.Doctor;
+package com.sameh.medicory.model.users.doctor;
 
 import com.sameh.medicory.entity.enums.Gender;
 import com.sameh.medicory.entity.enums.MaritalStatus;

@@ -1,7 +1,7 @@
 package com.sameh.medicory.service.admin.users;
 
-import com.sameh.medicory.model.users.Doctor.DoctorRequestDTO;
-import com.sameh.medicory.model.users.Doctor.DoctorResponseDTO;
+import com.sameh.medicory.model.users.doctor.DoctorRequestDTO;
+import com.sameh.medicory.model.users.doctor.DoctorResponseDTO;
 
 import java.util.List;
 

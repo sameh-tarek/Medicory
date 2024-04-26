@@ -1,7 +1,8 @@
-package com.sameh.medicory.model.users;
+package com.sameh.medicory.model.users.admin;
 
 import com.sameh.medicory.entity.enums.Gender;
 import com.sameh.medicory.entity.enums.MaritalStatus;
+import com.sameh.medicory.model.users.UserDTO;
 import lombok.*;
 
 @Data
@@ -9,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Setter
 @Getter
-public class AdminDTO {
+public class AdminRequestDTO {
     private Long id;
     private String firstName;
     private String lastName;

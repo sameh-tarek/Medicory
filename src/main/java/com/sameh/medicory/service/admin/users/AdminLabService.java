@@ -1,16 +1,18 @@
 package com.sameh.medicory.service.admin.users;
 
-import com.sameh.medicory.model.users.LabDTO;
+import com.sameh.medicory.model.users.lab.LabRequestDTO;
+import com.sameh.medicory.model.users.lab.LabResponseDTO;
 
 import java.util.List;
 
 public interface AdminLabService {
-    List<LabDTO> showAllLabs();
-    LabDTO findLabById(Long labId);
-    LabDTO findLabByEmail(String userEmail);
-    List<LabDTO>findLabByName(String labName);
-    String addLab(LabDTO newLab);
-    String updateLab(LabDTO updatedLab,Long labId);
+
+    LabResponseDTO showAllLabDataById(Long labId);
+    LabResponseDTO findLabByEmail(String userEmail);
+   LabResponseDTO dindLabByUserCode(String userCode);
+    List<LabResponseDTO>findLabByName(String labName);
+    String addLab(LabRequestDTO newLab);
+    String updateLab(LabRequestDTO updatedLab, Long labId);
     String deleteLab(Long labId);
 
 
