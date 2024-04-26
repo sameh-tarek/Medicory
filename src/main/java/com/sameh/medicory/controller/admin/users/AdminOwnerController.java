@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/admin/owners")
@@ -26,6 +28,11 @@ public class AdminOwnerController {
         OwnerResponseDTO owner =ownerService.findOwnerByCode(userCode);
         return new ResponseEntity<>(owner,HttpStatus.OK);
     }
+    @GetMapping("name/{name}")
+    public  ResponseEntity<List<OwnerResponseDTO>> findOwnerByName(@PathVariable String name){
+        List<OwnerResponseDTO> owner = ownerService.findOwnersByOwnerName(name);
+        return new ResponseEntity<>(owner,HttpStatus.OK);
+    }
 
     @GetMapping("/id/{ownerId}")
     public ResponseEntity<OwnerRequestDTO> showAllDataOfOwner(@PathVariable long ownerId){
@@ -35,8 +42,8 @@ public class AdminOwnerController {
     }
     @PostMapping("/owner")
     public ResponseEntity<String> addNewOwner(@RequestBody OwnerRequestDTO newOwner){
-        String messsage= ownerService.addNewOwner(newOwner);
-        return  new ResponseEntity<>(messsage,HttpStatus.CREATED);
+        String message= ownerService.addNewOwner(newOwner);
+        return  new ResponseEntity<>(message,HttpStatus.CREATED);
 
     }
     @PutMapping("/owner/id/{ownerId}")

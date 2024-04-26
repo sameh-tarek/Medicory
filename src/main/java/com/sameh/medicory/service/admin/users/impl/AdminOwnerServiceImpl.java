@@ -6,6 +6,7 @@ import com.sameh.medicory.exception.ConflictException;
 import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.OwnerMapper;
+import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.users.owner.OwnerRequestDTO;
 import com.sameh.medicory.model.users.owner.OwnerResponseDTO;
 import com.sameh.medicory.repository.OwnerRepository;
@@ -16,8 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,16 +30,65 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
     private final OwnerRepository ownerRepository;
     private final UserRepository userRepository;
     private final OwnerMapper ownerMapper;
+    private final UserMapper userMapper;
 
     @Override
     public List<OwnerResponseDTO> findOwnersByOwnerName(String fullName) {
-        return null;
+        if (fullName == null || fullName.isEmpty()) {
+            return Collections.emptyList();
+        }
+        if (fullName.contains(" ")) {
+            String[] nameParts = fullName.split(" ");
+            if (nameParts.length == 1) {
+                // fname
+                List<Owner> owners = ownerRepository.findOwnerByFirstName(nameParts[0]);
+                if (!owners.isEmpty()) {
+                    return (owners.stream()
+                            .map(ownerMapper::toResponseDTO)
+                            .collect(Collectors.toList()));
+                }
+                throw new RecordNotFoundException("No owners with name " + fullName + " founded :)");
+
+            } else if (nameParts.length == 2) {
+                List<Owner> owners = ownerRepository.findOwnerByFirstNameAndMiddleName(nameParts[0], nameParts[1]);
+
+                if (!owners.isEmpty()) { //fName ,mName
+                    return owners.stream()
+                            .map(ownerMapper::toResponseDTO)
+                            .collect(Collectors.toList());
+                } else {
+                    owners = ownerRepository.findOwnerByFirstNameAndLastName(nameParts[0], nameParts[1]);
+                    if (!owners.isEmpty()) { //fname ,lName
+                        return owners.stream()
+                                .map(ownerMapper::toResponseDTO)
+                                .collect(Collectors.toList());
+                    }
+                    throw new RecordNotFoundException("No owners with name " + fullName + " founded :)");
+                }
+            } else {
+                List<Owner> owners = ownerRepository.findOwnerByFirstNameAndMiddleNameAndLastName(nameParts[0], nameParts[1], nameParts[2]);
+                if (!owners.isEmpty()) { //fName ,mName ,Lname
+                    return owners.stream()
+                            .map(ownerMapper::toResponseDTO)
+                            .collect(Collectors.toList());
+                }
+                throw new RecordNotFoundException("No owners with name " + fullName + " founded :)");
+            }
+        } else {
+            List<Owner> owners = ownerRepository.findOwnerByFirstName(fullName);
+            if (!owners.isEmpty()) {
+                return (owners.stream()
+                        .map(ownerMapper::toResponseDTO)
+                        .collect(Collectors.toList()));
+            }
+            throw new RecordNotFoundException("No owners with name " + fullName + " founded :)");
+        }
     }
 
     @Override
     public OwnerResponseDTO findOwnerByOwnerEmail(String userEmail) {
         Owner owner = ownerRepository.findOwnerByUserEmail(userEmail)
-                .orElseThrow(()-> new RecordNotFoundException("No user *Owner* with email "+userEmail));
+                .orElseThrow(() -> new RecordNotFoundException("No user *Owner* with email " + userEmail));
         return ownerMapper.toResponseDTO(owner);
 
     }
@@ -46,62 +98,74 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
 
         Owner owner = ownerRepository
                 .findByUserCode(ownerCode)
-                .orElseThrow(()-> new RecordNotFoundException("Owner with code "+ownerCode +"doesn't exist"));
+                .orElseThrow(() -> new RecordNotFoundException("Owner with code " + ownerCode + "doesn't exist"));
         return ownerMapper.toResponseDTO(owner);
 
     }
 
     @Override
     public OwnerRequestDTO showAllDataOfOwnerById(long ownerId) {
-        if (ownerId > 0){
-          Owner owner = ownerRepository.findById(ownerId)
-                  .orElseThrow(()-> new RecordNotFoundException("No owner with id "+ownerId));
-          return ownerMapper.toRequestDTO(owner);
-    }
-      throw  new IllegalArgumentException("Invalid id "+ownerId+" ......");
+        if (ownerId > 0) {
+            Owner owner = ownerRepository.findById(ownerId)
+                    .orElseThrow(() -> new RecordNotFoundException("No owner with id " + ownerId));
+            return ownerMapper.toRequestDTO(owner);
+        }
+        throw new IllegalArgumentException("Invalid id " + ownerId + " ......");
     }
 
     // TODO GENERATE CODE WITH EACH USER
     @Override
     public String addNewOwner(OwnerRequestDTO newOwnerDTO) {
-          Owner newOwner = ownerMapper.toEntity(newOwnerDTO);
-          User newUser = newOwner.getUser();
-        Optional< User> checkUserExisting = userRepository.findByEmail(newOwner.getUser().getEmail());
-        if(!checkUserExisting.isPresent()){
+        Owner newOwner = ownerMapper.toEntity(newOwnerDTO);
+        User newUser = newOwner.getUser();
+        Optional<User> checkUserExisting = userRepository.findByEmail(newOwner.getUser().getEmail());
+        if (!checkUserExisting.isPresent()) {
 
-         newUser.setCreatedAt(LocalDateTime.now());
-         newUser.setUpdatedAt(LocalDateTime.now());
-         userRepository.save(newUser);
-         ownerRepository.save(newOwner);
-        return "owner added successfully";}
-        throw new ConflictException("Owner with email "+ newUser.getEmail()+" already exsist");
+            newUser.setCreatedAt(LocalDateTime.now());
+            newUser.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(newUser);
+            ownerRepository.save(newOwner);
+            return "owner added successfully";
+        }
+        throw new ConflictException("Owner with email " + newUser.getEmail() + " already exsist");
     }
 
     @Override
     public String updateOwner(long ownerId, OwnerRequestDTO updatedOwnerDTO) {
-//        Owner oldOwner = ownerRepository.findById(ownerId)
-//                .orElseThrow(()-> new RecordNotFoundException("No owner with id "+ ownerId));
-//        Owner newOwner =ownerMapper.toEntity(updatedOwnerDTO);
-//        User oldUser = oldOwner.getUser();
-//        oldUser.setUpdatedAt(LocalDateTime.now());
-//        if (!oldUser.getEmail().equals(newOwner.getUser().getEmail())) {
-//            User existingUser = userRepository.findByEmail(newOwner.getUser().getEmail())
-//                    .orElse(null);
-//            if (existingUser != null && existingUser.getId() != oldUser.getId()) {
-//                throw new ConflictException("Email " + newOwner.getUser().getEmail() + " is already in use");
-//            }
-//
-//            oldUser.setEmail(newOwner.getUser().getEmail());
-//        }
-//        oldOwner.setAllergies(newOwner.getAllergies());
-//        userRepository.save(oldUser);
-//        ownerRepository.save(newOwner);
-        return "Owner updated successfully";
+        if (ownerId > 0) {
+            Owner oldOwner = ownerRepository.findById(ownerId)
+                    .orElseThrow(() -> new RecordNotFoundException("No owner with id " + ownerId));
+            User oldUser = oldOwner.getUser();
+            User updatedUser = userMapper.toEntity(updatedOwnerDTO.getUser());
+
+            if (updatedUser != null) {
+                oldUser.setEmail(updatedUser.getEmail());
+                oldUser.setPassword(updatedUser.getPassword());
+                oldUser.setEnabled(updatedUser.isEnabled());
+                oldUser.setRole(updatedUser.getRole());
+                oldUser.setUpdatedAt(LocalDateTime.now());
+            }
+            oldOwner.setFirstName(updatedOwnerDTO.getFirstName());
+            oldOwner.setMiddleName(updatedOwnerDTO.getMiddleName());
+            oldOwner.setLastName(updatedOwnerDTO.getLastName());
+            oldOwner.setGender(updatedOwnerDTO.getGender());
+            oldOwner.setDateOfBirth(updatedOwnerDTO.getDateOfBirth());
+            oldOwner.setAddress(updatedOwnerDTO.getAddress());
+            oldOwner.setBloodType(updatedOwnerDTO.getBloodType());
+            oldOwner.setNationalId(updatedOwnerDTO.getNationalId());
+            oldOwner.setMaritalStatus(updatedOwnerDTO.getMaritalStatus());
+            oldOwner.setJob(updatedOwnerDTO.getJob());
+
+            userRepository.save(oldUser);
+            ownerRepository.save(oldOwner);
+            return "Owner updated successfully";
+        }
+        throw new IllegalArgumentException("invalid id");
     }
 
     @Override
     public String deleteOwnerById(long id) {
-        if(id>0) {
+        if (id > 0) {
             Owner owner = ownerRepository.findById(id)
                     .orElseThrow(() -> new RecordNotFoundException("No owner with id " + id));
             User user = owner.getUser();
@@ -113,6 +177,6 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
             }
             throw new UserDisabledException("This user is unEnabled already");
         }
-        throw new IllegalArgumentException("Invalid id "+id);
+        throw new IllegalArgumentException("Invalid id " + id);
     }
 }
