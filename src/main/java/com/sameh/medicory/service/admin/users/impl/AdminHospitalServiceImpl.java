@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AdminAdminHospitalServiceImpl implements AdminHospitalService {
+public class AdminHospitalServiceImpl implements AdminHospitalService {
 
     private final HospitalMapper hospitalMapper;
     private final UserMapper userMapper;

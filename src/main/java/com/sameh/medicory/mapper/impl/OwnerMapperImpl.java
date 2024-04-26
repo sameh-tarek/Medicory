@@ -65,7 +65,7 @@ public class OwnerMapperImpl implements OwnerMapper {
     @Override
     public OwnerResponseDTO toResponseDTO(Owner owner) {
         return  new OwnerResponseDTO(
-                 owner.getUser().getId()
+                 owner.getId()
                 ,owner.getFirstName()+" "
                 +owner.getMiddleName()+" "
                 +owner.getLastName()
