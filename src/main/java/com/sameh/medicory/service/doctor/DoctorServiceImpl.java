@@ -33,6 +33,8 @@ import com.sameh.medicory.model.tests.LabTestRequestDTO;
 import com.sameh.medicory.model.tests.LabTestResponseDTO;
 import com.sameh.medicory.model.patient.PatientPersonalInformation;
 import com.sameh.medicory.repository.*;
+import com.sameh.medicory.repository.DoctorRepository;
+import com.sameh.medicory.repository.OwnerRepository;
 import com.sameh.medicory.utils.OwnerContext;
 import com.sameh.medicory.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +45,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

@@ -1,5 +1,6 @@
-package com.sameh.medicory.model.users;
+package com.sameh.medicory.model.users.pharmacy;
 
+import com.sameh.medicory.model.users.UserDTO;
 import lombok.*;
 
 @Data
@@ -7,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Setter
 @Getter
-public class PharmacyDTO {
+public class PharmacyRequestDTO {
     private Long id;
     private String name;
     private String googleMapsLink;

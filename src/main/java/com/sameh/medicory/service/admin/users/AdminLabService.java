@@ -9,7 +9,7 @@ public interface AdminLabService {
 
     LabResponseDTO showAllLabDataById(Long labId);
     LabResponseDTO findLabByEmail(String userEmail);
-   LabResponseDTO dindLabByUserCode(String userCode);
+   LabResponseDTO findLabByUserCode(String userCode);
     List<LabResponseDTO>findLabByName(String labName);
     String addLab(LabRequestDTO newLab);
     String updateLab(LabRequestDTO updatedLab, Long labId);

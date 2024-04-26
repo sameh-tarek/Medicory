@@ -51,7 +51,7 @@ public class AdminLabServiceImpl implements AdminLabService {
     }
 
     @Override
-    public LabResponseDTO dindLabByUserCode(String userCode) {
+    public LabResponseDTO findLabByUserCode(String userCode) {
         Lab lab = labRepo.findByUserCode(userCode)
                 .orElseThrow(()-> new RecordNotFoundException("No lab with code "+userCode));
         return labMap.toResponseDTO(lab);
