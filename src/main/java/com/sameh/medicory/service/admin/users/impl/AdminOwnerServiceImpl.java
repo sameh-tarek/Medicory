@@ -37,52 +37,36 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
         if (fullName == null || fullName.isEmpty()) {
             return Collections.emptyList();
         }
+        List<Owner> owners = null;
         if (fullName.contains(" ")) {
             String[] nameParts = fullName.split(" ");
             if (nameParts.length == 1) {
                 // fname
-                List<Owner> owners = ownerRepository.findOwnerByFirstName(nameParts[0]);
-                if (!owners.isEmpty()) {
-                    return (owners.stream()
-                            .map(ownerMapper::toResponseDTO)
-                            .collect(Collectors.toList()));
-                }
-                throw new RecordNotFoundException("No owners with name " + fullName + " founded :)");
+                owners = ownerRepository.findOwnerByFirstName(nameParts[0]);
+                owners.addAll(ownerRepository.findOwnerByMiddleName(nameParts[0]));
+                owners.addAll(ownerRepository.findOwnerByLastName(nameParts[0]));
 
             } else if (nameParts.length == 2) {
-                List<Owner> owners = ownerRepository.findOwnerByFirstNameAndMiddleName(nameParts[0], nameParts[1]);
-
-                if (!owners.isEmpty()) { //fName ,mName
-                    return owners.stream()
-                            .map(ownerMapper::toResponseDTO)
-                            .collect(Collectors.toList());
-                } else {
+                owners = ownerRepository.findOwnerByFirstNameAndMiddleName(nameParts[0], nameParts[1]);
+                if (owners.isEmpty()) {
                     owners = ownerRepository.findOwnerByFirstNameAndLastName(nameParts[0], nameParts[1]);
-                    if (!owners.isEmpty()) { //fname ,lName
-                        return owners.stream()
-                                .map(ownerMapper::toResponseDTO)
-                                .collect(Collectors.toList());
-                    }
-                    throw new RecordNotFoundException("No owners with name " + fullName + " founded :)");
+                    if (owners.isEmpty())
+                        owners = ownerRepository.findOwnerByMiddleNameAndLastName(nameParts[0], nameParts[1]);
                 }
-            } else {
-                List<Owner> owners = ownerRepository.findOwnerByFirstNameAndMiddleNameAndLastName(nameParts[0], nameParts[1], nameParts[2]);
-                if (!owners.isEmpty()) { //fName ,mName ,Lname
-                    return owners.stream()
-                            .map(ownerMapper::toResponseDTO)
-                            .collect(Collectors.toList());
-                }
-                throw new RecordNotFoundException("No owners with name " + fullName + " founded :)");
+            } else if (nameParts.length == 3) {
+                owners = ownerRepository.findOwnerByFirstNameAndMiddleNameAndLastName(nameParts[0], nameParts[1], nameParts[2]);
             }
         } else {
-            List<Owner> owners = ownerRepository.findOwnerByFirstName(fullName);
-            if (!owners.isEmpty()) {
-                return (owners.stream()
-                        .map(ownerMapper::toResponseDTO)
-                        .collect(Collectors.toList()));
-            }
-            throw new RecordNotFoundException("No owners with name " + fullName + " founded :)");
+            owners = ownerRepository.findOwnerByFirstName(fullName);
+            owners.addAll(ownerRepository.findOwnerByMiddleName(fullName));
+            owners.addAll(ownerRepository.findOwnerByLastName(fullName));
         }
+        if (owners.isEmpty())
+            throw new RecordNotFoundException("No owners with name " + fullName + " founded :)");
+
+        return owners.stream()
+                .map(ownerMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
