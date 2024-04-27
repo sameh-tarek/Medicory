@@ -9,7 +9,7 @@ import com.sameh.medicory.entity.otherEntities.Allergies;
 import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
 import com.sameh.medicory.entity.otherEntities.Immunization;
 import com.sameh.medicory.entity.otherEntities.Surgery;
-import com.sameh.medicory.entity.phoneEntities.OwnerPhoneNumber;
+import com.sameh.medicory.entity.phoneEntities.UserPhoneNumber;
 import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
 import com.sameh.medicory.entity.usersEntities.Doctor;
 import com.sameh.medicory.entity.usersEntities.Owner;
@@ -83,7 +83,7 @@ public class DoctorServiceImpl implements DoctorService {
                 getCurrentAge(patientOwner.getDateOfBirth()),
                 patientOwner.getGender().name(),
                 getPatientPhoneNumbers(patientUser),
-                getPatientRelativePhoneNumbers(patientUser),
+                getPatientRelativePhoneNumbers(patientOwner),
                 patientOwner.getAddress(),
                 patientUser.getEmail(),
                 patientOwner.getBloodType().name()
@@ -631,15 +631,15 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private List<String> getPatientPhoneNumbers(User patientUser){
-        List<OwnerPhoneNumber> phoneNumbers =patientUser.getOwnerPhoneNumbers();
+        List<UserPhoneNumber> phoneNumbers =patientUser.getUserPhoneNumbers();
         List<String> patientPhoneNumbers = phoneNumbers.stream()
                 .map(phoneNumber -> phoneNumber.getPhone())
                 .collect(Collectors.toList());
         return patientPhoneNumbers;
     }
 
-    private List<String> getPatientRelativePhoneNumbers(User patientUser){
-        List<RelativePhoneNumber> relativePhoneNumbers = patientUser.getRelativePhoneNumbers();
+    private List<String> getPatientRelativePhoneNumbers(Owner patient){
+        List<RelativePhoneNumber> relativePhoneNumbers = patient.getRelativePhoneNumbers();
         List<String> patientRelativePhoneNumbers = relativePhoneNumbers.stream()
                 .map(phoneNumber -> phoneNumber.getPhone())
                 .collect(Collectors.toList());

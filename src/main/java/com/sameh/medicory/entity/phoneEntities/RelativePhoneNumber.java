@@ -1,5 +1,6 @@
 package com.sameh.medicory.entity.phoneEntities;
 
+import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.entity.usersEntities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ public class RelativePhoneNumber {
     private String phone;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
 }
 
