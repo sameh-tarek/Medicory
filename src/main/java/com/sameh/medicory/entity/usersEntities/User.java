@@ -1,7 +1,7 @@
 package com.sameh.medicory.entity.usersEntities;
 
 
-import com.sameh.medicory.entity.phoneEntities.OwnerPhoneNumber;
+import com.sameh.medicory.entity.phoneEntities.UserPhoneNumber;
 import com.sameh.medicory.entity.enums.Role;
 import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
 import jakarta.persistence.*;
@@ -40,12 +40,11 @@ public class User implements UserDetails {
     private boolean enabled;
 
     @OneToMany(mappedBy = "user")
-    private List<OwnerPhoneNumber> ownerPhoneNumbers;
+    private List<UserPhoneNumber> userPhoneNumbers;
 
-    @OneToMany(mappedBy = "user")
-    private List<RelativePhoneNumber> relativePhoneNumbers;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -90,5 +89,7 @@ public class User implements UserDetails {
     public boolean isEnabled () {
         return enabled;
     }
+
+
 }
 

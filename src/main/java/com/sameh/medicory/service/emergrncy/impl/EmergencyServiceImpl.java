@@ -66,7 +66,7 @@ public class EmergencyServiceImpl implements EmergencyService {
                 emergencyInfo.setAllergies(allergyNames);
                 emergencyInfo.setSurgeries(surgeriesNames);
                 emergencyInfo.setChronicDiseases(chronicDiseasesNames);
-                emergencyInfo.setRelativePhoneNumbers(owner.getUser().getRelativePhoneNumbers());
+                emergencyInfo.setRelativePhoneNumbers(owner.getRelativePhoneNumbers());
 
                 return emergencyInfo;
             } else {

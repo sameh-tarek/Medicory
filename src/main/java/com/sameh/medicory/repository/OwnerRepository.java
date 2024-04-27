@@ -12,9 +12,20 @@ public interface OwnerRepository extends
     Optional<Owner> findAllByUserId(Long userId);
 
     Optional<Owner> findByUserCode(String userCode);
-    List<Owner> findOwnerByFirstNameAndMiddleNameAndLastName(String fName,String mName,String lName);
-    List<Owner> findOwnerByFirstNameAndMiddleName(String fName,String mName);
-    List<Owner> findOwnerByFirstNameAndLastName(String fName,String lName);
+
+    List<Owner> findOwnerByFirstNameAndMiddleNameAndLastName(String fName, String mName, String lName);
+
+    List<Owner> findOwnerByFirstNameAndMiddleName(String fName, String mName);
+
+    List<Owner> findOwnerByFirstNameAndLastName(String fName, String lName);
+
+    List<Owner> findOwnerByLastName(String name);
+    List<Owner> findOwnerByMiddleName(String name);
+
     List<Owner> findOwnerByFirstName(String fName);
+
+    List<Owner> findOwnerByMiddleNameAndLastName(String mName, String lName);
+
     Optional<Owner> findOwnerByUserEmail(String userEmail);
+
 }

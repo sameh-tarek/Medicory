@@ -52,29 +52,26 @@ public class AdminServiceImpl implements AdminService {
     public List<AdminResponseDTO> findAdminByName(String fullName) {
 
         if(fullName !=null ||fullName.isBlank()) {
+            List<Admin> admins =null;
             // if enter fname + lname
             if (fullName.contains(" ")) {
                 String[] nameParts = fullName.split(" ");
                 String fName = nameParts[0];
                 String lName = nameParts[1];
-                List<Admin> admins = adminRepository.findAdminsByFirstNameAndLastName(fName, lName);
-                 if (!admins.isEmpty()) {
-                    return admins.stream()
-                            .map(adminMapper :: toResponseDTO)
-                            .collect(Collectors.toList());
-                  }
-                throw new RecordNotFoundException("No admins in this name"+fullName);
+                admins = adminRepository.findAdminsByFirstNameAndLastName(fName, lName);
             }
             else{
                 // if enter only fname
-                List<Admin> admins = adminRepository.findAdminsByFirstName(fullName);
-                if(!admins.isEmpty()){
-                        return admins.stream()
-                                .map(adminMapper :: toResponseDTO)
-                                .collect(Collectors.toList());
-                }
-                throw new RecordNotFoundException("No admins in this name"+fullName);
+              admins = adminRepository.findAdminsByFirstName(fullName);
+              admins.addAll(adminRepository.findAdminsByLastName(fullName));
             }
+
+            if(admins.isEmpty())
+                throw new RecordNotFoundException("No admins with name "+fullName);
+
+            return admins.stream()
+                    .map(adminMapper :: toResponseDTO)
+                    .collect(Collectors.toList());
 
         }
         throw new IllegalArgumentException("Invalid name ");

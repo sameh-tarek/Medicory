@@ -27,7 +27,7 @@ public class OwnerMapperImpl implements OwnerMapper {
                 calculateAge(owner.getDateOfBirth()),
                 owner.getGender().name(),
                 getOwnerPhoneNumber(owner.getUser()),
-                getRelativePhoneNumber(owner.getUser()),
+                getRelativePhoneNumber(owner),
                 owner.getUser().getEmail(),
                 owner.getAddress(),
                 owner.getBloodType().name(),
@@ -87,11 +87,10 @@ public class OwnerMapperImpl implements OwnerMapper {
                 owner.getMaritalStatus(),
                 owner.getJob(),
                 null,
-                null,
-                null
-                ,null,null,null,null,
+                null,null,null,null,null,null,
                 userMapper.toEntity(owner.getUser()),
-                null);
+                null,null
+               );
     }
 
     private int calculateAge(LocalDate date) {
@@ -102,13 +101,13 @@ public class OwnerMapperImpl implements OwnerMapper {
             throw new RuntimeException("Owner Date of Birth is null");
     }
     private List<String> getOwnerPhoneNumber(User user){
-        List<String > phoneNumbers = user.getOwnerPhoneNumbers()
+        List<String > phoneNumbers = user.getUserPhoneNumbers()
                 .stream()
                 .map(phoneNumber -> phoneNumber.getPhone())
                 .collect(Collectors.toList());
         return phoneNumbers;
     }
-    private List<String> getRelativePhoneNumber(User user){
+    private List<String> getRelativePhoneNumber(Owner user){
         List<String > phoneNumbers = user.getRelativePhoneNumbers()
                 .stream()
                 .map(phoneNumber -> phoneNumber.getPhone())
