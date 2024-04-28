@@ -1,5 +1,6 @@
 package com.sameh.medicory.service.admin.users.impl;
 
+import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.ConflictException;
@@ -7,6 +8,7 @@ import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.OwnerMapper;
 import com.sameh.medicory.mapper.UserMapper;
+import com.sameh.medicory.model.users.RelativePhoneNumberDTO;
 import com.sameh.medicory.model.users.owner.OwnerRequestDTO;
 import com.sameh.medicory.model.users.owner.OwnerResponseDTO;
 import com.sameh.medicory.repository.OwnerRepository;
@@ -109,6 +111,8 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
             newUser.setUpdatedAt(LocalDateTime.now());
             userRepository.save(newUser);
             ownerRepository.save(newOwner);
+            System.out.println(newOwner.getRelativePhoneNumbers());
+            System.out.println(newOwnerDTO.getRelativePhoneNumbers());
             return "owner added successfully";
         }
         throw new ConflictException("Owner with email " + newUser.getEmail() + " already exsist");
