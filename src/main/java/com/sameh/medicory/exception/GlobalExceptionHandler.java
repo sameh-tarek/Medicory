@@ -41,4 +41,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(details,HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(value = {IllegalAccessException.class})
+    public ResponseEntity<ErrorDetails> handleIllegalAccessException(IllegalAccessException e){
+        ErrorDetails errorDetails = new ErrorDetails(
+                e.getMessage(),
+                HttpStatus.FORBIDDEN.value(),
+                new Date()
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+    }
 }

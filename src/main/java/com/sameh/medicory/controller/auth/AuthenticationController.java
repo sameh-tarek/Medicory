@@ -6,10 +6,7 @@ import com.sameh.medicory.service.auth.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -21,5 +18,25 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public AuthenticationResponse authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest){
        return authenticationService.authenticate(authenticationRequest);
+    }
+
+    @PostMapping("/forgot-password")
+    public String forgotPassword(@RequestParam String email) {
+        return authenticationService.sendPasswordResetCode(email);
+    }
+
+    @PostMapping("/verify-password-reset-code")
+    public ResponseEntity<String> verifyPasswordResetCode(@RequestParam String email, @RequestParam String code) {
+        boolean codeVerified = authenticationService.verifyPasswordResetCode(email, code);
+        if (codeVerified) {
+            return ResponseEntity.ok("Verification code is correct.");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid verification code.");
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public String resetPassword(@RequestParam String email, @RequestParam String newPassword) throws IllegalAccessException {
+        return authenticationService.resetPassword(email, newPassword);
     }
 }
