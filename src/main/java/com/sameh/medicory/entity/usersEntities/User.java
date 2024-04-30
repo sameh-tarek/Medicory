@@ -1,9 +1,7 @@
 package com.sameh.medicory.entity.usersEntities;
 
-
 import com.sameh.medicory.entity.phoneEntities.UserPhoneNumber;
 import com.sameh.medicory.entity.enums.Role;
-import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 
@@ -48,6 +47,14 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "reset_password_code")
+    private String resetPasswordCode;
+
+    @Column(name = "reset_password_code_expiry")
+    private LocalDateTime resetPasswordCodeExpiry;
+
+    private boolean resetPasswordCodeVerified;
+
     @Override
     public String toString() {
         return "User{" +
@@ -58,7 +65,6 @@ public class User implements UserDetails {
                 ", isEnabled=" + enabled +
                 '}';
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -86,10 +92,11 @@ public class User implements UserDetails {
     }
 
     @Override
-    public boolean isEnabled () {
+    public boolean isEnabled() {
         return enabled;
     }
 
-
+    public void setResetPasswordCodeExpiry(int expirationMinutes) {
+        this.resetPasswordCodeExpiry = LocalDateTime.now().plus(expirationMinutes, ChronoUnit.MINUTES);
+    }
 }
-
