@@ -97,13 +97,13 @@ public class OwnerMapperImpl implements OwnerMapper {
                 null, null, null, null, null, null,
                 userMapper.toEntity(owner.getUser()),
                 null,
-                phoneMapper.toEntity(owner.getRelativePhoneNumbers())
+                null);
 
-        );
-        List<RelativePhoneNumber> relativePhoneNumbers =createRelativePhoneNumbers(newOwner);
+
+        List<RelativePhoneNumber> relativePhoneNumbers = createRelativePhoneNumbers(newOwner, owner.getRelativePhoneNumbers());
         newOwner.setRelativePhoneNumbers(relativePhoneNumbers);
 
-        return  newOwner;
+        return newOwner;
     }
 
     private int calculateAge(LocalDate date) {
@@ -134,6 +134,7 @@ public class OwnerMapperImpl implements OwnerMapper {
         List<RelativePhoneNumberDTO> relativePhoneNumbersDto = new ArrayList<>();
         for (RelativePhoneNumber relativePhoneNumber : owner.getRelativePhoneNumbers()) {
             relativePhoneNumbersDto.add(new RelativePhoneNumberDTO(
+                    relativePhoneNumber.getId(),
                     relativePhoneNumber.getPhone(),
                     relativePhoneNumber.getRelation()
 
@@ -142,11 +143,18 @@ public class OwnerMapperImpl implements OwnerMapper {
         return relativePhoneNumbersDto;
     }
 
-    public List<RelativePhoneNumber> createRelativePhoneNumbers(Owner owner) {
-     List<RelativePhoneNumber> phoneNumbers = owner.getRelativePhoneNumbers();
-     for(RelativePhoneNumber number : phoneNumbers){
-         number.setOwner(owner);
-     }
-     return phoneNumbers;
+    public List<RelativePhoneNumber> createRelativePhoneNumbers(Owner owner, List<RelativePhoneNumberDTO> phoneNumbers) {
+        return phoneNumbers.stream()
+                .map(dto -> {
+                    RelativePhoneNumber relativePhoneNumber = new RelativePhoneNumber();
+                    relativePhoneNumber.setId(dto.getId());
+                    relativePhoneNumber.setOwner(owner);
+                    relativePhoneNumber.setPhone(dto.getPhone());
+                    relativePhoneNumber.setRelation(dto.getRelation());
+                    return relativePhoneNumber;
+                })
+                .collect(Collectors.toList());
+
     }
+
 }
