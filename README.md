@@ -22,5 +22,6 @@ Click the link below to discover all the available features:
 
 
 # ERD
+![medicoryERD3](https://github.com/said-ahmd/health_card/assets/108232157/60a0e869-10d7-412d-96fd-d93ef5b3c640)
 
-![medicoryERD2](https://github.com/said-ahmd/health_card/assets/108232157/6a505ea2-e375-43d8-b5a5-611f9f1c8301)
+

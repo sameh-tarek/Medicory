@@ -1,0 +1,24 @@
+version: '3'
+services:
+  mysqldb:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: medicory
+      MYSQL_USER: medicory
+      MYSQL_PASSWORD: Medicory.1
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  spring-boot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysqldb
+
+volumes:
+  mysql_data:
