@@ -89,7 +89,7 @@ public class Owner {
     @JoinColumn(name = "current_schedule_id")
     private CurrentSchedule currentSchedule;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<RelativePhoneNumber> relativePhoneNumbers;
 
     @Override

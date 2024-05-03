@@ -20,6 +20,8 @@ public class RelativePhoneNumber {
 
     private String phone;
 
+    private String relation;
+
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private Owner owner;

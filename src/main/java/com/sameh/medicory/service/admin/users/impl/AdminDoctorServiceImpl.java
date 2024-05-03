@@ -1,5 +1,6 @@
 package com.sameh.medicory.service.admin.users.impl;
 
+import com.sameh.medicory.entity.phoneEntities.UserPhoneNumber;
 import com.sameh.medicory.entity.usersEntities.Doctor;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.ConflictException;
@@ -10,6 +11,7 @@ import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.users.doctor.DoctorRequestDTO;
 import com.sameh.medicory.model.users.doctor.DoctorResponseDTO;
 import com.sameh.medicory.repository.DoctorRepository;
+import com.sameh.medicory.repository.UserPhoneNumberRepository;
 import com.sameh.medicory.repository.UserRepository;
 import com.sameh.medicory.service.admin.users.AdminDoctorService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,8 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
     private final UserRepository userRepository;
     private final DoctorMapper doctorMapper;
     private final UserMapper userMapper;
+    private final UserPhoneNumberRepository userPhoneRepo;
+
 
     @Override
     public DoctorRequestDTO showAllDoctorDataById(Long doctorId) {
@@ -106,8 +110,19 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
             newUser.setUpdatedAt(LocalDateTime.now());
             newUser.setCreatedAt(LocalDateTime.now());
 
+            List<UserPhoneNumber> userPhoneNumbers = newUser.getUserPhoneNumbers()
+                    .stream()
+                    .map(userPhoneNumber -> {
+                        User user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone())
+                                .orElseThrow(() -> new ConflictException("Phone number" + userPhoneNumber.getPhone() + "already exist"));
+                        userPhoneNumber.setUser(newUser);
+                        return userPhoneNumber;
+                    })
+                    .collect(Collectors.toList());
+
             userRepository.save(newUser);
             doctorRepository.save(newDoctor);
+            userPhoneRepo.saveAll(userPhoneNumbers);
             return "Doctor added successfully";
         }
         throw new ConflictException("User with this email " + newUser.getEmail() + " already exist ");
@@ -140,6 +155,25 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
                 oldUser.setUpdatedAt(LocalDateTime.now());
             }
 
+            // Update or add user phone numbers
+            List<UserPhoneNumber> updatedUserPhoneNumbers = updatedUser.getUserPhoneNumbers();
+            List<UserPhoneNumber> existingUserPhoneNumbers = oldUser.getUserPhoneNumbers()
+                    .stream()
+                    .map(existingPhoneNumber -> {
+                        Optional<UserPhoneNumber> matchingUpdatedPhoneNumber = updatedUserPhoneNumbers.stream()
+                                .filter(updatedPhoneNumber ->
+                                        updatedPhoneNumber.getId() == existingPhoneNumber.getId())
+                                .findFirst();
+
+                        if (matchingUpdatedPhoneNumber.isPresent()) {
+                            UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
+                            existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
+                        }
+                        return existingPhoneNumber;
+                    })
+                    .collect(Collectors.toList());
+
+            userPhoneRepo.saveAll(existingUserPhoneNumbers);
             userRepository.save(oldUser);
             doctorRepository.save(oldDoctor);
             return "Doctor updated  successfully";

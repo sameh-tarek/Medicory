@@ -1,5 +1,6 @@
 package com.sameh.medicory.service.admin.users.impl;
 
+import com.sameh.medicory.entity.phoneEntities.UserPhoneNumber;
 import com.sameh.medicory.entity.usersEntities.Admin;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.ConflictException;
@@ -10,6 +11,7 @@ import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.users.admin.AdminRequestDTO;
 import com.sameh.medicory.model.users.admin.AdminResponseDTO;
 import com.sameh.medicory.repository.AdminRepository;
+import com.sameh.medicory.repository.UserPhoneNumberRepository;
 import com.sameh.medicory.repository.UserRepository;
 import com.sameh.medicory.service.admin.users.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +27,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class AdminServiceImpl implements AdminService {
-   private  final AdminRepository adminRepository;
-   private final UserRepository userRepository;
-   private final AdminMapper adminMapper;
-   private final UserMapper  userMapper;
+    private final AdminRepository adminRepository;
+    private final UserRepository userRepository;
+    private final AdminMapper adminMapper;
+    private final UserMapper userMapper;
+    private final UserPhoneNumberRepository userPhoneRepo;
 
 
     @Override
@@ -43,34 +46,33 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminResponseDTO findAdminByEmail(String email) {
-        Admin admin =adminRepository.findByUserEmail(email)
-                .orElseThrow(()-> new RecordNotFoundException("No admin with email "+email));
+        Admin admin = adminRepository.findByUserEmail(email)
+                .orElseThrow(() -> new RecordNotFoundException("No admin with email " + email));
         return adminMapper.toResponseDTO(admin);
     }
 
     @Override
     public List<AdminResponseDTO> findAdminByName(String fullName) {
 
-        if(fullName !=null ||fullName.isBlank()) {
-            List<Admin> admins =null;
+        if (fullName != null || fullName.isBlank()) {
+            List<Admin> admins = null;
             // if enter fname + lname
             if (fullName.contains(" ")) {
                 String[] nameParts = fullName.split(" ");
                 String fName = nameParts[0];
                 String lName = nameParts[1];
                 admins = adminRepository.findAdminsByFirstNameAndLastName(fName, lName);
-            }
-            else{
+            } else {
                 // if enter only fname
-              admins = adminRepository.findAdminsByFirstName(fullName);
-              admins.addAll(adminRepository.findAdminsByLastName(fullName));
+                admins = adminRepository.findAdminsByFirstName(fullName);
+                admins.addAll(adminRepository.findAdminsByLastName(fullName));
             }
 
-            if(admins.isEmpty())
-                throw new RecordNotFoundException("No admins with name "+fullName);
+            if (admins.isEmpty())
+                throw new RecordNotFoundException("No admins with name " + fullName);
 
             return admins.stream()
-                    .map(adminMapper :: toResponseDTO)
+                    .map(adminMapper::toResponseDTO)
                     .collect(Collectors.toList());
 
         }
@@ -79,23 +81,35 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminResponseDTO findAdminByUserCode(String userCode) {
-        Admin admin =adminRepository.findByUserCode(userCode)
-                .orElseThrow(()-> new RecordNotFoundException("No admin with code "+userCode));
+        Admin admin = adminRepository.findByUserCode(userCode)
+                .orElseThrow(() -> new RecordNotFoundException("No admin with code " + userCode));
         return adminMapper.toResponseDTO(admin);
     }
 
     @Override
     public String addAdmin(AdminRequestDTO newAdmin) {
-         Admin admin = adminMapper.toEntity(newAdmin);
-         User user = admin.getUser();
-         Optional<User> existing =userRepository.findByEmail(user.getEmail());
-         if( !existing.isPresent()){
-             user.setCreatedAt(LocalDateTime.now());
-             user.setUpdatedAt(LocalDateTime.now());
-             userRepository.save(user);
-             adminRepository.save(admin);
-             return  "Admin added sucessfully";
-         }throw new ConflictException("User Email "+user.getEmail()+" already exist");
+        Admin admin = adminMapper.toEntity(newAdmin);
+        User newUser = admin.getUser();
+        Optional<User> existing = userRepository.findByEmail(newUser.getEmail());
+        if (!existing.isPresent()) {
+            newUser.setCreatedAt(LocalDateTime.now());
+            newUser.setUpdatedAt(LocalDateTime.now());
+
+            List<UserPhoneNumber> userPhoneNumbers = newUser.getUserPhoneNumbers()
+                    .stream()
+                    .map(userPhoneNumber -> {
+                        User user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone())
+                                .orElseThrow(() -> new ConflictException("Phone number" + userPhoneNumber.getPhone() + "already exist"));
+                        userPhoneNumber.setUser(newUser);
+                        return userPhoneNumber;
+                    })
+                    .collect(Collectors.toList());
+            userRepository.save(newUser);
+            adminRepository.save(admin);
+            userPhoneRepo.saveAll(userPhoneNumbers);
+            return "Admin added sucessfully";
+        }
+        throw new ConflictException("User Email " + newUser.getEmail() + " already exist");
 
 
     }
@@ -121,8 +135,25 @@ public class AdminServiceImpl implements AdminService {
                 oldUser.setUpdatedAt(LocalDateTime.now());
 
             }
+            List<UserPhoneNumber> updatedUserPhoneNumbers = updatedUser.getUserPhoneNumbers();
+            List<UserPhoneNumber> existingUserPhoneNumbers = oldUser.getUserPhoneNumbers()
+                    .stream()
+                    .map(existingPhoneNumber -> {
+                        Optional<UserPhoneNumber> matchingUpdatedPhoneNumber = updatedUserPhoneNumbers.stream()
+                                .filter(updatedPhoneNumber ->
+                                        updatedPhoneNumber.getId() == existingPhoneNumber.getId())
+                                .findFirst();
+
+                        if (matchingUpdatedPhoneNumber.isPresent()) {
+                            UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
+                            existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
+                        }
+                        return existingPhoneNumber;
+                    })
+                    .collect(Collectors.toList());
             userRepository.save(oldUser);
             adminRepository.save(oldAdmin);
+            userPhoneRepo.saveAll(existingUserPhoneNumbers);
             return "Admin updatd sucessfully";
         }
         throw new IllegalArgumentException("Invalid id " + adminId);
@@ -130,19 +161,19 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public String deleteAdmin(Long adminId) {
-     if(adminId>0){
-         Admin admin =adminRepository
-                 .findById(adminId)
-                 .orElseThrow(()-> new RecordNotFoundException("NO admin with id "+adminId));
-         User unEnabledUser= admin.getUser();
-         if(unEnabledUser.isEnabled()){
-         unEnabledUser.setEnabled(false);
-         unEnabledUser.setUpdatedAt(LocalDateTime.now());
-         userRepository.save(unEnabledUser);
-         return "admin deleted ";
-         }
-         throw new UserDisabledException("This user is unEnabled already");
-     }
-     throw new IllegalArgumentException("Invalid id "+adminId);
+        if (adminId > 0) {
+            Admin admin = adminRepository
+                    .findById(adminId)
+                    .orElseThrow(() -> new RecordNotFoundException("NO admin with id " + adminId));
+            User unEnabledUser = admin.getUser();
+            if (unEnabledUser.isEnabled()) {
+                unEnabledUser.setEnabled(false);
+                unEnabledUser.setUpdatedAt(LocalDateTime.now());
+                userRepository.save(unEnabledUser);
+                return "admin deleted ";
+            }
+            throw new UserDisabledException("This user is unEnabled already");
+        }
+        throw new IllegalArgumentException("Invalid id " + adminId);
     }
 }

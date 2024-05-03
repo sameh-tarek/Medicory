@@ -1,29 +1,37 @@
 package com.sameh.medicory.mapper.impl;
 
+import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.mapper.OwnerMapper;
+import com.sameh.medicory.mapper.RelativePhoneMapper;
 import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.owner.OwnerDTO;
+import com.sameh.medicory.model.phones.RelativePhoneNumberDTO;
 import com.sameh.medicory.model.users.owner.OwnerRequestDTO;
 import com.sameh.medicory.model.users.owner.OwnerResponseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class OwnerMapperImpl implements OwnerMapper {
+
+    private final UserMapper userMapper;
+    private final RelativePhoneMapper relativePhoneMapper;
 
     @Override
     public OwnerDTO toDTO(Owner owner) {
         return new OwnerDTO(
                 owner.getFirstName() +
-                        (owner.getMiddleName()!= null ? " " + owner.getMiddleName() : "") +
-                        " "+ owner.getLastName(),
+                        (owner.getMiddleName() != null ? " " + owner.getMiddleName() : "") +
+                        " " + owner.getLastName(),
                 calculateAge(owner.getDateOfBirth()),
                 owner.getGender().name(),
                 getOwnerPhoneNumber(owner.getUser()),
@@ -39,11 +47,9 @@ public class OwnerMapperImpl implements OwnerMapper {
         );
     }
 
-    @Autowired
-    UserMapper userMapper;
     @Override
     public OwnerRequestDTO toRequestDTO(Owner owner) {
-        return  new OwnerRequestDTO(
+        return new OwnerRequestDTO(
                 owner.getId(),
                 owner.getFirstName(),
                 owner.getMiddleName(),
@@ -55,6 +61,7 @@ public class OwnerMapperImpl implements OwnerMapper {
                 owner.getNationalId(),
                 owner.getMaritalStatus(),
                 owner.getJob(),
+                getRelativePhoneNumbers(owner),
                 userMapper.toDto(
                         owner.getUser()
                 )
@@ -64,17 +71,17 @@ public class OwnerMapperImpl implements OwnerMapper {
 
     @Override
     public OwnerResponseDTO toResponseDTO(Owner owner) {
-        return  new OwnerResponseDTO(
-                 owner.getId()
-                ,owner.getFirstName()+" "
-                +owner.getMiddleName()+" "
-                +owner.getLastName()
+        return new OwnerResponseDTO(
+                owner.getId()
+                , owner.getFirstName() + " "
+                + owner.getMiddleName() + " "
+                + owner.getLastName()
         );
     }
 
     @Override
     public Owner toEntity(OwnerRequestDTO owner) {
-        return new Owner(
+        Owner newOwner = new Owner(
                 owner.getId(),
                 owner.getFirstName(),
                 owner.getMiddleName(),
@@ -87,33 +94,67 @@ public class OwnerMapperImpl implements OwnerMapper {
                 owner.getMaritalStatus(),
                 owner.getJob(),
                 null,
-                null,null,null,null,null,null,
+                null, null, null, null, null, null,
                 userMapper.toEntity(owner.getUser()),
-                null,null
-               );
+                null,
+                null);
+
+
+        List<RelativePhoneNumber> relativePhoneNumbers = createRelativePhoneNumbers(newOwner, owner.getRelativePhoneNumbers());
+        newOwner.setRelativePhoneNumbers(relativePhoneNumbers);
+
+        return newOwner;
     }
 
     private int calculateAge(LocalDate date) {
         LocalDate currentDate = LocalDate.now();
-        if(date!=null){
+        if (date != null) {
             return Period.between(date, currentDate).getYears();
-        }else
+        } else
             throw new RuntimeException("Owner Date of Birth is null");
     }
-    private List<String> getOwnerPhoneNumber(User user){
-        List<String > phoneNumbers = user.getUserPhoneNumbers()
-                .stream()
-                .map(phoneNumber -> phoneNumber.getPhone())
-                .collect(Collectors.toList());
-        return phoneNumbers;
-    }
-    private List<String> getRelativePhoneNumber(Owner user){
-        List<String > phoneNumbers = user.getRelativePhoneNumbers()
+
+    private List<String> getOwnerPhoneNumber(User user) {
+        List<String> phoneNumbers = user.getUserPhoneNumbers()
                 .stream()
                 .map(phoneNumber -> phoneNumber.getPhone())
                 .collect(Collectors.toList());
         return phoneNumbers;
     }
 
+    private List<String> getRelativePhoneNumber(Owner user) {
+        List<String> phoneNumbers = user.getRelativePhoneNumbers()
+                .stream()
+                .map(phoneNumber -> phoneNumber.getPhone())
+                .collect(Collectors.toList());
+        return phoneNumbers;
+    }
+
+    private List<RelativePhoneNumberDTO> getRelativePhoneNumbers(Owner owner) {
+        List<RelativePhoneNumberDTO> relativePhoneNumbersDto = new ArrayList<>();
+        for (RelativePhoneNumber relativePhoneNumber : owner.getRelativePhoneNumbers()) {
+            relativePhoneNumbersDto.add(new RelativePhoneNumberDTO(
+                    relativePhoneNumber.getId(),
+                    relativePhoneNumber.getPhone(),
+                    relativePhoneNumber.getRelation()
+
+            ));
+        }
+        return relativePhoneNumbersDto;
+    }
+
+    public List<RelativePhoneNumber> createRelativePhoneNumbers(Owner owner, List<RelativePhoneNumberDTO> phoneNumbers) {
+        return phoneNumbers.stream()
+                .map(dto -> {
+                    RelativePhoneNumber relativePhoneNumber = new RelativePhoneNumber();
+                    relativePhoneNumber.setId(dto.getId());
+                    relativePhoneNumber.setOwner(owner);
+                    relativePhoneNumber.setPhone(dto.getPhone());
+                    relativePhoneNumber.setRelation(dto.getRelation());
+                    return relativePhoneNumber;
+                })
+                .collect(Collectors.toList());
+
+    }
 
 }
