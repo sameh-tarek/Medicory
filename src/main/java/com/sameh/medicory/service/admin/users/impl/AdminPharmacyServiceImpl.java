@@ -79,8 +79,9 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
             List<UserPhoneNumber> userPhoneNumbers = newUser.getUserPhoneNumbers()
                     .stream()
                     .map(userPhoneNumber -> {
-                        User user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone())
-                                .orElseThrow(() -> new ConflictException("Phone number" + userPhoneNumber.getPhone() + "already exist"));
+                        Optional<UserPhoneNumber> user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone());
+                        if (user.isPresent())
+                            throw new ConflictException("This phone number " + userPhoneNumber.getPhone() + " already exist");
                         userPhoneNumber.setUser(newUser);
                         return userPhoneNumber;
                     })
@@ -126,11 +127,16 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
 
                         if (matchingUpdatedPhoneNumber.isPresent()) {
                             UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
+                            Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
+                            if (existingUser.isPresent()) {
+                                throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
+                            }
                             existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
                         }
                         return existingPhoneNumber;
                     })
                     .collect(Collectors.toList());
+
 
             userRepository.save(oldUser);
             pharmacyRepository.save(oldPharmacy);

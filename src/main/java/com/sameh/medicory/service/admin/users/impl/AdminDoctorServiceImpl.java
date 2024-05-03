@@ -113,8 +113,9 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
             List<UserPhoneNumber> userPhoneNumbers = newUser.getUserPhoneNumbers()
                     .stream()
                     .map(userPhoneNumber -> {
-                        User user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone())
-                                .orElseThrow(() -> new ConflictException("Phone number" + userPhoneNumber.getPhone() + "already exist"));
+                        Optional<UserPhoneNumber> user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone());
+                        if (user.isPresent())
+                            throw new ConflictException("This phone number " + userPhoneNumber.getPhone() + " already exist");
                         userPhoneNumber.setUser(newUser);
                         return userPhoneNumber;
                     })
@@ -155,7 +156,6 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
                 oldUser.setUpdatedAt(LocalDateTime.now());
             }
 
-            // Update or add user phone numbers
             List<UserPhoneNumber> updatedUserPhoneNumbers = updatedUser.getUserPhoneNumbers();
             List<UserPhoneNumber> existingUserPhoneNumbers = oldUser.getUserPhoneNumbers()
                     .stream()
@@ -167,11 +167,16 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
 
                         if (matchingUpdatedPhoneNumber.isPresent()) {
                             UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
+                            Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
+                            if (existingUser.isPresent()) {
+                                throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
+                            }
                             existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
                         }
                         return existingPhoneNumber;
                     })
                     .collect(Collectors.toList());
+
 
             userPhoneRepo.saveAll(existingUserPhoneNumbers);
             userRepository.save(oldUser);

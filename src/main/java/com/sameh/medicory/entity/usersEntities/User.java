@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -25,17 +26,20 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false ,unique = true)
     private String code;
 
-    @Column(unique = true)
+    @Column(unique = true,nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
-    @Column(name = "enabled")
+    @Column(name = "enabled" ,nullable = false)
     private boolean enabled;
 
     @OneToMany(mappedBy = "user")
@@ -99,4 +103,19 @@ public class User implements UserDetails {
     public void setResetPasswordCodeExpiry(int expirationMinutes) {
         this.resetPasswordCodeExpiry = LocalDateTime.now().plus(expirationMinutes, ChronoUnit.MINUTES);
     }
+    public static String generateCode() {
+        UUID uuid = UUID.randomUUID();
+        String code = uuid.toString().replace("-", "").substring(0, 16);
+        return code;
+    }
+    @PrePersist
+    public void generateCodeBeforePersist() {
+        String generatedCode = generateCode();
+        this.code = generatedCode;
+        // set password
+        this.password= generatedCode;
+
+    }
+
+
 }
