@@ -85,8 +85,10 @@ public class AdminHospitalServiceImpl implements AdminHospitalService {
             List<UserPhoneNumber> userPhoneNumbers = newUser.getUserPhoneNumbers()
                     .stream()
                     .map(userPhoneNumber -> {
-                        User user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone())
-                                .orElseThrow(() -> new ConflictException("Phone number" + userPhoneNumber.getPhone() + "already exist"));
+                        Optional<UserPhoneNumber> user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone());
+                        if (user.isPresent())
+                            throw new ConflictException("This phone number " + userPhoneNumber.getPhone() + " already exist");
+
                         userPhoneNumber.setUser(newUser);
                         return userPhoneNumber;
                     })
@@ -132,11 +134,16 @@ public class AdminHospitalServiceImpl implements AdminHospitalService {
 
                         if (matchingUpdatedPhoneNumber.isPresent()) {
                             UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
+                            Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
+                            if (existingUser.isPresent()) {
+                                throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
+                            }
                             existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
                         }
                         return existingPhoneNumber;
                     })
                     .collect(Collectors.toList());
+
             userPhoneRepo.saveAll(existingUserPhoneNumbers);
             userRepository.save(oldUser);
             hospitalRepository.save(oldHospital);

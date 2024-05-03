@@ -46,7 +46,8 @@ public class PharmacyMapperImpl implements PharmacyMpper {
     public PharmacyResponseDTO toResponseDTO(Pharmacy pharmacy) {
         return new PharmacyResponseDTO(
                 pharmacy.getId(),
-                pharmacy.getName()
+                pharmacy.getName(),
+                pharmacy.getUser().isEnabled()
         );
     }
 }

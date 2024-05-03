@@ -6,26 +6,24 @@ import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.users.clinic.ClinicRequestDTO;
 import com.sameh.medicory.model.users.clinic.ClinicResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class ClinicMapperImpl implements ClinicMapper {
 
     private final UserMapper map;
+
     @Override
     public Clinic toEntity(ClinicRequestDTO clinicRequestDTO) {
-        return  new Clinic(
+        return new Clinic(
                 clinicRequestDTO.getId(),
                 clinicRequestDTO.getName(),
                 clinicRequestDTO.getGoogleMapsLink(),
                 clinicRequestDTO.getAddress(),
                 clinicRequestDTO.getOwnerName(),
                 clinicRequestDTO.getSpecialization()
-               ,map.toEntity(clinicRequestDTO.getUser())
+                , map.toEntity(clinicRequestDTO.getUser())
         );
     }
 
@@ -44,9 +42,10 @@ public class ClinicMapperImpl implements ClinicMapper {
 
     @Override
     public ClinicResponseDTO toResponseDTO(Clinic clinic) {
-        return  new ClinicResponseDTO(
+        return new ClinicResponseDTO(
                 clinic.getId(),
-                clinic.getName()
+                clinic.getName(),
+                clinic.getUser().isEnabled()
         );
     }
 

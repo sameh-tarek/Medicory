@@ -10,4 +10,5 @@ public class OwnerResponseDTO {
     private Long id;
 
     private String fullName;
+    private Boolean isEnabled;
 }

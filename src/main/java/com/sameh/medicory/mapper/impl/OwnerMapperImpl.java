@@ -72,10 +72,11 @@ public class OwnerMapperImpl implements OwnerMapper {
     @Override
     public OwnerResponseDTO toResponseDTO(Owner owner) {
         return new OwnerResponseDTO(
-                owner.getId()
-                , owner.getFirstName() + " "
-                + owner.getMiddleName() + " "
-                + owner.getLastName()
+                owner.getId(),
+                owner.getFirstName() + " "
+                        + owner.getMiddleName() + " "
+                        + owner.getLastName(),
+                owner.getUser().isEnabled()
         );
     }
 

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class DoctorResponseDTO {
     private long doctorId;
     private String doctorName;
+    private boolean isEnabled ;
 
 
 }

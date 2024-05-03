@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class AdminMapperImpl implements AdminMapper {
 
     private final UserMapper map;
+
     @Override
     public Admin toEntity(AdminRequestDTO admin) {
         return new Admin(
@@ -22,9 +23,9 @@ public class AdminMapperImpl implements AdminMapper {
                 admin.getMaritalStatus(),
                 admin.getGender(),
                 map.toEntity(
-                  admin.getUser()
+                        admin.getUser()
                 )
-                );
+        );
     }
 
     @Override
@@ -36,9 +37,9 @@ public class AdminMapperImpl implements AdminMapper {
                 admin.getMaritalStatus(),
                 admin.getGender(),
                 map.toDto(
-                   admin.getUser()
+                        admin.getUser()
                 )
-                );
+        );
     }
 
     @Override
@@ -46,8 +47,9 @@ public class AdminMapperImpl implements AdminMapper {
         return new AdminResponseDTO(
                 admin.getId(),
                 admin.getFirstName()
-                +" "
-                +admin.getLastName()
+                        + " "
+                        + admin.getLastName(),
+                admin.getUser().isEnabled()
         );
 
     }
