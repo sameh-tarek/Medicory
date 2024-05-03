@@ -4,10 +4,10 @@ import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.mapper.OwnerMapper;
-import com.sameh.medicory.mapper.PhoneMapper;
+import com.sameh.medicory.mapper.RelativePhoneMapper;
 import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.owner.OwnerDTO;
-import com.sameh.medicory.model.users.RelativePhoneNumberDTO;
+import com.sameh.medicory.model.phones.RelativePhoneNumberDTO;
 import com.sameh.medicory.model.users.owner.OwnerRequestDTO;
 import com.sameh.medicory.model.users.owner.OwnerResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class OwnerMapperImpl implements OwnerMapper {
 
     private final UserMapper userMapper;
-    private final PhoneMapper phoneMapper;
+    private final RelativePhoneMapper relativePhoneMapper;
 
     @Override
     public OwnerDTO toDTO(Owner owner) {

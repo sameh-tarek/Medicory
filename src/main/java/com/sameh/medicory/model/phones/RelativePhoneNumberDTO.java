@@ -1,4 +1,4 @@
-package com.sameh.medicory.model.users;
+package com.sameh.medicory.model.phones;
 
 import com.sameh.medicory.model.users.owner.OwnerRequestDTO;
 import lombok.AllArgsConstructor;

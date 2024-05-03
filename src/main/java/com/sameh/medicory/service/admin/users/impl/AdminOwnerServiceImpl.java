@@ -1,18 +1,19 @@
 package com.sameh.medicory.service.admin.users.impl;
 
 import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
+import com.sameh.medicory.entity.phoneEntities.UserPhoneNumber;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.ConflictException;
 import com.sameh.medicory.exception.RecordNotFoundException;
 import com.sameh.medicory.exception.UserDisabledException;
 import com.sameh.medicory.mapper.OwnerMapper;
-import com.sameh.medicory.mapper.PhoneMapper;
 import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.users.owner.OwnerRequestDTO;
 import com.sameh.medicory.model.users.owner.OwnerResponseDTO;
 import com.sameh.medicory.repository.OwnerRepository;
 import com.sameh.medicory.repository.RelativePhoneNumberRepository;
+import com.sameh.medicory.repository.UserPhoneNumberRepository;
 import com.sameh.medicory.repository.UserRepository;
 import com.sameh.medicory.service.admin.users.AdminOwnerService;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +35,8 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
     private final UserRepository userRepository;
     private final OwnerMapper ownerMapper;
     private final UserMapper userMapper;
-    private final PhoneMapper phoneMapper;
     private final RelativePhoneNumberRepository relativeRepo;
+    private final UserPhoneNumberRepository userPhoneRepo;
 
     @Override
     public List<OwnerResponseDTO> findOwnersByOwnerName(String fullName) {
@@ -112,8 +113,21 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
 
             newUser.setCreatedAt(LocalDateTime.now());
             newUser.setUpdatedAt(LocalDateTime.now());
+
+            // user phone numbers
+            List<UserPhoneNumber> userPhoneNumbers = newUser.getUserPhoneNumbers()
+                    .stream()
+                    .map(userPhoneNumber -> {
+                        User user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone())
+                                .orElseThrow(() -> new ConflictException("Phone number" + userPhoneNumber.getPhone() + "already exist"));
+                        userPhoneNumber.setUser(newUser);
+                        return userPhoneNumber;
+                    })
+                    .collect(Collectors.toList());
+
             userRepository.save(newUser);
             ownerRepository.save(newOwner);
+            userPhoneRepo.saveAll(userPhoneNumbers);
             return "owner added successfully";
         }
         throw new ConflictException("Owner with email " + newUser.getEmail() + " already exsist");
@@ -166,7 +180,26 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
                     })
                     .collect(Collectors.toList());
 
+            // Update or add user phone numbers
+            List<UserPhoneNumber> updatedUserPhoneNumbers = updatedUser.getUserPhoneNumbers();
+            List<UserPhoneNumber> existingUserPhoneNumbers = oldUser.getUserPhoneNumbers()
+                    .stream()
+                    .map(existingPhoneNumber -> {
+                        Optional<UserPhoneNumber> matchingUpdatedPhoneNumber = updatedUserPhoneNumbers.stream()
+                                .filter(updatedPhoneNumber ->
+                                        updatedPhoneNumber.getId() == existingPhoneNumber.getId())
+                                .findFirst();
+
+                        if (matchingUpdatedPhoneNumber.isPresent()) {
+                            UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
+                            existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
+                        }
+                        return existingPhoneNumber;
+                    })
+                    .collect(Collectors.toList());
+
             relativeRepo.saveAll(existingRelativePhoneNumbers);
+            userPhoneRepo.saveAll(existingUserPhoneNumbers);
             userRepository.save(oldUser);
             ownerRepository.save(oldOwner);
             return "Owner updated successfully";

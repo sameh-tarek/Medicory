@@ -3,7 +3,7 @@ package com.sameh.medicory.model.users.owner;
 import com.sameh.medicory.entity.enums.BloodType;
 import com.sameh.medicory.entity.enums.Gender;
 import com.sameh.medicory.entity.enums.MaritalStatus;
-import com.sameh.medicory.model.users.RelativePhoneNumberDTO;
+import com.sameh.medicory.model.phones.RelativePhoneNumberDTO;
 import com.sameh.medicory.model.users.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
