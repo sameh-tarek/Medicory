@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class AdminResponseDTO {
     private long id;
     private String adminName;
+    private boolean isEnabled ;
 }
+

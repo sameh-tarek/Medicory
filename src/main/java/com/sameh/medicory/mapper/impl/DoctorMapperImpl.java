@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DoctorMapperImpl implements DoctorMapper {
 
-    private  final UserMapper userMapper;
+    private final UserMapper userMapper;
+
     @Override
     public Doctor toEntity(DoctorRequestDTO doctorRequest) {
         return new Doctor(
@@ -51,11 +52,12 @@ public class DoctorMapperImpl implements DoctorMapper {
 
     @Override
     public DoctorResponseDTO toResponseDTO(Doctor doctor) {
-      return new DoctorResponseDTO(
-              doctor.getId(),
-              doctor.getFirstName()
-                      + (doctor.getMiddleName()!= null ? " " + doctor.getMiddleName() : "")
-                      + " " + doctor.getLastName()
-      );
+        return new DoctorResponseDTO(
+                doctor.getId(),
+                doctor.getFirstName()
+                        + (doctor.getMiddleName() != null ? " " + doctor.getMiddleName() : "")
+                        + " " + doctor.getLastName(),
+                doctor.getUser().isEnabled()
+        );
     }
 }

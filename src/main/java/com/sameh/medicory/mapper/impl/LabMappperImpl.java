@@ -13,17 +13,18 @@ import org.springframework.stereotype.Component;
 public class LabMappperImpl implements LabMapper {
 
     private final UserMapper map;
+
     @Override
     public Lab toEntity(LabRequestDTO labRequestDTO) {
         return new Lab(
-                  labRequestDTO.getId()
+                labRequestDTO.getId()
                 , labRequestDTO.getName()
                 , labRequestDTO.getGoogleMapsLink()
                 , labRequestDTO.getAddress()
                 , labRequestDTO.getOwnerName()
                 , map.toEntity(
-                        labRequestDTO.getUser()
-                )
+                labRequestDTO.getUser()
+        )
         );
     }
 
@@ -36,7 +37,7 @@ public class LabMappperImpl implements LabMapper {
                 lab.getAddress(),
                 lab.getOwnerName(),
                 map.toDto(
-                    lab.getUser()
+                        lab.getUser()
                 )
         );
     }
@@ -45,7 +46,8 @@ public class LabMappperImpl implements LabMapper {
     public LabResponseDTO toResponseDTO(Lab lab) {
         return new LabResponseDTO(
                 lab.getId(),
-                lab.getName()
+                lab.getName(),
+                lab.getUser().isEnabled()
         );
     }
 }

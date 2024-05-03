@@ -16,7 +16,7 @@ public class HospitalMapperImpl implements HospitalMapper {
 
     @Override
     public HospitalDTO toDTO(Hospital hospital) {
-        return  new HospitalDTO(
+        return new HospitalDTO(
                 hospital.getId(),
                 hospital.getName(),
                 hospital.getGoogleMapsLink(),
@@ -31,7 +31,8 @@ public class HospitalMapperImpl implements HospitalMapper {
     public HospitalResponseDTO toResponseDTO(Hospital hospital) {
         return new HospitalResponseDTO(
                 hospital.getId(),
-                hospital.getName()
+                hospital.getName(),
+                hospital.getUser().isEnabled()
         );
     }
 

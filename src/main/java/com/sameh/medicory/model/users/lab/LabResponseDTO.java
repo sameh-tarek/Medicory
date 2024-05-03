@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class LabResponseDTO {
     private long labId;
     private String labName;
+    private boolean isEnabled ;
+
 }
