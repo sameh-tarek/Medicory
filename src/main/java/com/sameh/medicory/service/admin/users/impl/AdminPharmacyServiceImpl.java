@@ -63,7 +63,12 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
 
     @Override
     public PharmacyRequestDTO showAllDataOfPharmacyById(long id) {
-        return null;
+        if (id > 0) {
+            Pharmacy pharmacy = pharmacyRepository.findById(id)
+                    .orElseThrow(() -> new RecordNotFoundException("No pharmacy with id " + id));
+            return pharmacyMpper.toDTO(pharmacy);
+        }
+        throw new IllegalArgumentException("Invalid pharmacy id " + id);
     }
 
     @Override

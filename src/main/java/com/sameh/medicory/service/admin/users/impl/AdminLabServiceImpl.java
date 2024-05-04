@@ -39,11 +39,11 @@ public class AdminLabServiceImpl implements AdminLabService {
 
 
     @Override
-    public LabResponseDTO showAllLabDataById(Long labId) {
+    public LabRequestDTO showAllLabDataById(Long labId) {
         if (labId > 0) {
             Lab lab = labRepo.findById(labId)
                     .orElseThrow(() -> new RecordNotFoundException("No lab with id " + labId));
-            return labMap.toResponseDTO(lab);
+            return labMap.toDTO(lab);
         }
 
         throw new RuntimeException("Invalid id" + labId);
@@ -138,11 +138,14 @@ public class AdminLabServiceImpl implements AdminLabService {
 
                         if (matchingUpdatedPhoneNumber.isPresent()) {
                             UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
-                            Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
-                            if (existingUser.isPresent()) {
-                                throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
+                            // updated !
+                            if (!existingPhoneNumber.getPhone().equals(updatedPhoneNumber.getPhone())) {
+                                Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
+                                if (existingUser.isPresent()) {
+                                    throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
+                                }
+                                existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
                             }
-                            existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
                         }
                         return existingPhoneNumber;
                     })
