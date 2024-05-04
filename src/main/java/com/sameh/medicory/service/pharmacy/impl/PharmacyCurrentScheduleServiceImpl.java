@@ -3,18 +3,18 @@ package com.sameh.medicory.service.pharmacy.impl;
 import com.sameh.medicory.entity.medicationEntities.CurrentSchedule;
 import com.sameh.medicory.entity.medicationEntities.Medication;
 import com.sameh.medicory.entity.medicationEntities.Prescription;
+import com.sameh.medicory.entity.medicationEntities.VoiceRecord;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.mapper.MedicationMapper;
 import com.sameh.medicory.model.medication.CurrentScheduleRequest;
 import com.sameh.medicory.model.medication.MedicationDTO;
-import com.sameh.medicory.repository.CurrentScheduleRepository;
-import com.sameh.medicory.repository.MedicationRepository;
-import com.sameh.medicory.repository.OwnerRepository;
-import com.sameh.medicory.repository.PrescriptionRepository;
+import com.sameh.medicory.repository.*;
 import com.sameh.medicory.service.pharmacy.PharmacyCurrentScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,6 +26,7 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
     private final PrescriptionRepository prescriptionRepository;
     private final MedicationMapper medicationMapper;
     private final CurrentScheduleRepository currentScheduleRepository;
+    private final VoiceRecordRepository voiceRecordRepository;
 
     @Override
     public String createTreatmentSchedule(String userCode, CurrentScheduleRequest currentScheduleRequest) {
@@ -54,6 +55,24 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
                 .toList();
         return medicationsResponse;
     }
+
+//    @Override
+//    public String createVoiceRecord(MultipartFile file, Long medicationId) {
+//        Medication medication = medicationRepository.findById(medicationId).orElseThrow(
+//                ()->new IllegalArgumentException("Medication id is wrong.")
+//        );
+//
+//        File destnation = new File("voice-records");
+//
+//        VoiceRecord voiceRecord = VoiceRecord.builder()
+//                .name(file.getOriginalFilename())
+//                .path(destnation.getPath()+file.getOriginalFilename())
+//                .medication(medication)
+//                .build();
+//
+//        voiceRecordRepository.save(voiceRecord);
+//        return "voice record saved successfully.";
+//    }
 
     private Owner fetchOwner(String userCode){
         return ownerRepository.findByUserCode(userCode).orElseThrow(

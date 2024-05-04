@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -53,4 +54,7 @@ public class Medication {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private Owner owner;
+
+    @OneToMany(mappedBy = "medication")
+    List<VoiceRecord> voiceRecords;
 }

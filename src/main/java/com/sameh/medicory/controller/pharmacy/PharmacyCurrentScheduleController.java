@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,5 +32,14 @@ public class PharmacyCurrentScheduleController {
                 .status(HttpStatus.OK)
                 .body(response);
     }
+//    @PostMapping("{userCode}/prescriptions/medications/{medicationId}")
+//    ResponseEntity<String> createVoiceRecord(@PathVariable String userCode, @RequestParam MultipartFile file, @PathVariable Long medicationId){
+//        String response = pharmacyCurrentScheduleService.createVoiceRecord( file, medicationId);
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(response);
+//
+//    }
+
 
 }
