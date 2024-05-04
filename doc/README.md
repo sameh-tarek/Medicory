@@ -2,14 +2,23 @@
 
 **Host ID**: http://localhost:8081
 
-## 1. Doctor
+### 1. Auth
+
+| No. | Feature                      | Description                                                     | Endpoint                                           |
+|----:|------------------------------|-----------------------------------------------------------------|----------------------------------------------------|
+|  1. | Authenticate                | Authenticate a user and generate an access token                | `POST /auth/authenticate`                          |
+|  2. | Forgot Password             | Send a password reset code to the user's email                  | `POST /auth/forgot-password`                       |
+|  3. | Verify Password Reset Code  | Verify the password reset code sent to the user's email         | `POST /auth/verify-password-reset-code`            |
+|  4. | Reset Password              | Reset the user's password using the reset code                  | `POST /auth/reset-password`                        |
+
+### 2. Doctor
 
 | No. | Feature                      | Description                                                     | Endpoint                                           |
 |----:|------------------------------|-----------------------------------------------------------------|----------------------------------------------------|
 |  1. | Patient Personal Information | Retrieve personal information of a patient                      | `GET /doctors/patients/{userCode}/personal-information` |
 |  2. | Patient Chronic Diseases     | Retrieve chronic diseases of a patient                          | `GET /doctors/patients/{userCode}/chronic-diseases`      |
 |  3. | Add Chronic Disease          | Add a new chronic disease for a patient                        | `POST /doctors/patients/{userCode}/chronic-diseases`     |
-|  4. | Find Chronic Disease         | Find chronic disease by ID                                      | `GET /doctors/patients/chronic-diseases /{diseasesId}`     |
+|  4. | Find Chronic Disease         | Find chronic disease by ID                                      | `GET /doctors/patients/chronic-diseases/{diseasesId}`     |
 |  5. | Update Chronic Disease       | Update chronic disease                                          | `PUT /doctors/patients/{userCode}/chronic-diseases/{diseasesId}` |
 |  6. | Delete Chronic Disease       | Delete chronic disease                                          | `DELETE /doctors/patients/chronic-diseases/{diseasesId}` |
 |  7. | Patient Allergies            | Retrieve allergies of a patient                                | `GET /doctors/patients/{userCode}/allergies`             |
@@ -45,7 +54,7 @@
 
 
 --------
-## 2. Admin
+## 3. Admin
 
 ### Admin-Clinic
 

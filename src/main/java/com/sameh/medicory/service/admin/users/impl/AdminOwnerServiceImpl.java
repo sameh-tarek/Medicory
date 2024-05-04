@@ -1,5 +1,7 @@
 package com.sameh.medicory.service.admin.users.impl;
 
+import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
+import com.sameh.medicory.entity.phoneEntities.UserPhoneNumber;
 import com.sameh.medicory.entity.usersEntities.Owner;
 import com.sameh.medicory.entity.usersEntities.User;
 import com.sameh.medicory.exception.ConflictException;
@@ -10,6 +12,8 @@ import com.sameh.medicory.mapper.UserMapper;
 import com.sameh.medicory.model.users.owner.OwnerRequestDTO;
 import com.sameh.medicory.model.users.owner.OwnerResponseDTO;
 import com.sameh.medicory.repository.OwnerRepository;
+import com.sameh.medicory.repository.RelativePhoneNumberRepository;
+import com.sameh.medicory.repository.UserPhoneNumberRepository;
 import com.sameh.medicory.repository.UserRepository;
 import com.sameh.medicory.service.admin.users.AdminOwnerService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +35,8 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
     private final UserRepository userRepository;
     private final OwnerMapper ownerMapper;
     private final UserMapper userMapper;
+    private final RelativePhoneNumberRepository relativeRepo;
+    private final UserPhoneNumberRepository userPhoneRepo;
 
     @Override
     public List<OwnerResponseDTO> findOwnersByOwnerName(String fullName) {
@@ -107,8 +113,22 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
 
             newUser.setCreatedAt(LocalDateTime.now());
             newUser.setUpdatedAt(LocalDateTime.now());
+
+            // user phone numbers
+            List<UserPhoneNumber> userPhoneNumbers = newUser.getUserPhoneNumbers()
+                    .stream()
+                    .map(userPhoneNumber -> {
+                        Optional<UserPhoneNumber> user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone());
+                        if (user.isPresent())
+                            throw new ConflictException("This phone number " + userPhoneNumber.getPhone() + " already exist");
+                        userPhoneNumber.setUser(newUser);
+                        return userPhoneNumber;
+                    })
+                    .collect(Collectors.toList());
+
             userRepository.save(newUser);
             ownerRepository.save(newOwner);
+            userPhoneRepo.saveAll(userPhoneNumbers);
             return "owner added successfully";
         }
         throw new ConflictException("Owner with email " + newUser.getEmail() + " already exsist");
@@ -120,6 +140,7 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
             Owner oldOwner = ownerRepository.findById(ownerId)
                     .orElseThrow(() -> new RecordNotFoundException("No owner with id " + ownerId));
             User oldUser = oldOwner.getUser();
+            Owner updatedOwner = ownerMapper.toEntity(updatedOwnerDTO);
             User updatedUser = userMapper.toEntity(updatedOwnerDTO.getUser());
 
             if (updatedUser != null) {
@@ -129,6 +150,7 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
                 oldUser.setRole(updatedUser.getRole());
                 oldUser.setUpdatedAt(LocalDateTime.now());
             }
+
             oldOwner.setFirstName(updatedOwnerDTO.getFirstName());
             oldOwner.setMiddleName(updatedOwnerDTO.getMiddleName());
             oldOwner.setLastName(updatedOwnerDTO.getLastName());
@@ -140,11 +162,57 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
             oldOwner.setMaritalStatus(updatedOwnerDTO.getMaritalStatus());
             oldOwner.setJob(updatedOwnerDTO.getJob());
 
+            // Update or add relative phone numbers
+            List<RelativePhoneNumber> updatedRelativePhoneNumbers = updatedOwner.getRelativePhoneNumbers();
+            List<RelativePhoneNumber> existingRelativePhoneNumbers = oldOwner.getRelativePhoneNumbers()
+                    .stream()
+                    .map(existingPhoneNumber -> {
+                        Optional<RelativePhoneNumber> matchingUpdatedPhoneNumber = updatedRelativePhoneNumbers.stream()
+                                .filter(updatedPhoneNumber ->
+                                        updatedPhoneNumber.getId() == existingPhoneNumber.getId())
+                                .findFirst();
+
+                        if (matchingUpdatedPhoneNumber.isPresent()) {
+                            RelativePhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
+                            existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
+                            existingPhoneNumber.setRelation(updatedPhoneNumber.getRelation());
+                        }
+                        return existingPhoneNumber;
+                    })
+                    .collect(Collectors.toList());
+
+            // Update or add user phone numbers
+            List<UserPhoneNumber> updatedUserPhoneNumbers = updatedUser.getUserPhoneNumbers();
+            List<UserPhoneNumber> existingUserPhoneNumbers = oldUser.getUserPhoneNumbers()
+                    .stream()
+                    .map(existingPhoneNumber -> {
+                        Optional<UserPhoneNumber> matchingUpdatedPhoneNumber = updatedUserPhoneNumbers.stream()
+                                .filter(updatedPhoneNumber ->
+                                        updatedPhoneNumber.getId() == existingPhoneNumber.getId())
+                                .findFirst();
+
+                        if (matchingUpdatedPhoneNumber.isPresent()) {
+                            UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
+                            // updated !
+                            if (!existingPhoneNumber.getPhone().equals(updatedPhoneNumber.getPhone())) {
+                                Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
+                                if (existingUser.isPresent()) {
+                                    throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
+                                }
+                                existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
+                            }
+                        }
+                        return existingPhoneNumber;
+                    })
+
+                    .collect(Collectors.toList());
+            relativeRepo.saveAll(existingRelativePhoneNumbers);
+            userPhoneRepo.saveAll(existingUserPhoneNumbers);
             userRepository.save(oldUser);
             ownerRepository.save(oldOwner);
             return "Owner updated successfully";
         }
-        throw new IllegalArgumentException("invalid id");
+        throw new IllegalArgumentException("Invalid id");
     }
 
     @Override

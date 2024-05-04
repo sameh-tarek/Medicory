@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AdminLabService {
 
-    LabResponseDTO showAllLabDataById(Long labId);
+    LabRequestDTO showAllLabDataById(Long labId);
     LabResponseDTO findLabByEmail(String userEmail);
    LabResponseDTO findLabByUserCode(String userCode);
     List<LabResponseDTO>findLabByName(String labName);

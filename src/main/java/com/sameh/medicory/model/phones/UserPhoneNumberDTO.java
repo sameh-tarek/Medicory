@@ -1,4 +1,4 @@
-package com.sameh.medicory.model.users.admin;
+package com.sameh.medicory.model.phones;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminResponseDTO {
+public class UserPhoneNumberDTO {
     private long id;
-    private String adminName;
-    private boolean isEnabled ;
+    private String phone ;
 }
-

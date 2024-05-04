@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class PharmacyResponseDTO {
     private long  pharmacyId;
     private String pharmacyName;
+    private boolean isEnabled ;
 
 }

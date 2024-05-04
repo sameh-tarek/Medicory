@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class ClinicResponseDTO {
     private  Long clinicId ;
     private String clinicName;
+    private  boolean isEnabled ;
 }
