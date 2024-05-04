@@ -18,8 +18,8 @@ public class AdminLabController {
     private final AdminLabService labService;
 
     @GetMapping("/id/{labId}")
-    public ResponseEntity<LabResponseDTO> showAllLabDataById(@PathVariable Long labId) {
-        LabResponseDTO lab = labService.showAllLabDataById(labId);
+    public ResponseEntity<LabRequestDTO> showAllLabDataById(@PathVariable Long labId) {
+        LabRequestDTO lab = labService.showAllLabDataById(labId);
         return ResponseEntity.ok(lab);
     }
 

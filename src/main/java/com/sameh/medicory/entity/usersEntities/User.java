@@ -105,7 +105,7 @@ public class User implements UserDetails {
     }
     public static String generateCode() {
         UUID uuid = UUID.randomUUID();
-        String code = uuid.toString().replace("-", "").substring(0, 16);
+        String code = uuid.toString().replace("-", "").substring(0, 16).toUpperCase();
         return code;
     }
     @PrePersist

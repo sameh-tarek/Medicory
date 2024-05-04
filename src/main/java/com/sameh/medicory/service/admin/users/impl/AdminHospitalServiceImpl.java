@@ -122,7 +122,6 @@ public class AdminHospitalServiceImpl implements AdminHospitalService {
                 oldUser.setRole(updatedUser.getRole());
                 oldUser.setUpdatedAt(LocalDateTime.now());
             }
-            // Update or add user phone numbers
             List<UserPhoneNumber> updatedUserPhoneNumbers = updatedUser.getUserPhoneNumbers();
             List<UserPhoneNumber> existingUserPhoneNumbers = oldUser.getUserPhoneNumbers()
                     .stream()
@@ -134,15 +133,19 @@ public class AdminHospitalServiceImpl implements AdminHospitalService {
 
                         if (matchingUpdatedPhoneNumber.isPresent()) {
                             UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
-                            Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
-                            if (existingUser.isPresent()) {
-                                throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
+                            // updated !
+                            if (!existingPhoneNumber.getPhone().equals(updatedPhoneNumber.getPhone())) {
+                                Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
+                                if (existingUser.isPresent()) {
+                                    throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
+                                }
+                                existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
                             }
-                            existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
                         }
                         return existingPhoneNumber;
                     })
                     .collect(Collectors.toList());
+
 
             userPhoneRepo.saveAll(existingUserPhoneNumbers);
             userRepository.save(oldUser);

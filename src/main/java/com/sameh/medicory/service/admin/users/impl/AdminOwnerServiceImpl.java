@@ -193,17 +193,19 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
 
                         if (matchingUpdatedPhoneNumber.isPresent()) {
                             UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
-                            Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
-                            if (existingUser.isPresent()) {
-                                throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
+                            // updated !
+                            if (!existingPhoneNumber.getPhone().equals(updatedPhoneNumber.getPhone())) {
+                                Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
+                                if (existingUser.isPresent()) {
+                                    throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
+                                }
+                                existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
                             }
-                            existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
                         }
                         return existingPhoneNumber;
                     })
+
                     .collect(Collectors.toList());
-
-
             relativeRepo.saveAll(existingRelativePhoneNumbers);
             userPhoneRepo.saveAll(existingUserPhoneNumbers);
             userRepository.save(oldUser);
