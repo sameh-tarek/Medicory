@@ -1,5 +1,7 @@
 package com.graduationProject.medicory.entity.medicationEntities;
 
+import com.graduationProject.medicory.entity.testsEntities.ImagingTest;
+import com.graduationProject.medicory.entity.testsEntities.LabTest;
 import com.graduationProject.medicory.entity.usersEntities.Doctor;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
 import jakarta.persistence.*;
@@ -41,6 +43,12 @@ public class Prescription {
 
     @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL)
     private List<Medication> medications;
+
+    @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL)
+    private List<LabTest> labTests;
+
+    @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL)
+    private List<ImagingTest> imagingTests;
 
     private LocalDateTime createdAt;
 
