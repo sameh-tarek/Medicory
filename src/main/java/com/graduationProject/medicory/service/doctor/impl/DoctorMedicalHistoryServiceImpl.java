@@ -1,56 +1,36 @@
-package com.graduationProject.medicory.service.doctor;
+package com.graduationProject.medicory.service.doctor.impl;
 
-import com.graduationProject.medicory.entity.medicationEntities.Medication;
-import com.graduationProject.medicory.entity.medicationEntities.Medicine;
-import com.graduationProject.medicory.entity.medicationEntities.Prescription;
-import com.graduationProject.medicory.entity.testsEntities.ImagingTest;
-import com.graduationProject.medicory.entity.testsEntities.LabTest;
 import com.graduationProject.medicory.entity.otherEntities.Allergies;
 import com.graduationProject.medicory.entity.otherEntities.ChronicDiseases;
 import com.graduationProject.medicory.entity.otherEntities.Immunization;
 import com.graduationProject.medicory.entity.otherEntities.Surgery;
-import com.graduationProject.medicory.entity.phoneEntities.UserPhoneNumber;
-import com.graduationProject.medicory.entity.phoneEntities.RelativePhoneNumber;
-import com.graduationProject.medicory.entity.usersEntities.Doctor;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
-import com.graduationProject.medicory.entity.usersEntities.User;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.mapper.*;
 import com.graduationProject.medicory.model.immunization.ImmunizationRequestDTO;
 import com.graduationProject.medicory.model.immunization.ImmunizationResponseDTO;
 import com.graduationProject.medicory.model.chronicDisease.ChronicDiseasesRequestDTO;
 import com.graduationProject.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
-import com.graduationProject.medicory.model.medication.MedicationResponseDTO;
-import com.graduationProject.medicory.model.prescription.PrescriptionRequestDTO;
-import com.graduationProject.medicory.model.prescription.PrescriptionResponseDTO;
 import com.graduationProject.medicory.model.surgery.SurgeryRequestDTO;
 import com.graduationProject.medicory.model.surgery.SurgeryResponseDTO;
 import com.graduationProject.medicory.model.allergies.AllergiesRequestDTO;
 import com.graduationProject.medicory.model.allergies.AllergiesResponseDTO;
-import com.graduationProject.medicory.model.tests.ImagingTestRequestDTO;
-import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
-import com.graduationProject.medicory.model.tests.LabTestRequestDTO;
-import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
-import com.graduationProject.medicory.model.patient.PatientPersonalInformation;
 import com.graduationProject.medicory.repository.*;
-import com.graduationProject.medicory.repository.DoctorRepository;
 import com.graduationProject.medicory.repository.OwnerRepository;
+import com.graduationProject.medicory.service.doctor.DoctorMedicalHistoryService;
 import com.graduationProject.medicory.utils.OwnerContext;
-import com.graduationProject.medicory.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DoctorServiceImpl implements DoctorService {
+public class DoctorMedicalHistoryServiceImpl implements DoctorMedicalHistoryService {
 
     private final OwnerRepository ownerRepository;
     private final ChronicDiseasesMapper chronicDiseasesMapper;
@@ -58,40 +38,11 @@ public class DoctorServiceImpl implements DoctorService {
     private final AllergiesMapper allergiesMapper;
     private final ImmunizationMapper immunizationMapper;
     private final SurgeryMapper surgeryMapper;
-    private final LabTestMapper labTestMapper;
-    private final LabTestRepository labTestRepository;
     private final ChronicDiseasesRepository chronicDiseasesRepository;
     private final AllergiesRepository allergiesRepository;
     private final ImmunizationRepository immunizationRepository;
     private final SurgeryRepository surgeryRepository;
-    private final MedicationMapper medicationMapper;
-    private final MedicineRepository medicineRepository;
-    private final PrescriptionRepository prescriptionRepository;
-    private final SecurityUtils securityUtils;
-    private final DoctorRepository doctorRepository;
-    private final ImagingTestMapper imagingTestMapper;
-    private final ImagingTestRepository imagingTestRepository;
 
-    @Override
-    public PatientPersonalInformation getPatientPersonalInformation(String userCode) {
-        User patientUser = ownerContext.getCurrentUser(userCode);
-        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
-        log.info("Doctor Wants to get patient personal information for owner with id {}", patientOwner.getId());
-        PatientPersonalInformation patientPersonalInformation = new PatientPersonalInformation(
-                patientOwner.getFirstName() + " " + patientOwner.getMiddleName() + " "
-                        + patientOwner.getLastName(),
-                getCurrentAge(patientOwner.getDateOfBirth()),
-                patientOwner.getGender().name(),
-                getPatientPhoneNumbers(patientUser),
-                getPatientRelativePhoneNumbers(patientOwner),
-                patientOwner.getAddress(),
-                patientUser.getEmail(),
-                patientOwner.getBloodType().name()
-        );
-        log.info("patient personal information for owner with id: {} is {}",
-                patientOwner.getId(), patientPersonalInformation);
-        return patientPersonalInformation;
-    }
 
     @Override
     public List<ChronicDiseasesResponseDTO> getPatientChronicDiseases(String userCode) {
@@ -356,294 +307,9 @@ public class DoctorServiceImpl implements DoctorService {
         log.info("Doctor want to delete Surgery disease with id {}", surgeryId);
         Surgery surgery = surgeryRepository.findById(surgeryId)
                 .orElseThrow(() ->
-                        new RecordNotFoundException("This Surgery with id "+surgeryId+" Already doesn't exist"));
+                        new RecordNotFoundException("This Surgery with id " + surgeryId + " Already doesn't exist"));
         surgeryRepository.delete(surgery);
         log.info("Surgery deleted successfully");
         return "success";
     }
-
-
-
-
-    @Override
-    public List<LabTestResponseDTO> findAllLabTestsForPatient(String userCode) {
-        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
-        log.info("Doctor want to get all Lab Tests for owner with id {}", patientOwner.getId());
-        List<LabTestResponseDTO> labTestResponseDTOS = patientOwner.getLabTests()
-                .stream()
-                .map(labTestMapper::toDTO)
-                .collect(Collectors.toList());
-        log.info("Patient Lab Tests {}", labTestResponseDTOS);
-        return labTestResponseDTOS;
-    }
-
-    @Override
-    public String deleteLabTestFromHistory(Long testId) {
-        LabTest labTest = labTestRepository.findById(testId)
-                .orElseThrow(() -> new RecordNotFoundException("This Lab test Already doesn't exists"));
-        labTestRepository.delete(labTest);
-        return "deleted successfully";
-    }
-
-    @Override
-    public boolean updateLabTest(Long testId, LabTestRequestDTO labTestRequestDTO) {
-        log.trace("Doctor want to update lab test with id {}, this new update {}", testId, labTestRequestDTO);
-        LabTest existTest = labTestRepository.findById(testId)
-                .orElseThrow(() -> new RecordNotFoundException("This test with id " + testId + " doesn't exist!"));
-
-        LabTest updatedLabTest = labTestMapper.toEntity(labTestRequestDTO);
-        updatedLabTest.setCreatedAt(existTest.getCreatedAt());
-        updatedLabTest.setUpdatedAt(LocalDateTime.now());
-        updatedLabTest.setId(existTest.getId());
-        updatedLabTest.setOwner(existTest.getOwner());
-        labTestRepository.save(updatedLabTest);
-        return true;
-    }
-
-
-    @Override
-    public boolean addLabTestsForPatientThatRequiredNow(String userCode, List<LabTestRequestDTO> requiredTests) {
-        log.info("Doctor need to ask patient with id {}, for this lab tests {}", userCode, requiredTests);
-
-        Owner owner = ownerContext.getCurrentOwner(userCode);
-        List<LabTest> labTests = requiredTests.stream()
-                .map(labTestMapper::toEntity)
-                .map(labTest -> {
-                    labTest.setStatus(true);
-                    labTest.setOwner(owner);
-                    return labTest;
-                })
-                .collect(Collectors.toList());
-
-        owner.getLabTests().addAll(labTests);
-        ownerRepository.save(owner);
-        log.info("lab tests after add {}", owner.getLabTests());
-        return true;
-    }
-
-    @Override
-    public List<LabTestResponseDTO> getActiveLabTests(String userCode) {
-        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
-        log.info("Doctor want to get Active Lab Tests for owner with id {}", patientOwner.getId());
-        List<LabTestResponseDTO> labTestResponseDTOS = patientOwner.getLabTests().stream()
-                .filter(labTest -> labTest.isStatus())
-                .map(labTestMapper::toDTO)
-                .collect(Collectors.toList());
-        log.info("All active lab tests {}", labTestResponseDTOS);
-        return labTestResponseDTOS;
-    }
-
-    @Override
-    public LabTestResponseDTO findLabTestById(Long testId) {
-        LabTest labTest = labTestRepository.findById(testId)
-                .orElseThrow(() -> new RecordNotFoundException("This lab test with id " + testId + " doesn't exist!"));
-        log.info("lab test with id {} is {}", testId, labTest);
-        return labTestMapper.toDTO(labTest);
-    }
-
-
-    @Override
-    public List<ImagingTestResponseDTO> getAllImagingTestForPatient(String userCode) {
-        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
-        log.info("Doctor want to get all Lab Tests for owner with id {}", patientOwner.getId());
-        List<ImagingTestResponseDTO> imagingTestResponseDTOS = patientOwner.getImagingTests()
-                .stream()
-                .map(imagingTestMapper::toDTO)
-                .collect(Collectors.toList());
-        log.info("Patient Lab Tests {}", imagingTestResponseDTOS);
-        return imagingTestResponseDTOS;
-    }
-
-    @Override
-    public boolean deleteImagingTestFromHistory(Long testId) {
-        ImagingTest imagingTest = imagingTestRepository.findById(testId)
-                        .orElseThrow(() -> new RecordNotFoundException("This Imaging Test with id " + testId + " doesn't exist!"));
-        imagingTestRepository.delete(imagingTest);
-        return true;
-    }
-
-    @Override
-    public boolean updateImagingTest(Long testId, ImagingTestRequestDTO imagingTestRequestDTO) {
-        log.trace("Doctor want to update Imaging test with id {}, this new update {}", testId, imagingTestRequestDTO);
-        ImagingTest existTest = imagingTestRepository.findById(testId)
-                .orElseThrow(() -> new RecordNotFoundException("This Imaging Test with id " + testId + " doesn't exist!"));
-
-        ImagingTest updatedImagingTest = imagingTestMapper.toEntity(imagingTestRequestDTO);
-        updatedImagingTest.setCreatedAt(existTest.getCreatedAt());
-        updatedImagingTest.setUpdatedAt(LocalDateTime.now());
-        updatedImagingTest.setId(existTest.getId());
-        updatedImagingTest.setOwner(existTest.getOwner());
-        imagingTestRepository.save(updatedImagingTest);
-        return true;
-    }
-
-    @Override
-    public boolean addImagingTestForPatientThatRequiredNow(String userCode, List<ImagingTestRequestDTO> requiredTests) {
-        log.info("Doctor need to ask patient with id {}, for this Imaging tests {}", userCode, requiredTests);
-
-        Owner owner = ownerContext.getCurrentOwner(userCode);
-        List<ImagingTest> imagingTests = requiredTests.stream()
-                .map(imagingTestMapper::toEntity)
-                .map(imagingTest -> {
-                    imagingTest.setStatus(true);
-                    imagingTest.setOwner(owner);
-                    return imagingTest;
-                })
-                .collect(Collectors.toList());
-
-        owner.getImagingTests().addAll(imagingTests);
-        ownerRepository.save(owner);
-        log.info("lab tests after add {}", owner.getLabTests());
-        return true;
-    }
-
-    @Override
-    public List<ImagingTestResponseDTO> getActiveImagingTest(String userCode) {
-        Owner patientOwner = ownerContext.getCurrentOwner(userCode);
-        log.info("Doctor want to get Active Lab Tests for owner with id {}", patientOwner.getId());
-        List<ImagingTestResponseDTO> imagingTestResponseDTOS = patientOwner.getImagingTests().stream()
-                .filter(imagingTest -> imagingTest.isStatus())
-                .map(imagingTestMapper::toDTO)
-                .collect(Collectors.toList());
-        log.info("All active lab tests {}", imagingTestResponseDTOS);
-        return imagingTestResponseDTOS;
-    }
-
-    @Override
-    public ImagingTestResponseDTO findImagingTestById(Long testId) {
-        ImagingTest imagingTest = imagingTestRepository.findById(testId)
-                .orElseThrow(() -> new RecordNotFoundException("This imaging test with id " + testId + " doesn't exist!"));
-        log.info("imaging test with id {} is {}", testId, imagingTest);
-        return imagingTestMapper.toDTO(imagingTest);
-
-    }
-
-
-    @Override
-    public boolean addNewPrescription(String userCode, PrescriptionRequestDTO prescriptionRequestDTO) {
-        log.trace("Doctor wants to add prescriptionRequestDTO {}, for owner with id {}",
-                prescriptionRequestDTO, userCode);
-        Owner owner = ownerRepository.findByUserCode(userCode)
-                .orElseThrow(() -> new RecordNotFoundException("This owner with id " + userCode + " doesn't exist"));
-
-
-        Prescription newPrescription = new Prescription();
-
-        List<Medication> medications = prescriptionRequestDTO.getMedications()
-                .stream()
-                .map(medicationRequestDTO -> {
-                    Medicine medicine = getMedicineByName(medicationRequestDTO.getMedicineName());
-                    Medication medication = medicationMapper.toEntity(medicationRequestDTO);
-                    medication.setPrescription(newPrescription);
-                    medication.setCreatedAt(LocalDateTime.now());
-                    medication.setUpdatedAt(LocalDateTime.now());
-                    medication.setOwner(owner);
-                    medication.setMedicine(medicine);
-                    return medication;
-                })
-                .collect(Collectors.toList());
-
-        newPrescription.setMedications(medications);
-        newPrescription.setMedicationStatus(true);
-        newPrescription.setCreatedAt(LocalDateTime.now());
-        newPrescription.setUpdatedAt(LocalDateTime.now());
-        newPrescription.setOwner(owner);
-        newPrescription.setDoctor(getCurrentDoctor());
-        prescriptionRepository.save(newPrescription);
-
-        log.info("Prescription Added successfully!");
-        return true;
-    }
-
-    @Override
-    public PrescriptionResponseDTO findPrescriptionById(Long prescriptionId) {
-        log.info("Doctor want to find Prescription By Id {}", prescriptionId);
-
-        Prescription prescription = prescriptionRepository.findById(prescriptionId)
-                .orElseThrow(() ->
-                        new RecordNotFoundException("This prescription with id " + prescriptionId + " doesn't exist"));
-        List<MedicationResponseDTO> medicationResponseDTOS = prescription.getMedications()
-                .stream()
-                .map(medicationMapper::toDTo)
-                .collect(Collectors.toList());
-
-        PrescriptionResponseDTO prescriptionResponseDTO = PrescriptionResponseDTO
-                .builder()
-                .medications(medicationResponseDTOS)
-                .build();
-
-        log.trace("this the prescription {}", prescriptionResponseDTO);
-        return prescriptionResponseDTO;
-    }
-
-    @Override
-    public List<PrescriptionResponseDTO> getAllPrescriptions(String userCode) {
-        log.info("Doctor wants to get all Prescriptions for owner with id {}", userCode);
-        Owner owner = ownerRepository.findByUserCode(userCode)
-                .orElseThrow(() -> new RecordNotFoundException("This owner with code " + userCode + " doesn't exist"));
-
-        return owner.getPrescriptions()
-                .stream()
-                .map(prescription -> {
-                    PrescriptionResponseDTO prescriptionResponseDTO = PrescriptionResponseDTO.builder().build();
-                    List<MedicationResponseDTO> medicationResponseDTOs = prescription.getMedications()
-                            .stream()
-                            .map(medication -> {
-                                MedicationResponseDTO medicationResponseDTO = medicationMapper.toDTo(medication);
-                                return medicationResponseDTO;
-                            })
-                            .collect(Collectors.toList());
-                    prescriptionResponseDTO.setMedications(medicationResponseDTOs);
-                    return prescriptionResponseDTO;
-                })
-                .collect(Collectors.toList());
-    }
-
-
-
-    private Medicine getMedicineByName(String name){
-        Medicine medicine = medicineRepository.findByName(name)
-                .orElse(null);
-
-        if (medicine == null){
-            Medicine newMedicine = new Medicine();
-            newMedicine.setName(name);
-            medicineRepository.save(newMedicine);
-            return newMedicine;
-        }
-
-        log.info("This medicine info: {}", medicine);
-        return medicine;
-    }
-
-    private Doctor getCurrentDoctor () {
-        String currentUserEmail = securityUtils.getCurrentAuthenticatedUserEmail();
-        Doctor doctor = doctorRepository.
-                findDoctorByUserEmail(currentUserEmail)
-                .orElse(null);
-        return doctor;
-    }
-
-    private Integer getCurrentAge(LocalDate dateOfBirth) {
-        LocalDate currentDate = LocalDate.now();
-        Period period = Period.between(dateOfBirth, currentDate);
-        return period.getYears();
-    }
-
-    private List<String> getPatientPhoneNumbers(User patientUser){
-        List<UserPhoneNumber> phoneNumbers =patientUser.getUserPhoneNumbers();
-        List<String> patientPhoneNumbers = phoneNumbers.stream()
-                .map(phoneNumber -> phoneNumber.getPhone())
-                .collect(Collectors.toList());
-        return patientPhoneNumbers;
-    }
-
-    private List<String> getPatientRelativePhoneNumbers(Owner patient){
-        List<RelativePhoneNumber> relativePhoneNumbers = patient.getRelativePhoneNumbers();
-        List<String> patientRelativePhoneNumbers = relativePhoneNumbers.stream()
-                .map(phoneNumber -> phoneNumber.getPhone())
-                .collect(Collectors.toList());
-        return patientRelativePhoneNumbers;
-    }
-
 }
