@@ -18,8 +18,6 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-@Getter
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
@@ -108,6 +106,7 @@ public class User implements UserDetails {
         String code = uuid.toString().replace("-", "").substring(0, 16).toUpperCase();
         return code;
     }
+
     @PrePersist
     public void generateCodeBeforePersist() {
         String generatedCode = generateCode();

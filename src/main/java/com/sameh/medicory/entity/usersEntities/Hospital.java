@@ -19,7 +19,7 @@ public class Hospital {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String googleMapsLink;
 
     @Column(nullable = false)

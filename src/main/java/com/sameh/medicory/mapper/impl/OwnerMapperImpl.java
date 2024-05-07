@@ -82,24 +82,20 @@ public class OwnerMapperImpl implements OwnerMapper {
 
     @Override
     public Owner toEntity(OwnerRequestDTO owner) {
-        Owner newOwner = new Owner(
-                owner.getId(),
-                owner.getFirstName(),
-                owner.getMiddleName(),
-                owner.getLastName(),
-                owner.getGender(),
-                owner.getDateOfBirth(),
-                owner.getAddress(),
-                owner.getBloodType(),
-                owner.getNationalId(),
-                owner.getMaritalStatus(),
-                owner.getJob(),
-                null,
-                null, null, null, null, null, null,
-                userMapper.toEntity(owner.getUser()),
-                null,
-                null);
-
+        Owner newOwner = Owner.builder()
+                .id(owner.getId())
+                .firstName(owner.getFirstName())
+                .middleName(owner.getMiddleName())
+                .lastName(owner.getLastName())
+                .gender(owner.getGender())
+                .dateOfBirth(owner.getDateOfBirth())
+                .address(owner.getAddress())
+                .bloodType(owner.getBloodType())
+                .nationalId(owner.getNationalId())
+                .maritalStatus(owner.getMaritalStatus())
+                .job(owner.getJob())
+                .user(userMapper.toEntity(owner.getUser()))
+                .build();
 
         List<RelativePhoneNumber> relativePhoneNumbers = createRelativePhoneNumbers(newOwner, owner.getRelativePhoneNumbers());
         newOwner.setRelativePhoneNumbers(relativePhoneNumbers);

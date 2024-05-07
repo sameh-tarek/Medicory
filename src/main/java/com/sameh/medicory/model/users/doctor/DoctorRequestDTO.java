@@ -8,8 +8,6 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
 public class DoctorRequestDTO {
     private Long id;
     private String firstName;

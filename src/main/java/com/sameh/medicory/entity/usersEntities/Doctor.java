@@ -18,18 +18,18 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(nullable = false)
     private String firstName;
-
+    @Column(nullable = false)
     private String middleName;
-
+    @Column(nullable = false)
     private String lastName;
-
+    @Column(nullable = false)
     private String specialization;
-
+    @Column(nullable = false, unique = true)
     private String licenceNumber;
 
-    private String nationalId ;
+    private String nationalId;
 
     @Enumerated(EnumType.STRING)
     private MaritalStatus maritalStatus;

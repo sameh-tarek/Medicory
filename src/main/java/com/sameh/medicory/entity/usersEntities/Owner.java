@@ -1,19 +1,20 @@
 package com.sameh.medicory.entity.usersEntities;
 
+import com.sameh.medicory.entity.enums.BloodType;
+import com.sameh.medicory.entity.enums.Gender;
 import com.sameh.medicory.entity.enums.MaritalStatus;
-import com.sameh.medicory.entity.medicationEntities.Prescription;
-import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
-import com.sameh.medicory.entity.testsEntities.ImagingTest;
-import com.sameh.medicory.entity.testsEntities.LabTest;
 import com.sameh.medicory.entity.medicationEntities.CurrentSchedule;
+import com.sameh.medicory.entity.medicationEntities.Prescription;
 import com.sameh.medicory.entity.otherEntities.Allergies;
 import com.sameh.medicory.entity.otherEntities.ChronicDiseases;
 import com.sameh.medicory.entity.otherEntities.Immunization;
 import com.sameh.medicory.entity.otherEntities.Surgery;
-import com.sameh.medicory.entity.enums.BloodType;
-import com.sameh.medicory.entity.enums.Gender;
+import com.sameh.medicory.entity.phoneEntities.RelativePhoneNumber;
+import com.sameh.medicory.entity.testsEntities.ImagingTest;
+import com.sameh.medicory.entity.testsEntities.LabTest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,21 +26,23 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "owners")
+@Builder
 public class Owner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "middle_name")
+    @Column(name = "middle_name", nullable = false)
     private String middleName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Gender gender;
 
     @Column(name = "date_of_birth")
@@ -48,10 +51,10 @@ public class Owner {
     private String address;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "blood_type")
+    @Column(name = "blood_type", nullable = false)
     private BloodType bloodType;
 
-    @Column(name = "national_id")
+    @Column(name = "national_id", nullable = false, unique = true)
     private long nationalId;
 
     @Column(name = "marital_status")
