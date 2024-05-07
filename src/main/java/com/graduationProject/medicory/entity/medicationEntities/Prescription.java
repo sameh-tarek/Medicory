@@ -44,8 +44,9 @@ public class Prescription {
     @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL)
     private List<Medication> medications;
 
-    @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL)
-    private List<LabTest> labTests;
+    @OneToMany
+    @JoinColumn(name = "prescription_id")
+    private List<LabTest> tests;
 
     @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL)
     private List<ImagingTest> imagingTests;

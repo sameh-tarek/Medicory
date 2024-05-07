@@ -2,6 +2,7 @@ package com.graduationProject.medicory.entity.testsEntities;
 
 import com.graduationProject.medicory.entity.medicationEntities.Prescription;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
+import com.graduationProject.medicory.model.users.pharmacy.PharmacyResponseDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
