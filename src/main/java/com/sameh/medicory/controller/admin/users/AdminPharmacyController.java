@@ -19,7 +19,7 @@ public class AdminPharmacyController {
     private final AdminPharmacyService pharmacyService;
 
 
-    @GetMapping("/id/{pharmacyId}")
+    @GetMapping("/id/{pharmacyId}/pharmacy")
     public ResponseEntity<PharmacyRequestDTO> showAllDataOfPharmacyById(@PathVariable Long pharmacyId) {
         PharmacyRequestDTO pharmacy = pharmacyService.showAllDataOfPharmacyById(pharmacyId);
         return ResponseEntity.ok(pharmacy);
@@ -50,13 +50,13 @@ public class AdminPharmacyController {
     }
 
 
-    @PutMapping("/pharmacy/{pharmacyId}")
+    @PutMapping("/id/{pharmacyId}/pharmacy")
     public ResponseEntity<String> updatePharmacy(@RequestBody PharmacyRequestDTO updatedPharmacy, @PathVariable Long pharmacyId) {
         String message = pharmacyService.updatePharmacy(updatedPharmacy, pharmacyId);
         return ResponseEntity.ok(message);
     }
 
-    @DeleteMapping("/pharmacy/{pharmacyId}")
+    @DeleteMapping("/id/{pharmacyId}")
     public ResponseEntity<String> deletePharmacyById(@PathVariable Long pharmacyId) {
         String message = pharmacyService.deletePharmacy(pharmacyId);
         return ResponseEntity.ok(message);

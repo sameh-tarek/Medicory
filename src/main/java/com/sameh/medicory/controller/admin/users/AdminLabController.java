@@ -17,7 +17,7 @@ import java.util.List;
 public class AdminLabController {
     private final AdminLabService labService;
 
-    @GetMapping("/id/{labId}")
+    @GetMapping("/id/{labId}/lab")
     public ResponseEntity<LabRequestDTO> showAllLabDataById(@PathVariable Long labId) {
         LabRequestDTO lab = labService.showAllLabDataById(labId);
         return ResponseEntity.ok(lab);
