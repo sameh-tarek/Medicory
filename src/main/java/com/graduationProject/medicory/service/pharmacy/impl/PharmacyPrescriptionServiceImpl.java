@@ -21,7 +21,7 @@ public class PharmacyPrescriptionServiceImpl implements PharmacyPrescriptionServ
     public List<PrescriptionResponse> getAllPrescription(String userCode) {
 //        User user = user
 //todo if user code not exist
-        List<Prescription> allPrescriptions = prescriptionRepository.findAllByOwnerIdSortedByUpdatedAt(userCode);
+        List<Prescription> allPrescriptions = prescriptionRepository.findAllByOwnerIdPharmacyNeededSortedByUpdatedAt(userCode);
 
         List<PrescriptionResponse> response = allPrescriptions.stream()
                 .map(prescription -> prescriptionMaper.toResponse(prescription))
@@ -31,7 +31,7 @@ public class PharmacyPrescriptionServiceImpl implements PharmacyPrescriptionServ
     }
     @Override
     public List<PrescriptionResponse> getActivePrescription(String userCode) {
-        List<Prescription> allPrescriptions = prescriptionRepository.findAllActivePharmacyNeededByOwnerIdSortedByUpdatedAt(userCode);
+        List<Prescription> allPrescriptions = prescriptionRepository.findAllActiveByOwnerIdPharmacyNeededSortedByUpdatedAt(userCode);
 
         List<PrescriptionResponse> response = allPrescriptions.stream()
                 .map(prescription -> prescriptionMaper.toResponse(prescription))

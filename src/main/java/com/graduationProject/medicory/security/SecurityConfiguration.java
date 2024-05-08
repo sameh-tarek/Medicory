@@ -40,6 +40,13 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .anyRequest().permitAll()
                 //TODO Add the Authorization
+//                .requestMatchers("/swagger-ui/**", "/v3/api-docs", "auth/authenticate", "/admin/**")
+//                .permitAll()
+//                .requestMatchers("/admin/**").hasAuthority("SCOPE_ADMIN")
+//                .requestMatchers("/doctors/**").hasAnyAuthority("SCOPE_DOCTOR", "SCOPE_CLINIC")
+//                .requestMatchers("/owners/**").hasAuthority("SCOPE_OWNER")
+//                .requestMatchers("/pharmacy/**").hasAuthority("SCOPE_PHARMACY")
+//                .anyRequest().authenticated()
                 .and()
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement()

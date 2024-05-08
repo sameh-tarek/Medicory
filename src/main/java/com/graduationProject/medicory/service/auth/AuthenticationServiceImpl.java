@@ -66,6 +66,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String resetCode = generateRandomCode(codeLength);
         user.setResetPasswordCode(resetCode);
         user.setResetPasswordCodeExpiry(codeExpirationMinutes);
+        user.setResetPasswordCodeVerified(false);
         userRepository.save(user);
 
         sendResetPasswordEmail(email, resetCode);
