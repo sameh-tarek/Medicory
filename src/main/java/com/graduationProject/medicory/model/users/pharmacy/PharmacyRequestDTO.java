@@ -6,8 +6,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
+
 public class PharmacyRequestDTO {
     private Long id;
     private String name;

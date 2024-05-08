@@ -10,8 +10,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class UserDTO {
     private Long id;
     private String code;

@@ -60,7 +60,7 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
 
 
         newPrescription.setMedications(medications);
-        newPrescription.setLabTests(labTests);
+        newPrescription.setTests(labTests);
         newPrescription.setImagingTests(imagingTests);
         newPrescription.setMedicationStatus(true);
         newPrescription.setCreatedAt(LocalDateTime.now());

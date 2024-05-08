@@ -18,12 +18,13 @@ public class Pharmacy {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "google_maps_link", nullable = true)
+    @Column(name = "google_maps_link", nullable = false)
     private String googleMapsLink;
 
     @Column(nullable = false)
     private String address;
 
+    @Column(nullable = false)
     private String ownerName;
 
     @OneToOne

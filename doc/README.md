@@ -54,13 +54,84 @@
 
 
 --------
-## 3. Admin
+## 3. Admin-Users
 
-### Admin-Clinic
+### Doctor
+| No. | Feature       | Description                                            | Endpoint                                   |
+|----:|---------------|--------------------------------------------------------|--------------------------------------------|
+|  1. | Find Doctor   | Retrieve doctor ( id, name,status ) using code         | `GET /admin/doctors/code/{code}`           |
+|  2. | Find Doctor   | Retrieve doctor ( id, name,status ) using email        | `GET /admin/doctors/email/{email}`         |
+|  3. | Find Doctors  | Retrieve doctors ( id, name,status ) using doctor name | `GET/admin/doctors/name/{name}`            |
+|  4. | Show Doctor   | Show all data of the doctor using ID                   | `GET /admin/doctors/id/{doctorId}/doctor`  |
+|  5. | Add Doctor    | add doctor as new user                                 | `POST /admin/doctors/doctor `              |
+|  6. | Update Doctor | update doctor's data using ID                          | `PUT /admin/doctors/id/{doctorId}/doctor ` |
+|  7. | Delete Doctor | Disable (delete) doctor using id                       | `PUT /admin/doctors/id/{doctorId}  `       |
+
+### Lab
+| No. | Feature    | Description                                      | Endpoint                          |
+|----:|------------|--------------------------------------------------|-----------------------------------|
+|  1. | Find Lab   | Retrieve lab ( id, name,status ) using code      | `GET /admin/labs/code/{code}`     |
+|  2. | Find lab   | Retrieve lab ( id, name,status ) using email     | `GET /admin/labs/email/{email}`   |
+|  3. | Find labs  | Retrieve labs ( id, name,status ) using lab name | `GET/admin/labs/name/{name}`      |
+|  4. | Show lab   | Show all data of the lab using ID                | `GET /admin/labs/id/{labId}/lab`  |
+|  5. | Add lab    | add lab as new user                              | `POST /admin/labs/doctor `        |
+|  6. | Update lab | update lab's data using ID                       | `PUT /admin/labs/id/{labId}/lab ` |
+|  7. | Delete lab | Disable (delete) lab using id                    | `DEL /admin/labs/id/{labId}  `    |
+
+### Pharmacy
+| No. | Feature          | Description                                                 | Endpoint                                          |
+|----:|------------------|-------------------------------------------------------------|---------------------------------------------------|
+|  1. | Find Pharmacy    | Retrieve pharmacy ( id, name,status ) using code            | `GET /admin/pharmacies/code/{code}`               |
+|  2. | Find Pharmacy    | Retrieve pharmacy ( id, name,status ) using email           | `GET /admin/pharmacies/email/{email}`             |
+|  3. | Find Pharmacies  | Retrieve pharmacies ( id, name,status ) using pharmacy name | `GET /admin/pharmacies/name/{name}`               |
+|  4. | Show Pharmacy    | Show all data of the pharmacy using ID                      | `GET /admin/pharmacies/id/{pharmacyId}/pharmacy`  |
+|  5. | Add Pharmacy     | add pharmacy as new user                                    | `POST /admin/pharmacies/pharmacy `                |
+|  6. | Update Pharmacy  | update pharmacy's data using ID                             | `PUT /admin/pharmacies/id/{pharmacyId}/pharmacy ` |
+|  7. | Delete Pharmacy  | Disable (delete) pharmacy using ID                          | `DEL /admin/pharmacies/id/{pharmacyId} `          |
+
+### Owner
+| No. | Feature      | Description                                         | Endpoint                                |
+|----:|--------------|-----------------------------------------------------|-----------------------------------------|
+|  1. | Find Owner   | Retrieve owner ( id, name,status ) using code       | `GET /admin/owners/code/{code}`         |
+|  2. | Find Owner   | Retrieve owner ( id, name,status ) using email      | `GET /admin/owners/email/{email}`       |
+|  3. | Find Owners  | Retrieve owner ( id, name,status ) using owner name | `GET /admin/owners/name/{name}`         |
+|  4. | Show Owner   | Show all data of the owner using ID                 | `GET /admin/owners/id/{ownerId}/owner`  |
+|  5. | Add Owner    | add owner as new user                               | `POST /admin/owners/owner `             |
+|  6. | Update Owner | update owner's data using ID                        | `PUT /admin/owners/id/{ownerId}/owner ` |
+|  7. | Delete Owner | Disable (delete) owner using ID                     | `DEL /admin/owners/id/{ownerId} `       |
+
+### Admin
+| No. | Feature      | Description                                         | Endpoint                                 |
+|----:|--------------|-----------------------------------------------------|------------------------------------------|
+|  1. | Find Admin   | Retrieve admin ( id, name,status ) using code       | `GET /admin/admins/code/{code}`          |
+|  2. | Find Admin   | Retrieve admin ( id, name,status ) using email      | `GET /admin/admins/email/{email}`        |
+|  3. | Find Admins  | Retrieve admin ( id, name,status ) using admin name | `GET /admin/admins/name/{name}`          |
+|  4. | Show Admin   | Show all data of the admin using ID                 | `GET /admin/admins/id/{adminId}/admin`   |
+|  5. | Add Admin    | add admin as new user                               | `POST /admin/admins  `                   |
+|  6. | Update Admin | update admin's data using ID                        | `PUT /admin/admins/id/{adminId}/admin `  |
+|  7. | Delete Admin | Disable (delete) admin using ID                     | `DEL /admin/admins/id/{adminId} `        |
+
+### Clinic
+| No. | Feature       | Description                                           | Endpoint                                   |
+|----:|---------------|-------------------------------------------------------|--------------------------------------------|
+|  1. | Find Clinic   | Retrieve clinic ( id, name,status ) using code        | `GET /admin/clinics/code/{code}`           |
+|  2. | Find Clinic   | Retrieve clinic ( id, name,status ) using email       | `GET /admin/clinics/email/{email}`         |
+|  3. | Find Clinics  | Retrieve clinic ( id, name,status ) using clinic name | `GET /admin/clinics/name/{name}`           |
+|  4. | Show Clinic   | Show all data of the clinic using ID                  | `GET /admin/clinics/id/{clinicId}/clinic`  |
+|  5. | Add Clinic    | add clinic as new user                                | `POST /admin/clinics/clinic  `             |
+|  6. | Update Clinic | update clinic's data using ID                         | `PUT /admin/clinics/id/{clinicId}/clinic ` |
+|  7. | Delete Clinic | Disable (delete) clinic using ID                      | `DEL /admin/clinics/id/{aclinicId} `       |
 
 
-### Admin-Lab
+### Hospital
+| No. | Feature          | Description                                               | Endpoint                                       |
+|----:|------------------|-----------------------------------------------------------|------------------------------------------------|
+|  1. | Find Hospital    | Retrieve hospital ( id, name,status ) using code          | `GET /admin/hospitals/code/{code}`             |
+|  2. | Find Hospital    | Retrieve hospital ( id, name,status ) using email         | `GET /admin/hospitals/email/{email}`           |
+|  3. | Find Hospitals   | Retrieve hospital ( id, name,status ) using hospital name | `GET /admin/hospitals/name/{name}`             |
+|  4. | Show Hospital    | Show all data of the hospital using ID                    | `GET /admin/hospital/id/{hospitalId}/hospital` |
+|  5. | Add Hospital     | add hospital as new user                                  | `POST /admin/hospitals/hospital `              |
+|  6. | Update Hospital  | update hospital's data using ID                           | `PUT /admin/clinics/id/{hospitalId}/hospital ` |
+|  7. | Delete Hospital  | Disable (delete) hospital using ID                        | `DEL /admin/hospitals/id/{hospitalId} `        |
 
-
-### Admin-Pharmacy
 
