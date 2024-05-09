@@ -1,4 +1,4 @@
-package com.graduationProject.medicory.model.users.clinic;
+package com.graduationProject.medicory.model.users.hospital;
 
 import com.graduationProject.medicory.entity.enums.Role;
 import lombok.AllArgsConstructor;
@@ -12,12 +12,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClinicRequestDTO {
+public class HospitalRequestDTO {
     private String name;
     private String googleMapsLink;
     private String address;
-    private String ownerName;
-    private String specialization;
     private Role role;
     private String email;
     private boolean isEnabled;

@@ -10,6 +10,7 @@ import com.graduationProject.medicory.mapper.ClinicMapper;
 import com.graduationProject.medicory.mapper.UserMapper;
 import com.graduationProject.medicory.model.users.UserDTO;
 import com.graduationProject.medicory.model.users.clinic.ClinicRequestDTO;
+import com.graduationProject.medicory.model.users.clinic.ClinicDTO;
 import com.graduationProject.medicory.model.users.clinic.ClinicResponseDTO;
 import com.graduationProject.medicory.repository.ClinicRepository;
 import com.graduationProject.medicory.repository.UserPhoneNumberRepository;
@@ -67,7 +68,7 @@ public class AdminClinicServiceImpl implements AdminClinicService {
     }
 
     @Override
-    public ClinicRequestDTO showAllDataOfClinicByClinicId(long clinicId) {
+    public ClinicDTO showAllDataOfClinicByClinicId(long clinicId) {
         if (clinicId > 0) {
             Clinic clinic = clinicRepository.findById(clinicId)
                     .orElseThrow(() -> new RecordNotFoundException("No clinic with id " + clinicId));
@@ -79,7 +80,7 @@ public class AdminClinicServiceImpl implements AdminClinicService {
 
     @Override
     public String addNewClinic(ClinicRequestDTO clinicRequestDTO) {
-        Clinic newClinic = map.toEntity(clinicRequestDTO);
+        Clinic newClinic = map.toRequestEntity(clinicRequestDTO);
         User newUser = newClinic.getUser();
         Optional<User> exsistingUser = userRepository.findByEmail(newUser.getEmail());
         if (!exsistingUser.isPresent()) {
@@ -108,7 +109,7 @@ public class AdminClinicServiceImpl implements AdminClinicService {
     }
 
     @Override
-    public String updateClinic(ClinicRequestDTO updatedClinic, Long clinicId) {
+    public String updateClinic(ClinicDTO updatedClinic, Long clinicId) {
         if (clinicId > 0) {
             Clinic clinic = clinicRepository.findById(clinicId)
                     .orElseThrow(() -> new RecordNotFoundException("No Clinic with id " + clinicId));

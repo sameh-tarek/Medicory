@@ -7,6 +7,7 @@ import com.graduationProject.medicory.exception.ConflictException;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.mapper.HospitalMapper;
 import com.graduationProject.medicory.mapper.UserMapper;
+import com.graduationProject.medicory.model.users.hospital.HospitalRequestDTO;
 import com.graduationProject.medicory.model.users.hospital.HospitalDTO;
 import com.graduationProject.medicory.model.users.hospital.HospitalResponseDTO;
 import com.graduationProject.medicory.repository.HospitalRepository;
@@ -73,8 +74,8 @@ public class AdminHospitalServiceImpl implements AdminHospitalService {
     }
 
     @Override
-    public String addHospital(HospitalDTO newHospital) {
-        Hospital hospital = hospitalMapper.toEntity(newHospital);
+    public String addHospital(HospitalRequestDTO newHospital) {
+        Hospital hospital = hospitalMapper.toRequestEntity(newHospital);
         Optional<User> userExist = userRepository.findByEmail(hospital.getUser().getEmail());
         if (!userExist.isPresent()) {
             User newUser = hospital.getUser();

@@ -2,19 +2,14 @@ package com.graduationProject.medicory.model.users.doctor;
 
 import com.graduationProject.medicory.entity.enums.Gender;
 import com.graduationProject.medicory.entity.enums.MaritalStatus;
-import com.graduationProject.medicory.entity.enums.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
+import com.graduationProject.medicory.model.users.UserDTO;
+import lombok.*;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorRequestDTO {
+public class DoctorDTO {
+    private Long id;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -23,8 +18,6 @@ public class DoctorRequestDTO {
     private String nationalId ;
     private MaritalStatus maritalStatus;
     private Gender gender;
-    private Role role;
-    private String email;
-    private boolean isEnabled;
-    private List<String> userPhoneNumbers;
+
+    private UserDTO user ;
 }

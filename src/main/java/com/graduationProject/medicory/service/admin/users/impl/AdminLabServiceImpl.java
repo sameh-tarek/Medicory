@@ -10,6 +10,7 @@ import com.graduationProject.medicory.mapper.LabMapper;
 import com.graduationProject.medicory.mapper.UserMapper;
 import com.graduationProject.medicory.model.users.UserDTO;
 import com.graduationProject.medicory.model.users.lab.LabRequestDTO;
+import com.graduationProject.medicory.model.users.lab.LabDTO;
 import com.graduationProject.medicory.model.users.lab.LabResponseDTO;
 import com.graduationProject.medicory.repository.LabRepository;
 import com.graduationProject.medicory.repository.UserPhoneNumberRepository;
@@ -39,7 +40,7 @@ public class AdminLabServiceImpl implements AdminLabService {
 
 
     @Override
-    public LabRequestDTO showAllLabDataById(Long labId) {
+    public LabDTO showAllLabDataById(Long labId) {
         if (labId > 0) {
             Lab lab = labRepo.findById(labId)
                     .orElseThrow(() -> new RecordNotFoundException("No lab with id " + labId));
@@ -76,7 +77,7 @@ public class AdminLabServiceImpl implements AdminLabService {
 
     @Override
     public String addLab(LabRequestDTO newLab) {
-        Lab lab = labMap.toEntity(newLab);
+        Lab lab = labMap.toRequestEntity(newLab);
         User newUser = lab.getUser();
         Optional<User> existingUser = userRepo.findByEmail(newUser.getEmail());
         if (!existingUser.isPresent()) {
@@ -105,7 +106,7 @@ public class AdminLabServiceImpl implements AdminLabService {
     }
 
     @Override
-    public String updateLab(LabRequestDTO updatedLab, Long labId) {
+    public String updateLab(LabDTO updatedLab, Long labId) {
         log.info("Updating lab with id: {}", labId);
         if (labId > 0) {
             Lab oldLab = labRepo.findById(labId)

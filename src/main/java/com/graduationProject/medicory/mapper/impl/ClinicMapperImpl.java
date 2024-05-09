@@ -1,9 +1,12 @@
 package com.graduationProject.medicory.mapper.impl;
 
 import com.graduationProject.medicory.entity.usersEntities.Clinic;
+import com.graduationProject.medicory.entity.usersEntities.User;
 import com.graduationProject.medicory.mapper.ClinicMapper;
 import com.graduationProject.medicory.mapper.UserMapper;
+import com.graduationProject.medicory.mapper.UserPhoneNumberMapper;
 import com.graduationProject.medicory.model.users.clinic.ClinicRequestDTO;
+import com.graduationProject.medicory.model.users.clinic.ClinicDTO;
 import com.graduationProject.medicory.model.users.clinic.ClinicResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,23 +16,24 @@ import org.springframework.stereotype.Component;
 public class ClinicMapperImpl implements ClinicMapper {
 
     private final UserMapper map;
+    private final UserPhoneNumberMapper phoneNumberMapper;
 
     @Override
-    public Clinic toEntity(ClinicRequestDTO clinicRequestDTO) {
+    public Clinic toEntity(ClinicDTO clinicDTO) {
         return new Clinic(
-                clinicRequestDTO.getId(),
-                clinicRequestDTO.getName(),
-                clinicRequestDTO.getGoogleMapsLink(),
-                clinicRequestDTO.getAddress(),
-                clinicRequestDTO.getOwnerName(),
-                clinicRequestDTO.getSpecialization()
-                , map.toEntity(clinicRequestDTO.getUser())
+                clinicDTO.getId(),
+                clinicDTO.getName(),
+                clinicDTO.getGoogleMapsLink(),
+                clinicDTO.getAddress(),
+                clinicDTO.getOwnerName(),
+                clinicDTO.getSpecialization()
+                , map.toEntity(clinicDTO.getUser())
         );
     }
 
     @Override
-    public ClinicRequestDTO toDto(Clinic clinic) {
-        return new ClinicRequestDTO(
+    public ClinicDTO toDto(Clinic clinic) {
+        return new ClinicDTO(
                 clinic.getId(),
                 clinic.getName(),
                 clinic.getGoogleMapsLink(),
@@ -47,6 +51,26 @@ public class ClinicMapperImpl implements ClinicMapper {
                 clinic.getName(),
                 clinic.getUser().isEnabled()
         );
+    }
+
+    @Override
+    public Clinic toRequestEntity(ClinicRequestDTO clinic) {
+        User userData = User.builder()
+                .role(clinic.getRole())
+                .enabled(clinic.isEnabled())
+                .email(clinic.getEmail())
+                .userPhoneNumbers(
+                        phoneNumberMapper.toRequestEntity(clinic.getUserPhoneNumbers())
+                )
+                .build();
+        return Clinic.builder()
+                .name(clinic.getName())
+                .address(clinic.getAddress())
+                .googleMapsLink(clinic.getGoogleMapsLink())
+                .ownerName(clinic.getOwnerName())
+                .specialization(clinic.getSpecialization())
+                .user(userData)
+                .build();
     }
 
 

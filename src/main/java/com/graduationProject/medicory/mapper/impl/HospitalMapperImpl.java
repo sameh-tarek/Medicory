@@ -1,8 +1,11 @@
 package com.graduationProject.medicory.mapper.impl;
 
 import com.graduationProject.medicory.entity.usersEntities.Hospital;
+import com.graduationProject.medicory.entity.usersEntities.User;
 import com.graduationProject.medicory.mapper.HospitalMapper;
 import com.graduationProject.medicory.mapper.UserMapper;
+import com.graduationProject.medicory.mapper.UserPhoneNumberMapper;
+import com.graduationProject.medicory.model.users.hospital.HospitalRequestDTO;
 import com.graduationProject.medicory.model.users.hospital.HospitalDTO;
 import com.graduationProject.medicory.model.users.hospital.HospitalResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class HospitalMapperImpl implements HospitalMapper {
 
     private final UserMapper map;
+    private final UserPhoneNumberMapper phoneNumberMapper;
 
     @Override
     public HospitalDTO toDTO(Hospital hospital) {
@@ -47,5 +51,23 @@ public class HospitalMapperImpl implements HospitalMapper {
                         hospitalDTO.getUser()
                 )
         );
+    }
+
+    @Override
+    public Hospital toRequestEntity(HospitalRequestDTO hospital) {
+        User user = User.builder()
+                .role(hospital.getRole())
+                .enabled(hospital.isEnabled())
+                .email(hospital.getEmail())
+                .userPhoneNumbers(
+                        phoneNumberMapper.toRequestEntity(hospital.getUserPhoneNumbers())
+                )
+                .build();
+        return Hospital.builder()
+                .name(hospital.getName())
+                .googleMapsLink(hospital.getGoogleMapsLink())
+                .address(hospital.getAddress())
+                .user(user)
+                .build();
     }
 }

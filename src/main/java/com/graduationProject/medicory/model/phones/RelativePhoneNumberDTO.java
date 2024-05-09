@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RelativePhoneNumberDTO {
 
-    private Long id ;
-
     private String phone;
 
     private String relation;

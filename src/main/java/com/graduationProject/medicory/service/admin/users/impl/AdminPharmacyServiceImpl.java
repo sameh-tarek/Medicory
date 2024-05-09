@@ -8,6 +8,7 @@ import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.exception.UserDisabledException;
 import com.graduationProject.medicory.mapper.PharmacyMpper;
 import com.graduationProject.medicory.mapper.UserMapper;
+import com.graduationProject.medicory.model.users.pharmacy.PharmacyDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyRequestDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyResponseDTO;
 import com.graduationProject.medicory.repository.PharmacyRepository;
@@ -62,7 +63,7 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
     }
 
     @Override
-    public PharmacyRequestDTO showAllDataOfPharmacyById(long id) {
+    public PharmacyDTO showAllDataOfPharmacyById(long id) {
         if (id > 0) {
             Pharmacy pharmacy = pharmacyRepository.findById(id)
                     .orElseThrow(() -> new RecordNotFoundException("No pharmacy with id " + id));
@@ -72,8 +73,8 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
     }
 
     @Override
-    public String addPharmacy(PharmacyRequestDTO newPharmacyRequestDTO) {
-        Pharmacy newPharmacy = pharmacyMpper.toEntity(newPharmacyRequestDTO);
+    public String addPharmacy(PharmacyRequestDTO newPharmacyDTO) {
+        Pharmacy newPharmacy = pharmacyMpper.toRequestEntity(newPharmacyDTO);
         User newUser = newPharmacy.getUser();
         Optional<User> existingUser = userRepository.findByEmail(newUser.getEmail());
         if (!existingUser.isPresent()) {
@@ -101,7 +102,7 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
     }
 
     @Override
-    public String updatePharmacy(PharmacyRequestDTO updatedPharmacy, Long pharmacyId) {
+    public String updatePharmacy(PharmacyDTO updatedPharmacy, Long pharmacyId) {
         if (pharmacyId > 0) {
             Pharmacy oldPharmacy = pharmacyRepository.findById(pharmacyId)
                     .orElseThrow(() -> new RecordNotFoundException("No pharmacy with id " + pharmacyId));

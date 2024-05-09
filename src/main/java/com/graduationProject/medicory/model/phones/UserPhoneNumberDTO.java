@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserPhoneNumberDTO {
-    private long id;
     private String phone ;
 }

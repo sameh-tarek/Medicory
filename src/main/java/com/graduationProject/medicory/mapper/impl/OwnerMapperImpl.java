@@ -131,7 +131,6 @@ public class OwnerMapperImpl implements OwnerMapper {
         List<RelativePhoneNumberDTO> relativePhoneNumbersDto = new ArrayList<>();
         for (RelativePhoneNumber relativePhoneNumber : owner.getRelativePhoneNumbers()) {
             relativePhoneNumbersDto.add(new RelativePhoneNumberDTO(
-                    relativePhoneNumber.getId(),
                     relativePhoneNumber.getPhone(),
                     relativePhoneNumber.getRelation()
 
@@ -144,7 +143,6 @@ public class OwnerMapperImpl implements OwnerMapper {
         return phoneNumbers.stream()
                 .map(dto -> {
                     RelativePhoneNumber relativePhoneNumber = new RelativePhoneNumber();
-                    relativePhoneNumber.setId(dto.getId());
                     relativePhoneNumber.setOwner(owner);
                     relativePhoneNumber.setPhone(dto.getPhone());
                     relativePhoneNumber.setRelation(dto.getRelation());

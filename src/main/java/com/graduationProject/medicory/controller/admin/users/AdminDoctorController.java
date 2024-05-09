@@ -1,6 +1,7 @@
 package com.graduationProject.medicory.controller.admin.users;
 
 import com.graduationProject.medicory.model.users.doctor.DoctorRequestDTO;
+import com.graduationProject.medicory.model.users.doctor.DoctorDTO;
 import com.graduationProject.medicory.model.users.doctor.DoctorResponseDTO;
 import com.graduationProject.medicory.service.admin.users.AdminDoctorService;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +39,8 @@ public class AdminDoctorController {
 
 
     @GetMapping("/id/{doctorId}/doctor")
-    public ResponseEntity<DoctorRequestDTO> getAllDataOfDoctorById(@PathVariable long doctorId) {
-        DoctorRequestDTO doctor = doctorService.showAllDoctorDataById(doctorId);
+    public ResponseEntity<DoctorDTO> getAllDataOfDoctorById(@PathVariable long doctorId) {
+        DoctorDTO doctor = doctorService.showAllDoctorDataById(doctorId);
         return new ResponseEntity<>(doctor,HttpStatus.OK);
     }
 
@@ -49,7 +50,7 @@ public class AdminDoctorController {
         return new ResponseEntity<>(message,HttpStatus.CREATED);
     }
     @PutMapping("/id/{doctorId}/doctor")
-    public ResponseEntity<String> updateDoctor(@RequestBody DoctorRequestDTO updatedDoctor,@PathVariable long doctorId){
+    public ResponseEntity<String> updateDoctor(@RequestBody DoctorDTO updatedDoctor, @PathVariable long doctorId){
         String message = doctorService.updateDoctor(updatedDoctor,doctorId);
         return new ResponseEntity<>(message,HttpStatus.OK);
     }

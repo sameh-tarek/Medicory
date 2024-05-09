@@ -1,6 +1,7 @@
 package com.graduationProject.medicory.service.admin.users;
 
 import com.graduationProject.medicory.model.users.clinic.ClinicRequestDTO;
+import com.graduationProject.medicory.model.users.clinic.ClinicDTO;
 import com.graduationProject.medicory.model.users.clinic.ClinicResponseDTO;
 
 import java.util.List;
@@ -13,11 +14,12 @@ public interface AdminClinicService {
 
     ClinicResponseDTO findClinicByUserEmail(String userEmail);
 
-    ClinicRequestDTO showAllDataOfClinicByClinicId(long clinicId);
+    ClinicDTO showAllDataOfClinicByClinicId(long clinicId);
 
     String addNewClinic(ClinicRequestDTO clinic);
 
-    String updateClinic(ClinicRequestDTO clinicRequestDTO, Long clinicId);
+    String updateClinic(ClinicDTO clinicDTO, Long clinicId);
 
     String deleteClinicById(Long clinicId);
+
 }

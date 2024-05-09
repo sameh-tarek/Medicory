@@ -1,6 +1,7 @@
 package com.graduationProject.medicory.controller.admin.users;
 
 import com.graduationProject.medicory.model.users.clinic.ClinicRequestDTO;
+import com.graduationProject.medicory.model.users.clinic.ClinicDTO;
 import com.graduationProject.medicory.model.users.clinic.ClinicResponseDTO;
 import com.graduationProject.medicory.service.admin.users.AdminClinicService;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +39,8 @@ public class AdminClinicController {
     }
 
     @GetMapping("/id/{clinicId}/clinic")
-    public ResponseEntity<ClinicRequestDTO> getAllDataOfClinicById(@PathVariable long clinicId) {
-       ClinicRequestDTO clinic = clinicService.showAllDataOfClinicByClinicId(clinicId);
+    public ResponseEntity<ClinicDTO> getAllDataOfClinicById(@PathVariable long clinicId) {
+       ClinicDTO clinic = clinicService.showAllDataOfClinicByClinicId(clinicId);
        return new ResponseEntity<>(clinic,HttpStatus.OK);
     }
 
@@ -49,7 +50,7 @@ public class AdminClinicController {
         return new ResponseEntity<>(message,HttpStatus.CREATED);
     }
     @PutMapping("/id/{clinicId}/clinic")
-    public ResponseEntity<String> updateClinic(@PathVariable long clinicId,@RequestBody ClinicRequestDTO updatedClinic){
+    public ResponseEntity<String> updateClinic(@PathVariable long clinicId,@RequestBody ClinicDTO updatedClinic){
         String message = clinicService.updateClinic(updatedClinic,clinicId);
         return new ResponseEntity<>(message,HttpStatus.OK);
     }

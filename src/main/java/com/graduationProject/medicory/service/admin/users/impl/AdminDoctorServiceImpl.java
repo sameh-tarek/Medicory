@@ -9,6 +9,7 @@ import com.graduationProject.medicory.exception.UserDisabledException;
 import com.graduationProject.medicory.mapper.DoctorMapper;
 import com.graduationProject.medicory.mapper.UserMapper;
 import com.graduationProject.medicory.model.users.doctor.DoctorRequestDTO;
+import com.graduationProject.medicory.model.users.doctor.DoctorDTO;
 import com.graduationProject.medicory.model.users.doctor.DoctorResponseDTO;
 import com.graduationProject.medicory.repository.DoctorRepository;
 import com.graduationProject.medicory.repository.UserPhoneNumberRepository;
@@ -37,7 +38,7 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
 
 
     @Override
-    public DoctorRequestDTO showAllDoctorDataById(Long doctorId) {
+    public DoctorDTO showAllDoctorDataById(Long doctorId) {
         if (doctorId > 0) {
             Doctor doctor = doctorRepository.findById(doctorId)
                     .orElseThrow(() -> new RecordNotFoundException("No doctor  with id " + doctorId));
@@ -103,7 +104,7 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
 
     @Override
     public String addNewDoctor(DoctorRequestDTO newDoctorRequestDTO) {
-        Doctor newDoctor = doctorMapper.toEntity(newDoctorRequestDTO);
+        Doctor newDoctor = doctorMapper.toRequestEntity(newDoctorRequestDTO);
         User newUser = newDoctor.getUser();
         Optional<User> existing = userRepository.findByEmail(newUser.getEmail());
         if (!existing.isPresent()) {
@@ -131,21 +132,21 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
 
     //TODO enhance update function for all users
     @Override
-    public String updateDoctor(DoctorRequestDTO updatedDoctorRequestDTO, Long doctorId) {
+    public String updateDoctor(DoctorDTO updatedDoctorDTO, Long doctorId) {
         if (doctorId > 0) {
             Doctor oldDoctor = doctorRepository.findById(doctorId)
                     .orElseThrow(() -> new RecordNotFoundException("No doctor with id " + doctorId));
 
-            oldDoctor.setFirstName(updatedDoctorRequestDTO.getFirstName());
-            oldDoctor.setMiddleName(updatedDoctorRequestDTO.getMiddleName());
-            oldDoctor.setLastName(updatedDoctorRequestDTO.getLastName());
-            oldDoctor.setSpecialization(updatedDoctorRequestDTO.getSpecialization());
-            oldDoctor.setLicenceNumber(updatedDoctorRequestDTO.getLicenceNumber());
-            oldDoctor.setNationalId(updatedDoctorRequestDTO.getNationalId());
-            oldDoctor.setMaritalStatus(updatedDoctorRequestDTO.getMaritalStatus());
-            oldDoctor.setGender(updatedDoctorRequestDTO.getGender());
+            oldDoctor.setFirstName(updatedDoctorDTO.getFirstName());
+            oldDoctor.setMiddleName(updatedDoctorDTO.getMiddleName());
+            oldDoctor.setLastName(updatedDoctorDTO.getLastName());
+            oldDoctor.setSpecialization(updatedDoctorDTO.getSpecialization());
+            oldDoctor.setLicenceNumber(updatedDoctorDTO.getLicenceNumber());
+            oldDoctor.setNationalId(updatedDoctorDTO.getNationalId());
+            oldDoctor.setMaritalStatus(updatedDoctorDTO.getMaritalStatus());
+            oldDoctor.setGender(updatedDoctorDTO.getGender());
 
-            User updatedUser = userMapper.toEntity(updatedDoctorRequestDTO.getUser());
+            User updatedUser = userMapper.toEntity(updatedDoctorDTO.getUser());
             User oldUser = oldDoctor.getUser();
 
             if (updatedUser != null) {

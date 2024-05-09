@@ -1,9 +1,12 @@
 package com.graduationProject.medicory.mapper.impl;
 
 import com.graduationProject.medicory.entity.usersEntities.Lab;
+import com.graduationProject.medicory.entity.usersEntities.User;
 import com.graduationProject.medicory.mapper.LabMapper;
 import com.graduationProject.medicory.mapper.UserMapper;
+import com.graduationProject.medicory.mapper.UserPhoneNumberMapper;
 import com.graduationProject.medicory.model.users.lab.LabRequestDTO;
+import com.graduationProject.medicory.model.users.lab.LabDTO;
 import com.graduationProject.medicory.model.users.lab.LabResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,24 +16,44 @@ import org.springframework.stereotype.Component;
 public class LabMappperImpl implements LabMapper {
 
     private final UserMapper map;
+    private final UserPhoneNumberMapper phoneNumberMapper;
 
     @Override
-    public Lab toEntity(LabRequestDTO labRequestDTO) {
+    public Lab toEntity(LabDTO labDTO) {
         return new Lab(
-                labRequestDTO.getId()
-                , labRequestDTO.getName()
-                , labRequestDTO.getGoogleMapsLink()
-                , labRequestDTO.getAddress()
-                , labRequestDTO.getOwnerName()
+                labDTO.getId()
+                , labDTO.getName()
+                , labDTO.getGoogleMapsLink()
+                , labDTO.getAddress()
+                , labDTO.getOwnerName()
                 , map.toEntity(
-                labRequestDTO.getUser()
+                labDTO.getUser()
         )
         );
     }
 
     @Override
-    public LabRequestDTO toDTO(Lab lab) {
-        return new LabRequestDTO(
+    public Lab toRequestEntity(LabRequestDTO lab) {
+        User user = User.builder()
+                .role(lab.getRole())
+                .email(lab.getEmail())
+                .enabled(lab.isEnabled())
+                .userPhoneNumbers(
+                        phoneNumberMapper.toRequestEntity(lab.getUserPhoneNumbers())
+                )
+                .build();
+        return Lab.builder()
+                .name(lab.getName())
+                .googleMapsLink(lab.getGoogleMapsLink())
+                .address(lab.getAddress())
+                .ownerName(lab.getOwnerName())
+                .user(user)
+                .build();
+    }
+
+    @Override
+    public LabDTO toDTO(Lab lab) {
+        return new LabDTO(
                 lab.getId(),
                 lab.getName(),
                 lab.getGoogleMapsLink(),

@@ -1,9 +1,12 @@
 package com.graduationProject.medicory.mapper.impl;
 
 import com.graduationProject.medicory.entity.usersEntities.Doctor;
+import com.graduationProject.medicory.entity.usersEntities.User;
 import com.graduationProject.medicory.mapper.DoctorMapper;
 import com.graduationProject.medicory.mapper.UserMapper;
+import com.graduationProject.medicory.mapper.UserPhoneNumberMapper;
 import com.graduationProject.medicory.model.users.doctor.DoctorRequestDTO;
+import com.graduationProject.medicory.model.users.doctor.DoctorDTO;
 import com.graduationProject.medicory.model.users.doctor.DoctorResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,9 +16,10 @@ import org.springframework.stereotype.Component;
 public class DoctorMapperImpl implements DoctorMapper {
 
     private final UserMapper userMapper;
+    private final UserPhoneNumberMapper phoneNumberMapper;
 
     @Override
-    public Doctor toEntity(DoctorRequestDTO doctorRequest) {
+    public Doctor toEntity(DoctorDTO doctorRequest) {
         return new Doctor(
                 doctorRequest.getId(),
                 doctorRequest.getFirstName(),
@@ -33,8 +37,31 @@ public class DoctorMapperImpl implements DoctorMapper {
     }
 
     @Override
-    public DoctorRequestDTO toDTO(Doctor doctor) {
-        return new DoctorRequestDTO(
+    public Doctor toRequestEntity(DoctorRequestDTO doctor) {
+       User user =User.builder()
+               .email(doctor.getEmail())
+               .role(doctor.getRole())
+               .enabled(doctor.isEnabled())
+               .userPhoneNumbers(
+                       phoneNumberMapper.toRequestEntity(doctor.getUserPhoneNumbers())
+               )
+               .build();
+       return Doctor.builder()
+               .firstName(doctor.getFirstName())
+               .middleName(doctor.getMiddleName())
+               .lastName(doctor.getLastName())
+               .specialization(doctor.getSpecialization())
+               .licenceNumber(doctor.getLicenceNumber())
+               .nationalId(doctor.getNationalId())
+               .maritalStatus(doctor.getMaritalStatus())
+               .gender(doctor.getGender())
+               .user(user)
+               .build();
+    }
+
+    @Override
+    public DoctorDTO toDTO(Doctor doctor) {
+        return new DoctorDTO(
                 doctor.getId(),
                 doctor.getFirstName(),
                 doctor.getMiddleName(),
