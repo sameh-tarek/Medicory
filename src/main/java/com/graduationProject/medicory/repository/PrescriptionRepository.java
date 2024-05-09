@@ -3,10 +3,11 @@ package com.graduationProject.medicory.repository;
 import com.graduationProject.medicory.entity.medicationEntities.Prescription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+@Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription, Long> {
     @Query("FROM Prescription where owner.user.code = :userCode AND isPharmacyNeeded=true ")
     List<Prescription> findAllByUserCodePharmacyNeededSortedByUpdatedAt(String userCode);

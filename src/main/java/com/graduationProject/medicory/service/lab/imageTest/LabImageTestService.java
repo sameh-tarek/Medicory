@@ -1,8 +1,6 @@
 package com.graduationProject.medicory.service.lab.imageTest;
 
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
-import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
-
 import java.util.List;
 
 public interface LabImageTestService {

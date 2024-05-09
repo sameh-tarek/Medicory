@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ImagingTestRepository extends JpaRepository<ImagingTest, Long> {
-    @Query("FROM ImagingTest WHERE prescription.id =: prescriptionId")
+    @Query("FROM ImagingTest WHERE prescription.id = :prescriptionId")
     List<ImagingTest> findByPrescriptionId(Long prescriptionId);
 
     @Query("FROM ImagingTest where prescription.id = :prescriptionId AND status = true")

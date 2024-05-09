@@ -5,7 +5,6 @@ import com.graduationProject.medicory.entity.testsEntities.ImagingTest;
 import com.graduationProject.medicory.mapper.ImagingTestMapper;
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.repository.ImagingTestRepository;
-import com.graduationProject.medicory.repository.PrescriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +19,7 @@ public class LabImageTestServiceImpl implements LabImageTestService {
     @Override
     public List<ImagingTestResponseDTO> getAllImageTestsOfPrescription(Long prescriptionId) {
         List<ImagingTest> imagingTests = imagingTestRepository.findByPrescriptionId(prescriptionId);
+        System.out.println(imagingTests.size());
         List<ImagingTestResponseDTO> response = imagingTests.stream().map(
                 imagingTest -> imagingTestMapper.toDTO(imagingTest)
         ).toList();

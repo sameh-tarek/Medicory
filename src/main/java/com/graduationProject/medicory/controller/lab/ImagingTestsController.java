@@ -1,6 +1,5 @@
 package com.graduationProject.medicory.controller.lab;
 
-import com.graduationProject.medicory.model.prescription.PrescriptionResponse;
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.service.lab.imageTest.LabImageTestService;
 import lombok.RequiredArgsConstructor;

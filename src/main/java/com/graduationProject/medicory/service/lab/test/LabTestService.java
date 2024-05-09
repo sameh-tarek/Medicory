@@ -11,7 +11,6 @@ public interface LabTestService {
 
 
     List<LabTestResponseDTO> getAllTestsOfPrescription(Long prescriptionId);
-
     List<LabTestResponseDTO> getActiveTestsOfPrescription(Long prescriptionId);
 
 }
