@@ -3,7 +3,7 @@ package com.graduationProject.medicory.mapper.impl;
 import com.graduationProject.medicory.entity.medicationEntities.Prescription;
 import com.graduationProject.medicory.entity.usersEntities.Doctor;
 import com.graduationProject.medicory.mapper.MedicationMapper;
-import com.graduationProject.medicory.mapper.PrescriptionMaper;
+import com.graduationProject.medicory.mapper.PrescriptionMapper;
 import com.graduationProject.medicory.model.prescription.PrescriptionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class PrescriptionMaperImpl implements PrescriptionMaper {
+public class PrescriptionMapperImpl implements PrescriptionMapper {
     private final MedicationMapper medicationMapper;
     @Override
     public PrescriptionResponse toResponse(Prescription prescription) {

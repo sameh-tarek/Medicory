@@ -9,12 +9,9 @@ import java.util.List;
 @Service
 public interface LabTestService {
 
-    List<PrescriptionResponse> getAllPrescriptionsHaveTests(String userCode);
-
-    List<PrescriptionResponse> getActivePrescriptionsHaveTests(String userCode);
 
     List<LabTestResponseDTO> getAllTestsOfPrescription(Long prescriptionId);
 
-    List<LabTestResponseDTO> getActiveTests(Long prescriptionId);
+    List<LabTestResponseDTO> getActiveTestsOfPrescription(Long prescriptionId);
 
 }

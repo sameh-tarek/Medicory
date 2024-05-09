@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PrescriptionRepository extends JpaRepository<Prescription, Long> {
     @Query("FROM Prescription where owner.user.code = :userCode AND isPharmacyNeeded=true ")
-    List<Prescription> findAllByOwnerIdPharmacyNeededSortedByUpdatedAt(String userCode);
+    List<Prescription> findAllByUserCodePharmacyNeededSortedByUpdatedAt(String userCode);
     @Query("FROM Prescription WHERE id=:id AND owner.user.code = :userCode")
     Optional<Prescription> findPrescriptionByUserCodeAndPrescriptionId(String userCode, Long id);
     @Query("SELECT p FROM Prescription p where p.owner.user.code = :userCode AND p.prescriptionStatus=true AND p.isPharmacyNeeded=true order by p.updatedAt")
@@ -17,10 +17,8 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Long
 
     ///////
     @Query("FROM Prescription where owner.user.code = :userCode AND isLabNeeded=true ")
-    List<Prescription> findAllByOwnerIdLabNeededSortedByUpdatedAt(String userCode);
-//    @Query("FROM Prescription WHERE id=:id AND owner.user.code = :userCode")
-//    Optional<Prescription> findPrescriptionByUserCodeAndTestId(String userCode, Long id);
+    List<Prescription> findAllByUserCodeLabNeededSortedByUpdatedAt(String userCode);
     @Query("SELECT p FROM Prescription p where p.owner.user.code = :userCode AND p.prescriptionStatus=true AND p.isLabNeeded=true order by p.updatedAt")
-    List<Prescription> findAllActiveByOwnerIdLabNeededSortedByUpdatedAt(String userCode);
+    List<Prescription> findAllActiveByUserCodeLabNeededSortedByUpdatedAt(String userCode);
 
 }

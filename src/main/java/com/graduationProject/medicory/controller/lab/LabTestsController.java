@@ -1,6 +1,5 @@
 package com.graduationProject.medicory.controller.lab;
 
-import com.graduationProject.medicory.model.prescription.PrescriptionResponse;
 import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
 import com.graduationProject.medicory.service.lab.test.LabTestService;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +16,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/lab/tests")
 public class LabTestsController {
+
     private final LabTestService labTestService;
-    @GetMapping("/{userCode}/prescriptions")
-    ResponseEntity<List<PrescriptionResponse>> getAllPrescriptionsHaveTests(@PathVariable String userCode){
-        List<PrescriptionResponse> response = labTestService.getAllPrescriptionsHaveTests(userCode);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-    @GetMapping("/{userCode}/active-prescriptions")
-    ResponseEntity<List<PrescriptionResponse>> getActivePrescriptionsHaveTests(@PathVariable String userCode){
-        List<PrescriptionResponse> response = labTestService.getActivePrescriptionsHaveTests(userCode);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
+
     @GetMapping("/{prescriptionId}")
     ResponseEntity<List<LabTestResponseDTO>> getAllTests(@PathVariable Long prescriptionId){
         List<LabTestResponseDTO> response = labTestService.getAllTestsOfPrescription(prescriptionId);
@@ -36,7 +27,7 @@ public class LabTestsController {
     //*
     @GetMapping("/active-tests/{prescriptionId}")
     ResponseEntity<List<LabTestResponseDTO>> getActiveTests(@PathVariable Long prescriptionId){
-        List<LabTestResponseDTO> response = labTestService.getActiveTests(prescriptionId);
+        List<LabTestResponseDTO> response = labTestService.getActiveTestsOfPrescription(prescriptionId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

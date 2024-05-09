@@ -1,31 +1,38 @@
 package com.graduationProject.medicory.service.lab.imageTest;
 
-import com.graduationProject.medicory.model.prescription.PrescriptionResponse;
-import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
+
+import com.graduationProject.medicory.entity.testsEntities.ImagingTest;
+import com.graduationProject.medicory.mapper.ImagingTestMapper;
+import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
+import com.graduationProject.medicory.repository.ImagingTestRepository;
+import com.graduationProject.medicory.repository.PrescriptionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@RequiredArgsConstructor
 @Service
 public class LabImageTestServiceImpl implements LabImageTestService {
 
+    private final ImagingTestRepository imagingTestRepository;
+    private final ImagingTestMapper imagingTestMapper;
+
     @Override
-    public List<PrescriptionResponse> getAllPrescriptionsHaveImagingTests(String userCode) {
-        return null;
+    public List<ImagingTestResponseDTO> getAllImageTestsOfPrescription(Long prescriptionId) {
+        List<ImagingTest> imagingTests = imagingTestRepository.findByPrescriptionId(prescriptionId);
+        List<ImagingTestResponseDTO> response = imagingTests.stream().map(
+                imagingTest -> imagingTestMapper.toDTO(imagingTest)
+        ).toList();
+        return response;
     }
 
     @Override
-    public List<PrescriptionResponse> getActivePrescriptionsHaveImagingTests(String userCode) {
-        return null;
-    }
+    public List<ImagingTestResponseDTO> getActiveImageTestsOfPrescription(Long prescriptionId) {
 
-    @Override
-    public List<LabTestResponseDTO> getAllImageTestsOfPrescription(Long prescriptionId) {
-        return null;
-    }
-
-    @Override
-    public List<LabTestResponseDTO> getActiveImageTests(Long prescriptionId) {
-        return null;
+        List<ImagingTest> imagingTests = imagingTestRepository.findActiveTestsByPrescriptionId(prescriptionId);
+        List<ImagingTestResponseDTO> response = imagingTests.stream().map(
+                imagingTest -> imagingTestMapper.toDTO(imagingTest)
+        ).toList();
+        return response;
     }
 }
