@@ -1,6 +1,7 @@
 package com.graduationProject.medicory.controller.admin.users;
 
 
+import com.graduationProject.medicory.model.users.admin.AdminDTO;
 import com.graduationProject.medicory.model.users.admin.AdminRequestDTO;
 import com.graduationProject.medicory.model.users.admin.AdminResponseDTO;
 import com.graduationProject.medicory.service.admin.users.AdminService;
@@ -35,8 +36,8 @@ public class AdminController {
         return new ResponseEntity<>(admins, HttpStatus.OK);
     }
     @GetMapping("/id/{adminId}/admin")
-    public ResponseEntity<AdminRequestDTO> showAllDataOfAdmin(@PathVariable long adminId){
-        AdminRequestDTO admin = adminService.showAllAdminDataById(adminId);
+    public ResponseEntity<AdminDTO> showAllDataOfAdmin(@PathVariable long adminId){
+        AdminDTO admin = adminService.showAllAdminDataById(adminId);
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
     @PostMapping("")
@@ -47,7 +48,7 @@ public class AdminController {
     }
 
     @PutMapping("/id/{adminId}/admin")
-    public ResponseEntity<String > updateAdmin(@PathVariable long adminId,@RequestBody AdminRequestDTO updatedAdmin){
+    public ResponseEntity<String > updateAdmin(@PathVariable long adminId,@RequestBody AdminDTO updatedAdmin){
         String message = adminService.updateAdmin(updatedAdmin,adminId);
         return new ResponseEntity<>(message,HttpStatus.OK);
     }

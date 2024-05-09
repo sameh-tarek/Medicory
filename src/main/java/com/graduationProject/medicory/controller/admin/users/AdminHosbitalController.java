@@ -1,6 +1,7 @@
 package com.graduationProject.medicory.controller.admin.users;
 
 import com.graduationProject.medicory.model.users.hospital.HospitalDTO;
+import com.graduationProject.medicory.model.users.hospital.HospitalRequestDTO;
 import com.graduationProject.medicory.model.users.hospital.HospitalResponseDTO;
 import com.graduationProject.medicory.service.admin.users.AdminHospitalService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class AdminHosbitalController {
         return new ResponseEntity<>(hospital,HttpStatus.OK);
     }
     @PostMapping("/hospital")
-    public ResponseEntity<String> addHospital(@RequestBody HospitalDTO hospital){
+    public ResponseEntity<String> addHospital(@RequestBody HospitalRequestDTO hospital){
         String message = hospitalService.addHospital(hospital);
         return new ResponseEntity<>(message,HttpStatus.CREATED);
     }

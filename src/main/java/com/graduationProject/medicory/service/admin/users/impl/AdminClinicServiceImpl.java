@@ -8,7 +8,7 @@ import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.exception.UserDisabledException;
 import com.graduationProject.medicory.mapper.ClinicMapper;
 import com.graduationProject.medicory.mapper.UserMapper;
-import com.graduationProject.medicory.model.users.UserDTO;
+import com.graduationProject.medicory.model.users.clinic.ClinicDTO;
 import com.graduationProject.medicory.model.users.clinic.ClinicRequestDTO;
 import com.graduationProject.medicory.model.users.clinic.ClinicResponseDTO;
 import com.graduationProject.medicory.repository.ClinicRepository;
@@ -67,7 +67,7 @@ public class AdminClinicServiceImpl implements AdminClinicService {
     }
 
     @Override
-    public ClinicRequestDTO showAllDataOfClinicByClinicId(long clinicId) {
+    public ClinicDTO showAllDataOfClinicByClinicId(long clinicId) {
         if (clinicId > 0) {
             Clinic clinic = clinicRepository.findById(clinicId)
                     .orElseThrow(() -> new RecordNotFoundException("No clinic with id " + clinicId));
@@ -78,8 +78,8 @@ public class AdminClinicServiceImpl implements AdminClinicService {
 
 
     @Override
-    public String addNewClinic(ClinicRequestDTO clinicRequestDTO) {
-        Clinic newClinic = map.toEntity(clinicRequestDTO);
+    public String addNewClinic(ClinicRequestDTO clinicDTO) {
+        Clinic newClinic = map.toRequestEntity(clinicDTO);
         User newUser = newClinic.getUser();
         Optional<User> exsistingUser = userRepository.findByEmail(newUser.getEmail());
         if (!exsistingUser.isPresent()) {
@@ -108,7 +108,7 @@ public class AdminClinicServiceImpl implements AdminClinicService {
     }
 
     @Override
-    public String updateClinic(ClinicRequestDTO updatedClinic, Long clinicId) {
+    public String updateClinic(ClinicDTO updatedClinic, Long clinicId) {
         if (clinicId > 0) {
             Clinic clinic = clinicRepository.findById(clinicId)
                     .orElseThrow(() -> new RecordNotFoundException("No Clinic with id " + clinicId));
@@ -118,44 +118,32 @@ public class AdminClinicServiceImpl implements AdminClinicService {
             clinic.setOwnerName(updatedClinic.getOwnerName());
             clinic.setSpecialization(updatedClinic.getSpecialization());
 
-            UserDTO updatedUser = updatedClinic.getUser();
             User oldUser = clinic.getUser();
-            if (updatedUser != null) {
-                oldUser.setEmail(updatedUser.getEmail());
-                oldUser.setPassword(updatedUser.getPassword());
-                oldUser.setRole(updatedUser.getRole());
-                oldUser.setEnabled(updatedUser.isEnabled());
-                oldUser.setUpdatedAt(LocalDateTime.now());
-            }
+            oldUser.setEmail(updatedClinic.getEmail());
+            oldUser.setPassword(updatedClinic.getPassword());
+            oldUser.setRole(updatedClinic.getRole());
+            oldUser.setEnabled(updatedClinic.isEnabled());
+            oldUser.setUpdatedAt(LocalDateTime.now());
             // Update or add user phone numbers
-            List<UserPhoneNumber> updatedUserPhoneNumbers = userMapper.toEntity(updatedUser).getUserPhoneNumbers();
-            List<UserPhoneNumber> existingUserPhoneNumbers = oldUser.getUserPhoneNumbers()
-                    .stream()
-                    .map(existingPhoneNumber -> {
-                        Optional<UserPhoneNumber> matchingUpdatedPhoneNumber = updatedUserPhoneNumbers.stream()
-                                .filter(updatedPhoneNumber ->
-                                        updatedPhoneNumber.getId() == existingPhoneNumber.getId())
-                                .findFirst();
+            List<String> updatedPhoneNumbers = updatedClinic.getUserPhoneNumbers();
+            List<UserPhoneNumber> oldUserPhoneNumbers = oldUser.getUserPhoneNumbers();
 
-                        if (matchingUpdatedPhoneNumber.isPresent()) {
-                            UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
-                            // updated !
-                            if (!existingPhoneNumber.getPhone().equals(updatedPhoneNumber.getPhone())) {
-                                Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
-                                if (existingUser.isPresent()) {
-                                    throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
-                                }
-                                existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
-                            }
-                        }
-                        return existingPhoneNumber;
-                    })
-                    .collect(Collectors.toList());
+            for (int i = 0; i < updatedPhoneNumbers.size(); i++) {
+                String updatedPhoneNumber = updatedPhoneNumbers.get(i);
+                UserPhoneNumber userPhoneNumber = oldUserPhoneNumbers.get(i);
 
+                if (!userPhoneNumber.getPhone().equals(updatedPhoneNumber)) {
+                    Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber);
+                    if (existingUser.isPresent()) {
+                        throw new ConflictException("This phone number " + updatedPhoneNumber + " already exists");
+                    }
+                    userPhoneNumber.setPhone(updatedPhoneNumber);
+                }
+            }
 
-            userPhoneRepo.saveAll(existingUserPhoneNumbers);
             userRepository.save(oldUser);
             clinicRepository.save(clinic);
+            userPhoneRepo.saveAll(oldUserPhoneNumbers);
             return "Clinic updted sucessfully";
         }
 

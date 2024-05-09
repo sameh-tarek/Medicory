@@ -4,12 +4,14 @@ import com.graduationProject.medicory.entity.enums.Gender;
 import com.graduationProject.medicory.entity.enums.MaritalStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "Admin")

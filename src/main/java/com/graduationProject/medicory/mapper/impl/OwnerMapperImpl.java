@@ -144,7 +144,6 @@ public class OwnerMapperImpl implements OwnerMapper {
         return phoneNumbers.stream()
                 .map(dto -> {
                     RelativePhoneNumber relativePhoneNumber = new RelativePhoneNumber();
-                    relativePhoneNumber.setId(dto.getId());
                     relativePhoneNumber.setOwner(owner);
                     relativePhoneNumber.setPhone(dto.getPhone());
                     relativePhoneNumber.setRelation(dto.getRelation());

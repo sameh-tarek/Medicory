@@ -1,5 +1,6 @@
 package com.graduationProject.medicory.controller.admin.users;
 
+import com.graduationProject.medicory.model.users.lab.LabDTO;
 import com.graduationProject.medicory.model.users.lab.LabRequestDTO;
 import com.graduationProject.medicory.model.users.lab.LabResponseDTO;
 import com.graduationProject.medicory.service.admin.users.AdminLabService;
@@ -17,8 +18,8 @@ public class AdminLabController {
     private final AdminLabService labService;
 
     @GetMapping("/id/{labId}/lab")
-    public ResponseEntity<LabRequestDTO> showAllLabDataById(@PathVariable Long labId) {
-        LabRequestDTO lab = labService.showAllLabDataById(labId);
+    public ResponseEntity<LabDTO> showAllLabDataById(@PathVariable Long labId) {
+        LabDTO lab = labService.showAllLabDataById(labId);
         return ResponseEntity.ok(lab);
     }
 
@@ -48,7 +49,7 @@ public class AdminLabController {
     }
 
     @PutMapping("/lab/{labId}")
-    public ResponseEntity<String> updateLab(@RequestBody LabRequestDTO updatedLab, @PathVariable Long labId) {
+    public ResponseEntity<String> updateLab(@RequestBody LabDTO updatedLab, @PathVariable Long labId) {
         String message = labService.updateLab(updatedLab, labId);
         return ResponseEntity.ok(message);
     }

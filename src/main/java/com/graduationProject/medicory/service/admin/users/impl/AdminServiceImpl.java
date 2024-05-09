@@ -7,7 +7,7 @@ import com.graduationProject.medicory.exception.ConflictException;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.exception.UserDisabledException;
 import com.graduationProject.medicory.mapper.AdminMapper;
-import com.graduationProject.medicory.mapper.UserMapper;
+import com.graduationProject.medicory.model.users.admin.AdminDTO;
 import com.graduationProject.medicory.model.users.admin.AdminRequestDTO;
 import com.graduationProject.medicory.model.users.admin.AdminResponseDTO;
 import com.graduationProject.medicory.repository.AdminRepository;
@@ -30,12 +30,11 @@ public class AdminServiceImpl implements AdminService {
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
     private final AdminMapper adminMapper;
-    private final UserMapper userMapper;
     private final UserPhoneNumberRepository userPhoneRepo;
 
 
     @Override
-    public AdminRequestDTO showAllAdminDataById(Long adminId) {
+    public AdminDTO showAllAdminDataById(Long adminId) {
         if (adminId > 0) {
             Admin admin = adminRepository.findById(adminId)
                     .orElseThrow(() -> new RecordNotFoundException("No admin with id " + adminId));
@@ -88,7 +87,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public String addAdmin(AdminRequestDTO newAdmin) {
-        Admin admin = adminMapper.toEntity(newAdmin);
+        Admin admin = adminMapper.toRequestEntity(newAdmin);
         User newUser = admin.getUser();
         Optional<User> existing = userRepository.findByEmail(newUser.getEmail());
         if (!existing.isPresent()) {
@@ -117,58 +116,48 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String updateAdmin(AdminRequestDTO updatedAdminRequestDTO, Long adminId) {
-        if (adminId > 0) {
-            Admin oldAdmin = adminRepository.findById(adminId)
-                    .orElseThrow(() -> new RecordNotFoundException("No admin with id " + adminId));
-            oldAdmin.setFirstName(updatedAdminRequestDTO.getFirstName());
-            oldAdmin.setLastName(updatedAdminRequestDTO.getLastName());
-            oldAdmin.setMaritalStatus(updatedAdminRequestDTO.getMaritalStatus());
-            oldAdmin.setGender(updatedAdminRequestDTO.getGender());
-
-            User updatedUser = userMapper.toEntity(updatedAdminRequestDTO.getUser());
-            User oldUser = oldAdmin.getUser();
-
-            if (updatedUser != null) {
-                oldUser.setEmail(updatedUser.getEmail());
-                oldUser.setPassword(updatedUser.getPassword());
-                oldUser.setEnabled(updatedUser.isEnabled());
-                oldUser.setRole(updatedUser.getRole());
-                oldUser.setUpdatedAt(LocalDateTime.now());
-
-            }
-            List<UserPhoneNumber> updatedUserPhoneNumbers = updatedUser.getUserPhoneNumbers();
-            List<UserPhoneNumber> existingUserPhoneNumbers = oldUser.getUserPhoneNumbers()
-                    .stream()
-                    .map(existingPhoneNumber -> {
-                        Optional<UserPhoneNumber> matchingUpdatedPhoneNumber = updatedUserPhoneNumbers.stream()
-                                .filter(updatedPhoneNumber ->
-                                        updatedPhoneNumber.getId() == existingPhoneNumber.getId())
-                                .findFirst();
-
-                        if (matchingUpdatedPhoneNumber.isPresent()) {
-                            UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
-                            // updated !
-                            if (!existingPhoneNumber.getPhone().equals(updatedPhoneNumber.getPhone())) {
-                                Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
-                                if (existingUser.isPresent()) {
-                                    throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
-                                }
-                                existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
-                            }
-                        }
-                        return existingPhoneNumber;
-                    })
-                    .collect(Collectors.toList());
-
-
-            userRepository.save(oldUser);
-            adminRepository.save(oldAdmin);
-            userPhoneRepo.saveAll(existingUserPhoneNumbers);
-            return "Admin updatd sucessfully";
+    public String updateAdmin(AdminDTO updatedAdminDTO, Long adminId) {
+        if (adminId <= 0) {
+            throw new IllegalArgumentException("Invalid admin ID: " + adminId);
         }
-        throw new IllegalArgumentException("Invalid id " + adminId);
+
+        Admin oldAdmin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new RecordNotFoundException("No admin with ID " + adminId));
+
+        oldAdmin.setFirstName(updatedAdminDTO.getFirstName());
+        oldAdmin.setLastName(updatedAdminDTO.getLastName());
+        oldAdmin.setMaritalStatus(updatedAdminDTO.getMaritalStatus());
+        oldAdmin.setGender(updatedAdminDTO.getGender());
+
+        User oldUser = oldAdmin.getUser();
+
+        oldUser.setEmail(updatedAdminDTO.getEmail());
+        oldUser.setEnabled(updatedAdminDTO.isEnabled());
+        oldUser.setRole(updatedAdminDTO.getRole());
+        oldUser.setUpdatedAt(LocalDateTime.now());
+
+        List<String> updatedPhoneNumbers = updatedAdminDTO.getUserPhoneNumbers();
+        List<UserPhoneNumber> oldUserPhoneNumbers = oldUser.getUserPhoneNumbers();
+
+        for (int i = 0; i < updatedPhoneNumbers.size(); i++) {
+            String updatedPhoneNumber = updatedPhoneNumbers.get(i);
+            UserPhoneNumber userPhoneNumber = oldUserPhoneNumbers.get(i);
+
+            if (!userPhoneNumber.getPhone().equals(updatedPhoneNumber)) {
+                Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber);
+                if (existingUser.isPresent()) {
+                    throw new ConflictException("This phone number " + updatedPhoneNumber + " already exists");
+                }
+                userPhoneNumber.setPhone(updatedPhoneNumber);
+            }
+        }
+
+        userRepository.save(oldUser);
+        adminRepository.save(oldAdmin);
+        userPhoneRepo.saveAll(oldUserPhoneNumbers);
+        return "Admin updated successfully";
     }
+
 
     @Override
     public String deleteAdmin(Long adminId) {
@@ -187,4 +176,5 @@ public class AdminServiceImpl implements AdminService {
         }
         throw new IllegalArgumentException("Invalid id " + adminId);
     }
+
 }

@@ -8,6 +8,7 @@ import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.exception.UserDisabledException;
 import com.graduationProject.medicory.mapper.DoctorMapper;
 import com.graduationProject.medicory.mapper.UserMapper;
+import com.graduationProject.medicory.model.users.doctor.DoctorDTO;
 import com.graduationProject.medicory.model.users.doctor.DoctorRequestDTO;
 import com.graduationProject.medicory.model.users.doctor.DoctorResponseDTO;
 import com.graduationProject.medicory.repository.DoctorRepository;
@@ -37,7 +38,7 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
 
 
     @Override
-    public DoctorRequestDTO showAllDoctorDataById(Long doctorId) {
+    public DoctorDTO showAllDoctorDataById(Long doctorId) {
         if (doctorId > 0) {
             Doctor doctor = doctorRepository.findById(doctorId)
                     .orElseThrow(() -> new RecordNotFoundException("No doctor  with id " + doctorId));
@@ -102,8 +103,8 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
     }
 
     @Override
-    public String addNewDoctor(DoctorRequestDTO newDoctorRequestDTO) {
-        Doctor newDoctor = doctorMapper.toEntity(newDoctorRequestDTO);
+    public String addNewDoctor(DoctorRequestDTO newDoctorDTO) {
+        Doctor newDoctor = doctorMapper.toRequestEntity(newDoctorDTO);
         User newUser = newDoctor.getUser();
         Optional<User> existing = userRepository.findByEmail(newUser.getEmail());
         if (!existing.isPresent()) {
@@ -131,54 +132,45 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
 
     //TODO enhance update function for all users
     @Override
-    public String updateDoctor(DoctorRequestDTO updatedDoctorRequestDTO, Long doctorId) {
+    public String updateDoctor(DoctorDTO updatedDoctorDTO, Long doctorId) {
         if (doctorId > 0) {
             Doctor oldDoctor = doctorRepository.findById(doctorId)
                     .orElseThrow(() -> new RecordNotFoundException("No doctor with id " + doctorId));
 
-            oldDoctor.setFirstName(updatedDoctorRequestDTO.getFirstName());
-            oldDoctor.setMiddleName(updatedDoctorRequestDTO.getMiddleName());
-            oldDoctor.setLastName(updatedDoctorRequestDTO.getLastName());
-            oldDoctor.setSpecialization(updatedDoctorRequestDTO.getSpecialization());
-            oldDoctor.setLicenceNumber(updatedDoctorRequestDTO.getLicenceNumber());
-            oldDoctor.setNationalId(updatedDoctorRequestDTO.getNationalId());
-            oldDoctor.setMaritalStatus(updatedDoctorRequestDTO.getMaritalStatus());
-            oldDoctor.setGender(updatedDoctorRequestDTO.getGender());
+            oldDoctor.setFirstName(updatedDoctorDTO.getFirstName());
+            oldDoctor.setMiddleName(updatedDoctorDTO.getMiddleName());
+            oldDoctor.setLastName(updatedDoctorDTO.getLastName());
+            oldDoctor.setSpecialization(updatedDoctorDTO.getSpecialization());
+            oldDoctor.setLicenceNumber(updatedDoctorDTO.getLicenceNumber());
+            oldDoctor.setNationalId(updatedDoctorDTO.getNationalId());
+            oldDoctor.setMaritalStatus(updatedDoctorDTO.getMaritalStatus());
+            oldDoctor.setGender(updatedDoctorDTO.getGender());
 
-            User updatedUser = userMapper.toEntity(updatedDoctorRequestDTO.getUser());
             User oldUser = oldDoctor.getUser();
 
-            if (updatedUser != null) {
-                oldUser.setEmail(updatedUser.getEmail());
-                oldUser.setPassword(updatedUser.getPassword());
-                oldUser.setEnabled(updatedUser.isEnabled());
-                oldUser.setRole(updatedUser.getRole());
-                oldUser.setUpdatedAt(LocalDateTime.now());
+            oldUser.setEmail(updatedDoctorDTO.getEmail());
+            oldUser.setPassword(updatedDoctorDTO.getPassword());
+            oldUser.setEnabled(updatedDoctorDTO.isEnabled());
+            oldUser.setRole(updatedDoctorDTO.getRole());
+            oldUser.setUpdatedAt(LocalDateTime.now());
+
+            List<String> updatedPhoneNumbers = updatedDoctorDTO.getUserPhoneNumbers();
+            List<UserPhoneNumber> oldUserPhoneNumbers = oldUser.getUserPhoneNumbers();
+
+            for (int i = 0; i < updatedPhoneNumbers.size(); i++) {
+                String updatedPhoneNumber = updatedPhoneNumbers.get(i);
+                UserPhoneNumber userPhoneNumber = oldUserPhoneNumbers.get(i);
+
+                if (!userPhoneNumber.getPhone().equals(updatedPhoneNumber)) {
+                    Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber);
+                    if (existingUser.isPresent()) {
+                        throw new ConflictException("This phone number " + updatedPhoneNumber + " already exists");
+                    }
+                    userPhoneNumber.setPhone(updatedPhoneNumber);
+                }
             }
 
-            List<UserPhoneNumber> updatedUserPhoneNumbers = updatedUser.getUserPhoneNumbers();
-            List<UserPhoneNumber> existingUserPhoneNumbers = oldUser.getUserPhoneNumbers()
-                    .stream()
-                    .map(existingPhoneNumber -> {
-                        Optional<UserPhoneNumber> matchingUpdatedPhoneNumber = updatedUserPhoneNumbers.stream()
-                                .filter(updatedPhoneNumber ->
-                                        updatedPhoneNumber.getId() == existingPhoneNumber.getId())
-                                .findFirst();
-
-                        if (matchingUpdatedPhoneNumber.isPresent()) {
-                            UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
-                            Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
-                            if (existingUser.isPresent()) {
-                                throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
-                            }
-                            existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
-                        }
-                        return existingPhoneNumber;
-                    })
-                    .collect(Collectors.toList());
-
-
-            userPhoneRepo.saveAll(existingUserPhoneNumbers);
+            userPhoneRepo.saveAll(oldUserPhoneNumbers);
             userRepository.save(oldUser);
             doctorRepository.save(oldDoctor);
             return "Doctor updated  successfully";

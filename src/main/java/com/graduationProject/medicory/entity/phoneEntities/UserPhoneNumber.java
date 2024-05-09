@@ -3,6 +3,7 @@ package com.graduationProject.medicory.entity.phoneEntities;
 import com.graduationProject.medicory.entity.usersEntities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "user_phone_numbers")
 public class UserPhoneNumber {
     @Id

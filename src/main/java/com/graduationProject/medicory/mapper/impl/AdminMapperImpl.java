@@ -1,8 +1,10 @@
 package com.graduationProject.medicory.mapper.impl;
 
 import com.graduationProject.medicory.entity.usersEntities.Admin;
+import com.graduationProject.medicory.entity.usersEntities.User;
 import com.graduationProject.medicory.mapper.AdminMapper;
-import com.graduationProject.medicory.mapper.UserMapper;
+import com.graduationProject.medicory.mapper.UserPhoneNumberMapper;
+import com.graduationProject.medicory.model.users.admin.AdminDTO;
 import com.graduationProject.medicory.model.users.admin.AdminRequestDTO;
 import com.graduationProject.medicory.model.users.admin.AdminResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -12,34 +14,39 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AdminMapperImpl implements AdminMapper {
 
-    private final UserMapper map;
+    private final UserPhoneNumberMapper phoneNumberMapper;
 
     @Override
-    public Admin toEntity(AdminRequestDTO admin) {
-        return new Admin(
-                admin.getId(),
-                admin.getFirstName(),
-                admin.getLastName(),
-                admin.getMaritalStatus(),
-                admin.getGender(),
-                map.toEntity(
-                        admin.getUser()
-                )
-        );
+    public Admin toEntity(AdminDTO admin) {
+
+        return Admin.builder()
+                .firstName(admin.getFirstName())
+                .lastName(admin.getLastName())
+                .maritalStatus(admin.getMaritalStatus())
+                .gender(admin.getGender())
+                .user(toUserEntity(admin))
+                .build();
     }
-
     @Override
-    public AdminRequestDTO toDTO(Admin admin) {
-        return new AdminRequestDTO(
-                admin.getId(),
-                admin.getFirstName(),
-                admin.getLastName(),
-                admin.getMaritalStatus(),
-                admin.getGender(),
-                map.toDto(
-                        admin.getUser()
-                )
-        );
+    public AdminDTO toDTO(Admin admin) {
+        User user = admin.getUser();
+        return AdminDTO.builder()
+                .firstName(admin.getFirstName())
+                .lastName(admin.getLastName())
+                .maritalStatus(admin.getMaritalStatus())
+                .gender(admin.getGender())
+                .email(user.getEmail())
+                .code(user.getCode())
+                .password(user.getPassword())
+                .role(user.getRole())
+                .isEnabled(user.isEnabled())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .userPhoneNumbers(phoneNumberMapper.toRequestDTO(
+                        user.getUserPhoneNumbers()
+                ))
+                .build();
+
     }
 
     @Override
@@ -53,4 +60,44 @@ public class AdminMapperImpl implements AdminMapper {
         );
 
     }
+
+    @Override
+    public Admin toRequestEntity(AdminRequestDTO admin) {
+
+        return Admin.builder()
+                .firstName(admin.getFirstName())
+                .lastName(admin.getLastName())
+                .maritalStatus(admin.getMaritalStatus())
+                .gender(admin.getGender())
+                .user(toUserRequestEntity(admin))
+                .build();
+
+    }
+
+    private User toUserRequestEntity(AdminRequestDTO admin) {
+        return User.builder()
+                .role(admin.getRole())
+                .enabled(admin.isEnabled())
+                .email(admin.getEmail())
+                .userPhoneNumbers(
+                        phoneNumberMapper.toRequestEntity(admin.getPhoneNumbers())
+                )
+                .build();
+    }
+
+    private User toUserEntity(AdminDTO admin) {
+        return User.builder()
+                .code(admin.getCode())
+                .role(admin.getRole())
+                .enabled(admin.isEnabled())
+                .email(admin.getEmail())
+                .password(admin.getPassword())
+                .createdAt(admin.getCreatedAt())
+                .updatedAt(admin.getUpdatedAt())
+                .userPhoneNumbers(
+                        phoneNumberMapper.toRequestEntity(admin.getUserPhoneNumbers())
+                )
+                .build();
+    }
+
 }

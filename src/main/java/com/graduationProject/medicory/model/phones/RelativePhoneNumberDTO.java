@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class RelativePhoneNumberDTO {
-
-    private Long id ;
-
+    private long id;
     private String phone;
 
     private String relation;
