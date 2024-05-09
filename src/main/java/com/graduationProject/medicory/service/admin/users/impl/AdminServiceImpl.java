@@ -8,6 +8,7 @@ import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.exception.UserDisabledException;
 import com.graduationProject.medicory.mapper.AdminMapper;
 import com.graduationProject.medicory.model.users.admin.AdminDTO;
+import com.graduationProject.medicory.model.users.admin.AdminRequestDTO;
 import com.graduationProject.medicory.model.users.admin.AdminResponseDTO;
 import com.graduationProject.medicory.repository.AdminRepository;
 import com.graduationProject.medicory.repository.UserPhoneNumberRepository;
@@ -18,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -86,7 +86,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String addAdmin(AdminDTO newAdmin) {
+    public String addAdmin(AdminRequestDTO newAdmin) {
         Admin admin = adminMapper.toRequestEntity(newAdmin);
         User newUser = admin.getUser();
         Optional<User> existing = userRepository.findByEmail(newUser.getEmail());
@@ -114,6 +114,7 @@ public class AdminServiceImpl implements AdminService {
 
 
     }
+
     @Override
     public String updateAdmin(AdminDTO updatedAdminDTO, Long adminId) {
         if (adminId <= 0) {
@@ -156,7 +157,6 @@ public class AdminServiceImpl implements AdminService {
         userPhoneRepo.saveAll(oldUserPhoneNumbers);
         return "Admin updated successfully";
     }
-
 
 
     @Override

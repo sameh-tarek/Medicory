@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,8 +17,8 @@ public class ClinicRequestDTO {
     private String address;
     private String ownerName;
     private String specialization;
-    private Role role;
     private String email;
+    private Role role;
     private boolean isEnabled;
     private List<String> userPhoneNumbers;
 }

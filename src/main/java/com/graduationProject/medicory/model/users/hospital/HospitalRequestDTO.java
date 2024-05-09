@@ -16,8 +16,8 @@ public class HospitalRequestDTO {
     private String name;
     private String googleMapsLink;
     private String address;
-    private Role role;
     private String email;
+    private Role role;
     private boolean isEnabled;
     private List<String> userPhoneNumbers;
 }

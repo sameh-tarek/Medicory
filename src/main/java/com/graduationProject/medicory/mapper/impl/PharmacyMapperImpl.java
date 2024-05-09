@@ -4,7 +4,6 @@ package com.graduationProject.medicory.mapper.impl;
 import com.graduationProject.medicory.entity.usersEntities.Pharmacy;
 import com.graduationProject.medicory.entity.usersEntities.User;
 import com.graduationProject.medicory.mapper.PharmacyMpper;
-import com.graduationProject.medicory.mapper.UserMapper;
 import com.graduationProject.medicory.mapper.UserPhoneNumberMapper;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyRequestDTO;
@@ -15,55 +14,38 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class PharmacyMapperImpl implements PharmacyMpper {
-   private  final UserMapper map;
-   private final UserPhoneNumberMapper phoneNumberMapper;
+    private final UserPhoneNumberMapper phoneNumberMapper;
+
     @Override
     public PharmacyDTO toDTO(Pharmacy pharmacy) {
-        return new PharmacyDTO(
-                pharmacy.getId(),
-                pharmacy.getName(),
-                pharmacy.getGoogleMapsLink(),
-                pharmacy.getAddress(),
-                pharmacy.getOwnerName(),
-                map.toDto(
-                pharmacy.getUser()
-                )
-        );
-
+        User user = pharmacy.getUser();
+        return PharmacyDTO.builder()
+                .name(pharmacy.getName())
+                .googleMapsLink(pharmacy.getGoogleMapsLink())
+                .address(pharmacy.getAddress())
+                .ownerName(pharmacy.getOwnerName())
+                .code(user.getCode())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .role(user.getRole())
+                .isEnabled(user.isEnabled())
+                .updatedAt(user.getUpdatedAt())
+                .createdAt(user.getCreatedAt())
+                .userPhoneNumbers(phoneNumberMapper.toRequestDTO(
+                        user.getUserPhoneNumbers()
+                ))
+                .build();
     }
 
-    @Override
-    public Pharmacy toEntity(PharmacyDTO pharmacyDTO) {
-       return new Pharmacy(
-               pharmacyDTO.getId(),
-               pharmacyDTO.getName(),
-               pharmacyDTO.getGoogleMapsLink(),
-               pharmacyDTO.getAddress(),
-               pharmacyDTO.getOwnerName(),
-               map.toEntity(
-               pharmacyDTO.getUser()
-               )
-       );
-    }
 
     @Override
     public Pharmacy toRequestEntity(PharmacyRequestDTO pharmacy) {
-        User user = User.builder()
-                .email(pharmacy.getEmail())
-                .role(pharmacy.getRole())
-                .enabled(pharmacy.isEnabled())
-                .userPhoneNumbers(
-                        phoneNumberMapper.toRequestEntity(
-                                pharmacy.getUserPhoneNumbers()
-                        )
-                )
-                .build();
-
         return Pharmacy.builder()
                 .name(pharmacy.getName())
                 .googleMapsLink(pharmacy.getGoogleMapsLink())
                 .address(pharmacy.getAddress())
                 .ownerName(pharmacy.getOwnerName())
+                .user(toUserRequestEntity(pharmacy))
                 .build();
 
     }
@@ -75,5 +57,17 @@ public class PharmacyMapperImpl implements PharmacyMpper {
                 pharmacy.getName(),
                 pharmacy.getUser().isEnabled()
         );
+    }
+
+    private User toUserRequestEntity(PharmacyRequestDTO pharmacy) {
+        return User.builder()
+                .role(pharmacy.getRole())
+                .enabled(pharmacy.isEnabled())
+                .email(pharmacy.getEmail())
+                .userPhoneNumbers(
+                        phoneNumberMapper.toRequestEntity(pharmacy.getUserPhoneNumbers())
+                )
+                .build();
+
     }
 }

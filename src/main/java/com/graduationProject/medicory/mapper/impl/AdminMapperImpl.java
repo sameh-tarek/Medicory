@@ -5,6 +5,7 @@ import com.graduationProject.medicory.entity.usersEntities.User;
 import com.graduationProject.medicory.mapper.AdminMapper;
 import com.graduationProject.medicory.mapper.UserPhoneNumberMapper;
 import com.graduationProject.medicory.model.users.admin.AdminDTO;
+import com.graduationProject.medicory.model.users.admin.AdminRequestDTO;
 import com.graduationProject.medicory.model.users.admin.AdminResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,6 @@ public class AdminMapperImpl implements AdminMapper {
     public Admin toEntity(AdminDTO admin) {
 
         return Admin.builder()
-                .id(admin.getId())
                 .firstName(admin.getFirstName())
                 .lastName(admin.getLastName())
                 .maritalStatus(admin.getMaritalStatus())
@@ -27,12 +27,10 @@ public class AdminMapperImpl implements AdminMapper {
                 .user(toUserEntity(admin))
                 .build();
     }
-
     @Override
     public AdminDTO toDTO(Admin admin) {
         User user = admin.getUser();
         return AdminDTO.builder()
-                .id(admin.getId())
                 .firstName(admin.getFirstName())
                 .lastName(admin.getLastName())
                 .maritalStatus(admin.getMaritalStatus())
@@ -64,7 +62,7 @@ public class AdminMapperImpl implements AdminMapper {
     }
 
     @Override
-    public Admin toRequestEntity(AdminDTO admin) {
+    public Admin toRequestEntity(AdminRequestDTO admin) {
 
         return Admin.builder()
                 .firstName(admin.getFirstName())
@@ -76,17 +74,18 @@ public class AdminMapperImpl implements AdminMapper {
 
     }
 
-    private User toUserRequestEntity(AdminDTO admin){
-               return User.builder()
+    private User toUserRequestEntity(AdminRequestDTO admin) {
+        return User.builder()
                 .role(admin.getRole())
                 .enabled(admin.isEnabled())
                 .email(admin.getEmail())
                 .userPhoneNumbers(
-                        phoneNumberMapper.toRequestEntity(admin.getUserPhoneNumbers())
+                        phoneNumberMapper.toRequestEntity(admin.getPhoneNumbers())
                 )
                 .build();
     }
-    private User toUserEntity(AdminDTO admin){
+
+    private User toUserEntity(AdminDTO admin) {
         return User.builder()
                 .code(admin.getCode())
                 .role(admin.getRole())

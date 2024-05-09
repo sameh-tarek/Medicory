@@ -3,7 +3,6 @@ package com.graduationProject.medicory.model.users.admin;
 import com.graduationProject.medicory.entity.enums.Gender;
 import com.graduationProject.medicory.entity.enums.MaritalStatus;
 import com.graduationProject.medicory.entity.enums.Role;
-import com.graduationProject.medicory.model.users.UserDTO;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -14,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminDTO {
-    private Long id;
+    private  long id;
     private String firstName;
     private String lastName;
     private MaritalStatus maritalStatus;

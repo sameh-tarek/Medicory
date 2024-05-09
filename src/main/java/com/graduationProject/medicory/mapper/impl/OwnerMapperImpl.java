@@ -131,6 +131,7 @@ public class OwnerMapperImpl implements OwnerMapper {
         List<RelativePhoneNumberDTO> relativePhoneNumbersDto = new ArrayList<>();
         for (RelativePhoneNumber relativePhoneNumber : owner.getRelativePhoneNumbers()) {
             relativePhoneNumbersDto.add(new RelativePhoneNumberDTO(
+                    relativePhoneNumber.getId(),
                     relativePhoneNumber.getPhone(),
                     relativePhoneNumber.getRelation()
 

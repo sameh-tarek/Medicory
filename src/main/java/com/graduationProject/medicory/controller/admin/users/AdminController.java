@@ -2,6 +2,7 @@ package com.graduationProject.medicory.controller.admin.users;
 
 
 import com.graduationProject.medicory.model.users.admin.AdminDTO;
+import com.graduationProject.medicory.model.users.admin.AdminRequestDTO;
 import com.graduationProject.medicory.model.users.admin.AdminResponseDTO;
 import com.graduationProject.medicory.service.admin.users.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,7 @@ public class AdminController {
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
     @PostMapping("")
-    public ResponseEntity<String> addAdmin(@RequestBody AdminDTO newAdmin){
+    public ResponseEntity<String> addAdmin(@RequestBody AdminRequestDTO newAdmin){
         String message = adminService.addAdmin(newAdmin);
         return new ResponseEntity<>(message, HttpStatus.CREATED);
 

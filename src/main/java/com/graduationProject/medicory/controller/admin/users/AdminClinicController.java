@@ -1,7 +1,7 @@
 package com.graduationProject.medicory.controller.admin.users;
 
-import com.graduationProject.medicory.model.users.clinic.ClinicRequestDTO;
 import com.graduationProject.medicory.model.users.clinic.ClinicDTO;
+import com.graduationProject.medicory.model.users.clinic.ClinicRequestDTO;
 import com.graduationProject.medicory.model.users.clinic.ClinicResponseDTO;
 import com.graduationProject.medicory.service.admin.users.AdminClinicService;
 import lombok.RequiredArgsConstructor;

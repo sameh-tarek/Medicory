@@ -23,8 +23,9 @@ public class DoctorRequestDTO {
     private String nationalId ;
     private MaritalStatus maritalStatus;
     private Gender gender;
-    private Role role;
     private String email;
+    private Role role;
     private boolean isEnabled;
     private List<String> userPhoneNumbers;
+
 }

@@ -9,19 +9,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class AdminRequestDTO {
-
     private String firstName;
     private String lastName;
     private MaritalStatus maritalStatus;
     private Gender gender;
-    private Role role;
     private String email;
+    private Role role;
     private boolean isEnabled;
-    private List<String> userPhoneNumbers;
+    private List<String> phoneNumbers;
 }
