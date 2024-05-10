@@ -1,7 +1,7 @@
 package com.graduationProject.medicory.mapper.impl;
 
 import com.graduationProject.medicory.entity.phoneEntities.UserPhoneNumber;
-import com.graduationProject.medicory.mapper.UserPhoneNumberMapper;
+import com.graduationProject.medicory.mapper.phonesMappers.UserPhoneNumberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

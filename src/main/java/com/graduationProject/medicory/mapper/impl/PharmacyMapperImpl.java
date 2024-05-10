@@ -3,8 +3,8 @@ package com.graduationProject.medicory.mapper.impl;
 
 import com.graduationProject.medicory.entity.usersEntities.Pharmacy;
 import com.graduationProject.medicory.entity.usersEntities.User;
-import com.graduationProject.medicory.mapper.PharmacyMpper;
-import com.graduationProject.medicory.mapper.UserPhoneNumberMapper;
+import com.graduationProject.medicory.mapper.usersMappers.PharmacyMpper;
+import com.graduationProject.medicory.mapper.phonesMappers.UserPhoneNumberMapper;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyRequestDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyResponseDTO;

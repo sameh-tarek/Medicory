@@ -2,9 +2,9 @@ package com.graduationProject.medicory.service.lab.imageTest;
 
 
 import com.graduationProject.medicory.entity.testsEntities.ImagingTest;
-import com.graduationProject.medicory.mapper.ImagingTestMapper;
+import com.graduationProject.medicory.mapper.testsMappers.ImagingTestMapper;
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
-import com.graduationProject.medicory.repository.ImagingTestRepository;
+import com.graduationProject.medicory.repository.testsRepositories.ImagingTestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
