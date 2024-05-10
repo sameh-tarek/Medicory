@@ -1,7 +1,7 @@
 package com.graduationProject.medicory.mapper.impl;
 
 import com.graduationProject.medicory.entity.medicationEntities.Medication;
-import com.graduationProject.medicory.mapper.MedicationMapper;
+import com.graduationProject.medicory.mapper.medicationsMappers.MedicationMapper;
 import com.graduationProject.medicory.model.medication.MedicationDTO;
 import com.graduationProject.medicory.model.medication.MedicationResponseDTO;
 import org.springframework.stereotype.Component;

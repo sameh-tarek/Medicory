@@ -2,9 +2,9 @@ package com.graduationProject.medicory.service.pharmacy.impl;
 
 
 import com.graduationProject.medicory.entity.medicationEntities.Prescription;
-import com.graduationProject.medicory.mapper.PrescriptionMapper;
+import com.graduationProject.medicory.mapper.medicationsMappers.PrescriptionMapper;
 import com.graduationProject.medicory.model.prescription.PrescriptionResponse;
-import com.graduationProject.medicory.repository.PrescriptionRepository;
+import com.graduationProject.medicory.repository.MedicationsRepositories.PrescriptionRepository;
 import com.graduationProject.medicory.service.pharmacy.PharmacyPrescriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
