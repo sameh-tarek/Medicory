@@ -2,8 +2,8 @@ package com.graduationProject.medicory.mapper.impl;
 
 import com.graduationProject.medicory.entity.medicationEntities.Prescription;
 import com.graduationProject.medicory.entity.usersEntities.Doctor;
-import com.graduationProject.medicory.mapper.MedicationMapper;
-import com.graduationProject.medicory.mapper.PrescriptionMapper;
+import com.graduationProject.medicory.mapper.medicationsMappers.MedicationMapper;
+import com.graduationProject.medicory.mapper.medicationsMappers.PrescriptionMapper;
 import com.graduationProject.medicory.model.prescription.PrescriptionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

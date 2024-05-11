@@ -1,8 +1,10 @@
 package com.graduationProject.medicory.mapper.impl;
 
 import com.graduationProject.medicory.entity.usersEntities.Lab;
-import com.graduationProject.medicory.mapper.LabMapper;
-import com.graduationProject.medicory.mapper.UserMapper;
+import com.graduationProject.medicory.entity.usersEntities.User;
+import com.graduationProject.medicory.mapper.usersMappers.LabMapper;
+import com.graduationProject.medicory.mapper.phonesMappers.UserPhoneNumberMapper;
+import com.graduationProject.medicory.model.users.lab.LabDTO;
 import com.graduationProject.medicory.model.users.lab.LabRequestDTO;
 import com.graduationProject.medicory.model.users.lab.LabResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -11,36 +13,50 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class LabMappperImpl implements LabMapper {
+    private final UserPhoneNumberMapper phoneNumberMapper;
 
-    private final UserMapper map;
-
-    @Override
-    public Lab toEntity(LabRequestDTO labRequestDTO) {
-        return new Lab(
-                labRequestDTO.getId()
-                , labRequestDTO.getName()
-                , labRequestDTO.getGoogleMapsLink()
-                , labRequestDTO.getAddress()
-                , labRequestDTO.getOwnerName()
-                , map.toEntity(
-                labRequestDTO.getUser()
-        )
-        );
-    }
 
     @Override
-    public LabRequestDTO toDTO(Lab lab) {
-        return new LabRequestDTO(
-                lab.getId(),
-                lab.getName(),
-                lab.getGoogleMapsLink(),
-                lab.getAddress(),
-                lab.getOwnerName(),
-                map.toDto(
-                        lab.getUser()
+    public Lab toRequestEntity(LabRequestDTO lab) {
+        User user = User.builder()
+                .role(lab.getRole())
+                .email(lab.getEmail())
+                .enabled(lab.isEnabled())
+                .userPhoneNumbers(
+                        phoneNumberMapper.toRequestEntity(lab.getUserPhoneNumbers())
                 )
-        );
+                .build();
+
+        return Lab.builder()
+                .name(lab.getName())
+                .googleMapsLink(lab.getGoogleMapsLink())
+                .address(lab.getAddress())
+                .ownerName(lab.getOwnerName())
+                .user(user)
+                .build();
     }
+
+    @Override
+    public LabDTO toDTO(Lab lab) {
+        User user = lab.getUser();
+        return LabDTO.builder()
+                .name(lab.getName())
+                .googleMapsLink(lab.getGoogleMapsLink())
+                .address(lab.getAddress())
+                .ownerName(lab.getOwnerName())
+                .code(user.getCode())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .role(user.getRole())
+                .isEnabled(user.isEnabled())
+                .updatedAt(user.getUpdatedAt())
+                .createdAt(user.getCreatedAt())
+                .userPhoneNumbers(phoneNumberMapper.toRequestDTO(
+                        user.getUserPhoneNumbers()
+                ))
+                .build();
+    }
+
 
     @Override
     public LabResponseDTO toResponseDTO(Lab lab) {

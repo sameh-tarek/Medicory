@@ -1,5 +1,6 @@
 package com.graduationProject.medicory.controller.admin.users;
 
+import com.graduationProject.medicory.model.users.pharmacy.PharmacyDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyRequestDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyResponseDTO;
 import com.graduationProject.medicory.service.admin.users.AdminPharmacyService;
@@ -19,8 +20,8 @@ public class AdminPharmacyController {
 
 
     @GetMapping("/id/{pharmacyId}/pharmacy")
-    public ResponseEntity<PharmacyRequestDTO> showAllDataOfPharmacyById(@PathVariable Long pharmacyId) {
-        PharmacyRequestDTO pharmacy = pharmacyService.showAllDataOfPharmacyById(pharmacyId);
+    public ResponseEntity<PharmacyDTO> showAllDataOfPharmacyById(@PathVariable Long pharmacyId) {
+        PharmacyDTO pharmacy = pharmacyService.showAllDataOfPharmacyById(pharmacyId);
         return ResponseEntity.ok(pharmacy);
     }
 
@@ -50,7 +51,7 @@ public class AdminPharmacyController {
 
 
     @PutMapping("/id/{pharmacyId}/pharmacy")
-    public ResponseEntity<String> updatePharmacy(@RequestBody PharmacyRequestDTO updatedPharmacy, @PathVariable Long pharmacyId) {
+    public ResponseEntity<String> updatePharmacy(@RequestBody PharmacyDTO updatedPharmacy, @PathVariable Long pharmacyId) {
         String message = pharmacyService.updatePharmacy(updatedPharmacy, pharmacyId);
         return ResponseEntity.ok(message);
     }

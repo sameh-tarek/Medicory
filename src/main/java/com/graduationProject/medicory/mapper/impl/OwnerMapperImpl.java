@@ -3,9 +3,9 @@ package com.graduationProject.medicory.mapper.impl;
 import com.graduationProject.medicory.entity.phoneEntities.RelativePhoneNumber;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
 import com.graduationProject.medicory.entity.usersEntities.User;
-import com.graduationProject.medicory.mapper.OwnerMapper;
-import com.graduationProject.medicory.mapper.RelativePhoneMapper;
-import com.graduationProject.medicory.mapper.UserMapper;
+import com.graduationProject.medicory.mapper.usersMappers.OwnerMapper;
+import com.graduationProject.medicory.mapper.phonesMappers.RelativePhoneMapper;
+import com.graduationProject.medicory.mapper.usersMappers.UserMapper;
 import com.graduationProject.medicory.model.owner.OwnerDTO;
 import com.graduationProject.medicory.model.phones.RelativePhoneNumberDTO;
 import com.graduationProject.medicory.model.users.owner.OwnerRequestDTO;
@@ -144,7 +144,6 @@ public class OwnerMapperImpl implements OwnerMapper {
         return phoneNumbers.stream()
                 .map(dto -> {
                     RelativePhoneNumber relativePhoneNumber = new RelativePhoneNumber();
-                    relativePhoneNumber.setId(dto.getId());
                     relativePhoneNumber.setOwner(owner);
                     relativePhoneNumber.setPhone(dto.getPhone());
                     relativePhoneNumber.setRelation(dto.getRelation());

@@ -6,13 +6,13 @@ import com.graduationProject.medicory.entity.usersEntities.User;
 import com.graduationProject.medicory.exception.ConflictException;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.exception.UserDisabledException;
-import com.graduationProject.medicory.mapper.PharmacyMpper;
-import com.graduationProject.medicory.mapper.UserMapper;
+import com.graduationProject.medicory.mapper.usersMappers.PharmacyMpper;
+import com.graduationProject.medicory.model.users.pharmacy.PharmacyDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyRequestDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyResponseDTO;
-import com.graduationProject.medicory.repository.PharmacyRepository;
-import com.graduationProject.medicory.repository.UserPhoneNumberRepository;
-import com.graduationProject.medicory.repository.UserRepository;
+import com.graduationProject.medicory.repository.usersRepositories.PharmacyRepository;
+import com.graduationProject.medicory.repository.phoneRepositories.UserPhoneNumberRepository;
+import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
 import com.graduationProject.medicory.service.admin.users.AdminPharmacyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,6 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
     private final PharmacyRepository pharmacyRepository;
     private final UserRepository userRepository;
     private final PharmacyMpper pharmacyMpper;
-    private final UserMapper userMapper;
     private final UserPhoneNumberRepository userPhoneRepo;
 
 
@@ -62,7 +61,7 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
     }
 
     @Override
-    public PharmacyRequestDTO showAllDataOfPharmacyById(long id) {
+    public PharmacyDTO showAllDataOfPharmacyById(long id) {
         if (id > 0) {
             Pharmacy pharmacy = pharmacyRepository.findById(id)
                     .orElseThrow(() -> new RecordNotFoundException("No pharmacy with id " + id));
@@ -72,8 +71,8 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
     }
 
     @Override
-    public String addPharmacy(PharmacyRequestDTO newPharmacyRequestDTO) {
-        Pharmacy newPharmacy = pharmacyMpper.toEntity(newPharmacyRequestDTO);
+    public String addPharmacy(PharmacyRequestDTO newPharmacyDTO) {
+        Pharmacy newPharmacy = pharmacyMpper.toRequestEntity(newPharmacyDTO);
         User newUser = newPharmacy.getUser();
         Optional<User> existingUser = userRepository.findByEmail(newUser.getEmail());
         if (!existingUser.isPresent()) {
@@ -101,7 +100,7 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
     }
 
     @Override
-    public String updatePharmacy(PharmacyRequestDTO updatedPharmacy, Long pharmacyId) {
+    public String updatePharmacy(PharmacyDTO updatedPharmacy, Long pharmacyId) {
         if (pharmacyId > 0) {
             Pharmacy oldPharmacy = pharmacyRepository.findById(pharmacyId)
                     .orElseThrow(() -> new RecordNotFoundException("No pharmacy with id " + pharmacyId));
@@ -110,42 +109,33 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
             oldPharmacy.setOwnerName(updatedPharmacy.getOwnerName());
             oldPharmacy.setGoogleMapsLink(updatedPharmacy.getGoogleMapsLink());
 
-            User updatedUser = userMapper.toEntity(updatedPharmacy.getUser());
             User oldUser = oldPharmacy.getUser();
 
-            if (updatedUser != null) {
-                oldUser.setEmail(updatedUser.getEmail());
-                oldUser.setPassword(updatedUser.getPassword());
-                oldUser.setEnabled(updatedUser.isEnabled());
-                oldUser.setRole(updatedUser.getRole());
-                oldUser.setUpdatedAt(LocalDateTime.now());
+            oldUser.setEmail(updatedPharmacy.getEmail());
+            oldUser.setPassword(updatedPharmacy.getPassword());
+            oldUser.setEnabled(updatedPharmacy.isEnabled());
+            oldUser.setRole(updatedPharmacy.getRole());
+            oldUser.setUpdatedAt(LocalDateTime.now());
+
+            List<String> updatedPhoneNumbers = updatedPharmacy.getUserPhoneNumbers();
+            List<UserPhoneNumber> oldUserPhoneNumbers = oldUser.getUserPhoneNumbers();
+
+            for (int i = 0; i < updatedPhoneNumbers.size(); i++) {
+                String updatedPhoneNumber = updatedPhoneNumbers.get(i);
+                UserPhoneNumber userPhoneNumber = oldUserPhoneNumbers.get(i);
+
+                if (!userPhoneNumber.getPhone().equals(updatedPhoneNumber)) {
+                    Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber);
+                    if (existingUser.isPresent()) {
+                        throw new ConflictException("This phone number " + updatedPhoneNumber + " already exists");
+                    }
+                    userPhoneNumber.setPhone(updatedPhoneNumber);
+                }
             }
-
-            List<UserPhoneNumber> updatedUserPhoneNumbers = updatedUser.getUserPhoneNumbers();
-            List<UserPhoneNumber> existingUserPhoneNumbers = oldUser.getUserPhoneNumbers()
-                    .stream()
-                    .map(existingPhoneNumber -> {
-                        Optional<UserPhoneNumber> matchingUpdatedPhoneNumber = updatedUserPhoneNumbers.stream()
-                                .filter(updatedPhoneNumber ->
-                                        updatedPhoneNumber.getId() == existingPhoneNumber.getId())
-                                .findFirst();
-
-                        if (matchingUpdatedPhoneNumber.isPresent()) {
-                            UserPhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
-                            Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber.getPhone());
-                            if (existingUser.isPresent()) {
-                                throw new ConflictException("This phone number " + updatedPhoneNumber.getPhone() + " already exists");
-                            }
-                            existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
-                        }
-                        return existingPhoneNumber;
-                    })
-                    .collect(Collectors.toList());
-
 
             userRepository.save(oldUser);
             pharmacyRepository.save(oldPharmacy);
-            userPhoneRepo.saveAll(existingUserPhoneNumbers);
+            userPhoneRepo.saveAll(oldUserPhoneNumbers);
             return "Pharmacy updated sucessfully";
 
         }
