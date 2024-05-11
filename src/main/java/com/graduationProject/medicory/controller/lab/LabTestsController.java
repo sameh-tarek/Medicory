@@ -25,7 +25,7 @@ public class LabTestsController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     //*
-    @GetMapping("/active-tests/{prescriptionId}")
+    @GetMapping("/active/{prescriptionId}")
     ResponseEntity<List<LabTestResponseDTO>> getActiveTests(@PathVariable Long prescriptionId){
         List<LabTestResponseDTO> response = labTestService.getActiveTestsOfPrescription(prescriptionId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
