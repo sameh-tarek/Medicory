@@ -31,6 +31,7 @@ public class AdminMapperImpl implements AdminMapper {
     public AdminDTO toDTO(Admin admin) {
         User user = admin.getUser();
         return AdminDTO.builder()
+                .id(admin.getId())
                 .firstName(admin.getFirstName())
                 .lastName(admin.getLastName())
                 .maritalStatus(admin.getMaritalStatus())

@@ -40,6 +40,7 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
 
     @Override
     public List<OwnerResponseDTO> findOwnersByOwnerName(String fullName) {
+        log.info("Searching for owners with name {}", fullName);
         if (fullName == null || fullName.isEmpty()) {
             return Collections.emptyList();
         }
@@ -68,7 +69,7 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
             owners.addAll(ownerRepository.findOwnerByLastName(fullName));
         }
         if (owners.isEmpty())
-            throw new RecordNotFoundException("No owners with name " + fullName + " founded :)");
+            throw new RecordNotFoundException("No owners with name " + fullName + " found");
 
         return owners.stream()
                 .map(ownerMapper::toResponseDTO)
@@ -77,6 +78,7 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
 
     @Override
     public OwnerResponseDTO findOwnerByOwnerEmail(String userEmail) {
+        log.info("Searching for owner with email {}", userEmail);
         Owner owner = ownerRepository.findOwnerByUserEmail(userEmail)
                 .orElseThrow(() -> new RecordNotFoundException("No user *Owner* with email " + userEmail));
         return ownerMapper.toResponseDTO(owner);
@@ -85,16 +87,17 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
 
     @Override
     public OwnerResponseDTO findOwnerByCode(String ownerCode) {
-
+        log.info("Searching for owner with code {}", ownerCode);
         Owner owner = ownerRepository
                 .findByUserCode(ownerCode)
-                .orElseThrow(() -> new RecordNotFoundException("Owner with code " + ownerCode + "doesn't exist"));
+                .orElseThrow(() -> new RecordNotFoundException("Owner with code " + ownerCode + " doesn't exist"));
         return ownerMapper.toResponseDTO(owner);
 
     }
 
     @Override
     public OwnerRequestDTO showAllDataOfOwnerById(long ownerId) {
+        log.info("Fetching data of owner with id {}", ownerId);
         if (ownerId > 0) {
             Owner owner = ownerRepository.findById(ownerId)
                     .orElseThrow(() -> new RecordNotFoundException("No owner with id " + ownerId));
@@ -106,6 +109,7 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
     // TODO GENERATE CODE WITH EACH USER
     @Override
     public String addNewOwner(OwnerRequestDTO newOwnerDTO) {
+        log.info("Adding new owner");
         Owner newOwner = ownerMapper.toEntity(newOwnerDTO);
         User newUser = newOwner.getUser();
         Optional<User> checkUserExisting = userRepository.findByEmail(newOwner.getUser().getEmail());
@@ -120,7 +124,7 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
                     .map(userPhoneNumber -> {
                         Optional<UserPhoneNumber> user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone());
                         if (user.isPresent())
-                            throw new ConflictException("This phone number " + userPhoneNumber.getPhone() + " already exist");
+                            throw new ConflictException("This phone number " + userPhoneNumber.getPhone() + " already exists");
                         userPhoneNumber.setUser(newUser);
                         return userPhoneNumber;
                     })
@@ -131,11 +135,12 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
             userPhoneRepo.saveAll(userPhoneNumbers);
             return "owner added successfully";
         }
-        throw new ConflictException("Owner with email " + newUser.getEmail() + " already exsist");
+        throw new ConflictException("Owner with email " + newUser.getEmail() + " already exists");
     }
 
     @Override
     public String updateOwner(long ownerId, OwnerRequestDTO updatedOwnerDTO) {
+        log.info("Updating owner with id: {}", ownerId);
         if (ownerId > 0) {
             Owner oldOwner = ownerRepository.findById(ownerId)
                     .orElseThrow(() -> new RecordNotFoundException("No owner with id " + ownerId));
@@ -217,6 +222,7 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
 
     @Override
     public String deleteOwnerById(long id) {
+        log.info("Deleting owner with id: {}", id);
         if (id > 0) {
             Owner owner = ownerRepository.findById(id)
                     .orElseThrow(() -> new RecordNotFoundException("No owner with id " + id));
@@ -225,10 +231,11 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
                 user.setUpdatedAt(LocalDateTime.now());
                 user.setEnabled(false);
                 userRepository.save(user);
-                return "deleted sucessfully";
+                return "deleted successfully";
             }
             throw new UserDisabledException("This user is unEnabled already");
         }
         throw new IllegalArgumentException("Invalid id " + id);
     }
 }
+

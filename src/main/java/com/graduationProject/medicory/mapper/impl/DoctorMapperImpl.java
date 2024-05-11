@@ -37,6 +37,7 @@ public class DoctorMapperImpl implements DoctorMapper {
     public DoctorDTO toDTO(Doctor doctor) {
         User user = doctor.getUser();
         return DoctorDTO.builder()
+                .id(doctor.getId())
                 .firstName(doctor.getFirstName())
                 .middleName(doctor.getMiddleName())
                 .lastName(doctor.getLastName())

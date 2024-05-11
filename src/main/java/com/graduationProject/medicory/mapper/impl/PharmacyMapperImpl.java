@@ -20,6 +20,7 @@ public class PharmacyMapperImpl implements PharmacyMpper {
     public PharmacyDTO toDTO(Pharmacy pharmacy) {
         User user = pharmacy.getUser();
         return PharmacyDTO.builder()
+                .id(pharmacy.getId())
                 .name(pharmacy.getName())
                 .googleMapsLink(pharmacy.getGoogleMapsLink())
                 .address(pharmacy.getAddress())

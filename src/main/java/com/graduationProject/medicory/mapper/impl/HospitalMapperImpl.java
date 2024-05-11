@@ -21,6 +21,7 @@ public class HospitalMapperImpl implements HospitalMapper {
         User user = hospital.getUser();
 
         return HospitalDTO.builder()
+                .id(hospital.getId())
                 .name(hospital.getName())
                 .googleMapsLink(hospital.getGoogleMapsLink())
                 .address(hospital.getAddress())

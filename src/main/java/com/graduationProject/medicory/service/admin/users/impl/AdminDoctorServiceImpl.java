@@ -7,7 +7,6 @@ import com.graduationProject.medicory.exception.ConflictException;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.exception.UserDisabledException;
 import com.graduationProject.medicory.mapper.DoctorMapper;
-import com.graduationProject.medicory.mapper.UserMapper;
 import com.graduationProject.medicory.model.users.doctor.DoctorDTO;
 import com.graduationProject.medicory.model.users.doctor.DoctorRequestDTO;
 import com.graduationProject.medicory.model.users.doctor.DoctorResponseDTO;
@@ -33,40 +32,35 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
     private final DoctorMapper doctorMapper;
-    private final UserMapper userMapper;
     private final UserPhoneNumberRepository userPhoneRepo;
-
-
-    @Override
-    public DoctorDTO showAllDoctorDataById(Long doctorId) {
-        if (doctorId > 0) {
-            Doctor doctor = doctorRepository.findById(doctorId)
-                    .orElseThrow(() -> new RecordNotFoundException("No doctor  with id " + doctorId));
-            return doctorMapper.toDTO(doctor);
-        }
-        throw new IllegalArgumentException("Invalid id " + doctorId + ".....");
-    }
 
     @Override
     public DoctorResponseDTO findDoctoByUserEmail(String userEmail) {
+        log.info("Admin search for doctor by email {} ",userEmail);
         Doctor doctor = doctorRepository
                 .findDoctorByUserEmail(userEmail)
                 .orElseThrow(() -> new RecordNotFoundException("No user *DOCTOR* with this email " + userEmail));
-        return doctorMapper.toResponseDTO(doctor);
+       DoctorResponseDTO response = doctorMapper.toResponseDTO(doctor);
+        log.info("Data of doctor with email {} : {}",userEmail,response);
+        return  response;
     }
 
     @Override
     public DoctorResponseDTO findDoctorByUserCode(String userCode) {
+        log.info("Admin search for doctor by code {} ",userCode);
+
         Doctor doctor = doctorRepository
                 .findDoctorByUserCode(userCode)
                 .orElseThrow(() -> new RecordNotFoundException("No user *DOCTOR* with code : " + userCode));
-        return doctorMapper.toResponseDTO(doctor);
+        DoctorResponseDTO response = doctorMapper.toResponseDTO(doctor);
+        log.info("Data of doctor with code {} : {}",userCode,response);
+        return response ;
     }
 
-    //:(
     @Override
     public List<DoctorResponseDTO> findDoctorbyFullName(String fullName) {
         List<Doctor> doctors = null;
+        log.info("Admin search for doctor by fullName {} ",fullName);
         if (fullName.contains(" ")) {
             String[] nameParts = fullName.split(" ");
             if (nameParts.length == 1) {
@@ -94,16 +88,32 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
             doctors.addAll(doctorRepository.findDoctorByMiddleName(fullName));
             doctors.addAll(doctorRepository.findDoctorByLastName(fullName));
         }
-        if (doctors.isEmpty())
+        if (doctors.isEmpty()) {
+            log.error("No doctor found with name {}" ,fullName );
             throw new RecordNotFoundException("No doctor found with name " + fullName);
-
-        return doctors.stream()
+        }
+       List<DoctorResponseDTO> response = doctors
+               .stream()
                 .map(doctorMapper::toResponseDTO)
                 .collect(Collectors.toList());
+        log.info("Data of doctor with name {} : {}",fullName,response);
+       return response ;
     }
-
+    @Override
+    public DoctorDTO showAllDoctorDataById(Long doctorId) {
+        if (doctorId > 0) {
+            log.info("Admin want to get data of doctor with id {}",doctorId);
+            Doctor doctor = doctorRepository.findById(doctorId)
+                    .orElseThrow(() -> new RecordNotFoundException("No doctor  with id " + doctorId));
+            DoctorDTO response = doctorMapper.toDTO(doctor);
+            log.info("Data of doctor with id {} :{}",doctorId,response);
+            return response;
+        }
+        throw new IllegalArgumentException("Invalid id " + doctorId + ".....");
+    }
     @Override
     public String addNewDoctor(DoctorRequestDTO newDoctorDTO) {
+        log.info("Admin want to add new doctor");
         Doctor newDoctor = doctorMapper.toRequestEntity(newDoctorDTO);
         User newUser = newDoctor.getUser();
         Optional<User> existing = userRepository.findByEmail(newUser.getEmail());
@@ -115,8 +125,10 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
                     .stream()
                     .map(userPhoneNumber -> {
                         Optional<UserPhoneNumber> user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone());
-                        if (user.isPresent())
+                        if (user.isPresent()) {
+                            log.error("Admin add phone number {} already exist",userPhoneNumber.getPhone());
                             throw new ConflictException("This phone number " + userPhoneNumber.getPhone() + " already exist");
+                        }
                         userPhoneNumber.setUser(newUser);
                         return userPhoneNumber;
                     })
@@ -125,14 +137,15 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
             userRepository.save(newUser);
             doctorRepository.save(newDoctor);
             userPhoneRepo.saveAll(userPhoneNumbers);
+            log.info("Doctor added successfully");
             return "Doctor added successfully";
         }
         throw new ConflictException("User with this email " + newUser.getEmail() + " already exist ");
     }
 
-    //TODO enhance update function for all users
     @Override
     public String updateDoctor(DoctorDTO updatedDoctorDTO, Long doctorId) {
+        log.trace("Admin want to update doctor with id {}",doctorId);
         if (doctorId > 0) {
             Doctor oldDoctor = doctorRepository.findById(doctorId)
                     .orElseThrow(() -> new RecordNotFoundException("No doctor with id " + doctorId));
@@ -164,6 +177,7 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
                 if (!userPhoneNumber.getPhone().equals(updatedPhoneNumber)) {
                     Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber);
                     if (existingUser.isPresent()) {
+                        log.error("Admin add phone number {} already exist",userPhoneNumber.getPhone());
                         throw new ConflictException("This phone number " + updatedPhoneNumber + " already exists");
                     }
                     userPhoneNumber.setPhone(updatedPhoneNumber);
@@ -181,6 +195,7 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
 
     @Override
     public String deleteDoctorById(Long doctorId) {
+        log.info("Admin want to delete doctor with id {}",doctorId);
         if (doctorId > 0) {
             Doctor doctor = doctorRepository.findById(doctorId)
                     .orElseThrow(() -> new RecordNotFoundException("No doctor with id " + doctorId));
@@ -190,8 +205,10 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
                 unEnabledUser.setUpdatedAt(LocalDateTime.now());
                 unEnabledUser.setEnabled(false);
                 userRepository.save(unEnabledUser);
+                log.info("doctor with id {} disabled",doctorId);
                 return "Doctor deleted successfully";
             }
+            log.error("Admin tried to disable user that is already disabled");
             throw new UserDisabledException("This user is unEnabled already");
         }
         throw new IllegalArgumentException("Invalid id " + doctorId + ".....");

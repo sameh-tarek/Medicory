@@ -21,6 +21,7 @@ public class ClinicMapperImpl implements ClinicMapper {
     public ClinicDTO toDto(Clinic clinic) {
         User user = clinic.getUser();
         return ClinicDTO.builder()
+                .id(clinic.getId())
                 .name(clinic.getName())
                 .googleMapsLink(clinic.getGoogleMapsLink())
                 .address(clinic.getAddress())

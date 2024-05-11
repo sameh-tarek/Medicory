@@ -35,6 +35,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminDTO showAllAdminDataById(Long adminId) {
+        log.info("Fetching data of admin with id {}", adminId);
         if (adminId > 0) {
             Admin admin = adminRepository.findById(adminId)
                     .orElseThrow(() -> new RecordNotFoundException("No admin with id " + adminId));
@@ -45,6 +46,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminResponseDTO findAdminByEmail(String email) {
+        log.info("Searching for admin with email {}", email);
         Admin admin = adminRepository.findByUserEmail(email)
                 .orElseThrow(() -> new RecordNotFoundException("No admin with email " + email));
         return adminMapper.toResponseDTO(admin);
@@ -52,17 +54,15 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<AdminResponseDTO> findAdminByName(String fullName) {
-
-        if (fullName != null || fullName.isBlank()) {
-            List<Admin> admins = null;
-            // if enter fname + lname
+        log.info("Searching for admins with name {}", fullName);
+        if (fullName != null && !fullName.isBlank()) {
+            List<Admin> admins;
             if (fullName.contains(" ")) {
                 String[] nameParts = fullName.split(" ");
                 String fName = nameParts[0];
                 String lName = nameParts[1];
                 admins = adminRepository.findAdminsByFirstNameAndLastName(fName, lName);
             } else {
-                // if enter only fname
                 admins = adminRepository.findAdminsByFirstName(fullName);
                 admins.addAll(adminRepository.findAdminsByLastName(fullName));
             }
@@ -80,6 +80,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminResponseDTO findAdminByUserCode(String userCode) {
+        log.info("Searching for admin with code {}", userCode);
         Admin admin = adminRepository.findByUserCode(userCode)
                 .orElseThrow(() -> new RecordNotFoundException("No admin with code " + userCode));
         return adminMapper.toResponseDTO(admin);
@@ -87,6 +88,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public String addAdmin(AdminRequestDTO newAdmin) {
+        log.info("Adding new admin");
         Admin admin = adminMapper.toRequestEntity(newAdmin);
         User newUser = admin.getUser();
         Optional<User> existing = userRepository.findByEmail(newUser.getEmail());
@@ -99,7 +101,7 @@ public class AdminServiceImpl implements AdminService {
                     .map(userPhoneNumber -> {
                         Optional<UserPhoneNumber> user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone());
                         if (user.isPresent())
-                            throw new ConflictException("This phone number " + userPhoneNumber.getPhone() + " already exist");
+                            throw new ConflictException("This phone number " + userPhoneNumber.getPhone() + " already exists");
 
                         userPhoneNumber.setUser(newUser);
                         return userPhoneNumber;
@@ -108,15 +110,15 @@ public class AdminServiceImpl implements AdminService {
             userRepository.save(newUser);
             adminRepository.save(admin);
             userPhoneRepo.saveAll(userPhoneNumbers);
-            return "Admin added sucessfully";
+            log.info("Admin added successfully");
+            return "Admin added successfully";
         }
-        throw new ConflictException("User Email " + newUser.getEmail() + " already exist");
-
-
+        throw new ConflictException("User Email " + newUser.getEmail() + " already exists");
     }
 
     @Override
     public String updateAdmin(AdminDTO updatedAdminDTO, Long adminId) {
+        log.info("Updating admin with id: {}", adminId);
         if (adminId <= 0) {
             throw new IllegalArgumentException("Invalid admin ID: " + adminId);
         }
@@ -155,12 +157,14 @@ public class AdminServiceImpl implements AdminService {
         userRepository.save(oldUser);
         adminRepository.save(oldAdmin);
         userPhoneRepo.saveAll(oldUserPhoneNumbers);
+        log.info("Admin with id {} updated successfully", adminId);
         return "Admin updated successfully";
     }
 
 
     @Override
     public String deleteAdmin(Long adminId) {
+        log.info("Deleting admin with id: {}", adminId);
         if (adminId > 0) {
             Admin admin = adminRepository
                     .findById(adminId)
@@ -170,10 +174,13 @@ public class AdminServiceImpl implements AdminService {
                 unEnabledUser.setEnabled(false);
                 unEnabledUser.setUpdatedAt(LocalDateTime.now());
                 userRepository.save(unEnabledUser);
+                log.info("Admin with id {} deleted", adminId);
                 return "admin deleted ";
             }
+            log.error("User with id {} already disabled", adminId);
             throw new UserDisabledException("This user is unEnabled already");
         }
+        log.error("Invalid id {}", adminId);
         throw new IllegalArgumentException("Invalid id " + adminId);
     }
 
