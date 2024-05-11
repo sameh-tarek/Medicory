@@ -19,10 +19,9 @@ public class LabImageTestServiceImpl implements LabImageTestService {
     @Override
     public List<ImagingTestResponseDTO> getAllImageTestsOfPrescription(Long prescriptionId) {
         List<ImagingTest> imagingTests = imagingTestRepository.findByPrescriptionId(prescriptionId);
-        System.out.println(imagingTests.size());
-        List<ImagingTestResponseDTO> response = imagingTests.stream().map(
-                imagingTest -> imagingTestMapper.toDTO(imagingTest)
-        ).toList();
+        List<ImagingTestResponseDTO> response = imagingTests.stream()
+                .map(imagingTest -> imagingTestMapper.toDTO(imagingTest))
+                .toList();
         return response;
     }
 
@@ -30,9 +29,9 @@ public class LabImageTestServiceImpl implements LabImageTestService {
     public List<ImagingTestResponseDTO> getActiveImageTestsOfPrescription(Long prescriptionId) {
 
         List<ImagingTest> imagingTests = imagingTestRepository.findActiveTestsByPrescriptionId(prescriptionId);
-        List<ImagingTestResponseDTO> response = imagingTests.stream().map(
-                imagingTest -> imagingTestMapper.toDTO(imagingTest)
-        ).toList();
+        List<ImagingTestResponseDTO> response = imagingTests.stream()
+                .map(imagingTest -> imagingTestMapper.toDTO(imagingTest))
+                .toList();
         return response;
     }
 }
