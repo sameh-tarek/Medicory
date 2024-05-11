@@ -3,7 +3,7 @@ package com.graduationProject.medicory.service.auth;
 import com.graduationProject.medicory.entity.usersEntities.User;
 import com.graduationProject.medicory.model.auth.AuthenticationRequest;
 import com.graduationProject.medicory.model.auth.AuthenticationResponse;
-import com.graduationProject.medicory.repository.UserRepository;
+import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
 import com.graduationProject.medicory.security.JWTService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

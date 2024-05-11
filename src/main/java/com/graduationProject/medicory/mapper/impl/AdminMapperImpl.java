@@ -2,8 +2,8 @@ package com.graduationProject.medicory.mapper.impl;
 
 import com.graduationProject.medicory.entity.usersEntities.Admin;
 import com.graduationProject.medicory.entity.usersEntities.User;
-import com.graduationProject.medicory.mapper.AdminMapper;
-import com.graduationProject.medicory.mapper.UserPhoneNumberMapper;
+import com.graduationProject.medicory.mapper.usersMappers.AdminMapper;
+import com.graduationProject.medicory.mapper.phonesMappers.UserPhoneNumberMapper;
 import com.graduationProject.medicory.model.users.admin.AdminDTO;
 import com.graduationProject.medicory.model.users.admin.AdminRequestDTO;
 import com.graduationProject.medicory.model.users.admin.AdminResponseDTO;

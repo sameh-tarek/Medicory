@@ -3,7 +3,7 @@ package com.graduationProject.medicory.utils;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
 import com.graduationProject.medicory.entity.usersEntities.User;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
-import com.graduationProject.medicory.repository.OwnerRepository;
+import com.graduationProject.medicory.repository.usersRepositories.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

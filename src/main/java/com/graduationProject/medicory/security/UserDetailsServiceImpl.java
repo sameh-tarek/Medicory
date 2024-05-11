@@ -1,7 +1,7 @@
 package com.graduationProject.medicory.security;
 
 import com.graduationProject.medicory.entity.usersEntities.User;
-import com.graduationProject.medicory.repository.UserRepository;
+import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
