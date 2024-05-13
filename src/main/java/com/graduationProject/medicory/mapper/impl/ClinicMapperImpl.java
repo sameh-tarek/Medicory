@@ -25,6 +25,7 @@ public class ClinicMapperImpl implements ClinicMapper {
                 .name(clinic.getName())
                 .googleMapsLink(clinic.getGoogleMapsLink())
                 .address(clinic.getAddress())
+                .specialization(clinic.getSpecialization())
                 .ownerName(clinic.getOwnerName())
                 .code(user.getCode())
                 .email(user.getEmail())

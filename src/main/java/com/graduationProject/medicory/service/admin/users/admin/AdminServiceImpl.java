@@ -1,4 +1,4 @@
-package com.graduationProject.medicory.service.admin.users.impl;
+package com.graduationProject.medicory.service.admin.users.admin;
 
 import com.graduationProject.medicory.entity.phoneEntities.UserPhoneNumber;
 import com.graduationProject.medicory.entity.usersEntities.Admin;
@@ -13,7 +13,6 @@ import com.graduationProject.medicory.model.users.admin.AdminResponseDTO;
 import com.graduationProject.medicory.repository.usersRepositories.AdminRepository;
 import com.graduationProject.medicory.repository.phoneRepositories.UserPhoneNumberRepository;
 import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
-import com.graduationProject.medicory.service.admin.users.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

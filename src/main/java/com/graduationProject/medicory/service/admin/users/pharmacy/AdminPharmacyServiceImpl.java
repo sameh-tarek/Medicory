@@ -1,4 +1,4 @@
-package com.graduationProject.medicory.service.admin.users.impl;
+package com.graduationProject.medicory.service.admin.users.pharmacy;
 
 import com.graduationProject.medicory.entity.phoneEntities.UserPhoneNumber;
 import com.graduationProject.medicory.entity.usersEntities.Pharmacy;
@@ -13,7 +13,7 @@ import com.graduationProject.medicory.model.users.pharmacy.PharmacyResponseDTO;
 import com.graduationProject.medicory.repository.usersRepositories.PharmacyRepository;
 import com.graduationProject.medicory.repository.phoneRepositories.UserPhoneNumberRepository;
 import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
-import com.graduationProject.medicory.service.admin.users.AdminPharmacyService;
+import com.graduationProject.medicory.service.admin.users.pharmacy.AdminPharmacyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

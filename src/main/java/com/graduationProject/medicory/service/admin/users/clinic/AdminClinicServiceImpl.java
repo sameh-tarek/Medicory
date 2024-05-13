@@ -1,4 +1,4 @@
-package com.graduationProject.medicory.service.admin.users.impl;
+package com.graduationProject.medicory.service.admin.users.clinic;
 
 import com.graduationProject.medicory.entity.phoneEntities.UserPhoneNumber;
 import com.graduationProject.medicory.entity.usersEntities.Clinic;
@@ -13,7 +13,6 @@ import com.graduationProject.medicory.model.users.clinic.ClinicResponseDTO;
 import com.graduationProject.medicory.repository.usersRepositories.ClinicRepository;
 import com.graduationProject.medicory.repository.phoneRepositories.UserPhoneNumberRepository;
 import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
-import com.graduationProject.medicory.service.admin.users.AdminClinicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,8 +25,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-
-//TODO enhance this
 public class AdminClinicServiceImpl implements AdminClinicService {
 
     private final ClinicRepository clinicRepository;

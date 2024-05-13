@@ -1,4 +1,4 @@
-package com.graduationProject.medicory.service.admin.users.impl;
+package com.graduationProject.medicory.service.admin.users.owner;
 
 import com.graduationProject.medicory.entity.phoneEntities.RelativePhoneNumber;
 import com.graduationProject.medicory.entity.phoneEntities.UserPhoneNumber;
@@ -15,7 +15,7 @@ import com.graduationProject.medicory.repository.usersRepositories.OwnerReposito
 import com.graduationProject.medicory.repository.phoneRepositories.RelativePhoneNumberRepository;
 import com.graduationProject.medicory.repository.phoneRepositories.UserPhoneNumberRepository;
 import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
-import com.graduationProject.medicory.service.admin.users.AdminOwnerService;
+import com.graduationProject.medicory.service.admin.users.owner.AdminOwnerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
