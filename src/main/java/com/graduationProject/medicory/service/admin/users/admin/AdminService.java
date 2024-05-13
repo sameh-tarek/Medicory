@@ -1,4 +1,4 @@
-package com.graduationProject.medicory.service.admin.users;
+package com.graduationProject.medicory.service.admin.users.admin;
 
 import com.graduationProject.medicory.model.users.admin.AdminDTO;
 import com.graduationProject.medicory.model.users.admin.AdminRequestDTO;

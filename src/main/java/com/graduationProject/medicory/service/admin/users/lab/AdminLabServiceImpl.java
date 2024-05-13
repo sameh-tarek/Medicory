@@ -1,4 +1,4 @@
-package com.graduationProject.medicory.service.admin.users.impl;
+package com.graduationProject.medicory.service.admin.users.lab;
 
 import com.graduationProject.medicory.entity.phoneEntities.UserPhoneNumber;
 import com.graduationProject.medicory.entity.usersEntities.Lab;
@@ -14,7 +14,6 @@ import com.graduationProject.medicory.model.users.lab.LabResponseDTO;
 import com.graduationProject.medicory.repository.usersRepositories.LabRepository;
 import com.graduationProject.medicory.repository.phoneRepositories.UserPhoneNumberRepository;
 import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
-import com.graduationProject.medicory.service.admin.users.AdminLabService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,62 +34,70 @@ public class AdminLabServiceImpl implements AdminLabService {
     private final UserMapper userMapper;
 
 
-//TODO add logs
-
-
     @Override
     public LabDTO showAllLabDataById(Long labId) {
+        log.info("Fetching data of lab with id {}", labId);
         if (labId > 0) {
             Lab lab = labRepo.findById(labId)
                     .orElseThrow(() -> new RecordNotFoundException("No lab with id " + labId));
-            return labMap.toDTO(lab);
+            LabDTO response =labMap.toDTO(lab);
+            log.info("Data of lab with id {} : {}",labId,response);
+            return response ;
         }
-
-        throw new RuntimeException("Invalid id" + labId);
+        throw new IllegalArgumentException("Invalid id: " + labId);
     }
 
     @Override
     public LabResponseDTO findLabByEmail(String userEmail) {
+        log.info("Searching for lab with email {}", userEmail);
         Lab lab = labRepo.findByUserEmail(userEmail)
                 .orElseThrow(() -> new RecordNotFoundException("No user *LAB* with email " + userEmail));
-        return labMap.toResponseDTO(lab);
+        LabResponseDTO response = labMap.toResponseDTO(lab);
+         log.info("Data of lab with email {} : {}",userEmail,response);
+        return response;
     }
 
     @Override
     public LabResponseDTO findLabByUserCode(String userCode) {
+        log.info("Searching for lab with code {}", userCode);
         Lab lab = labRepo.findByUserCode(userCode)
                 .orElseThrow(() -> new RecordNotFoundException("No lab with code " + userCode));
-        return labMap.toResponseDTO(lab);
+       LabResponseDTO response =labMap.toResponseDTO(lab);
+       log.info("Data of lab with code {} : {}",userCode,response);
+       return response;
     }
 
     @Override
     public List<LabResponseDTO> findLabByName(String labName) {
+        log.info("Searching for labs with name {}", labName);
         List<Lab> labs = labRepo.findByName(labName);
         if (!labs.isEmpty()) {
             return labs.stream()
                     .map(labMap::toResponseDTO)
                     .collect(Collectors.toList());
         }
-        throw new RecordNotFoundException("No labs with name " + labName);
+        throw new RecordNotFoundException("No labs found with name " + labName);
     }
 
     @Override
     public String addLab(LabRequestDTO newLab) {
+        log.info("Adding new lab");
         Lab lab = labMap.toRequestEntity(newLab);
         User newUser = lab.getUser();
         Optional<User> existingUser = userRepo.findByEmail(newUser.getEmail());
         if (!existingUser.isPresent()) {
-
             newUser.setCreatedAt(LocalDateTime.now());
             newUser.setUpdatedAt(LocalDateTime.now());
 
-            // user phone numbers
+            // User phone numbers
             List<UserPhoneNumber> userPhoneNumbers = newUser.getUserPhoneNumbers()
                     .stream()
                     .map(userPhoneNumber -> {
                         Optional<UserPhoneNumber> user = userPhoneRepo.findUserByPhone(userPhoneNumber.getPhone());
-                        if (user.isPresent())
-                            throw new ConflictException("This phone number " + userPhoneNumber.getPhone() + " already exist");
+                        if (user.isPresent()) {
+                            log.error("Admin add phone number {} already exist",userPhoneNumber.getPhone());
+                            throw new ConflictException("This phone number " + userPhoneNumber.getPhone() + " already exists");
+                        }
                         userPhoneNumber.setUser(newUser);
                         return userPhoneNumber;
                     })
@@ -99,6 +106,7 @@ public class AdminLabServiceImpl implements AdminLabService {
             userRepo.save(newUser);
             labRepo.save(lab);
             userPhoneRepo.saveAll(userPhoneNumbers);
+            log.info("Lab added successfully");
             return "Lab inserted successfully";
         }
         throw new ConflictException("The user email " + newUser.getEmail() + " already exists");
@@ -135,6 +143,7 @@ public class AdminLabServiceImpl implements AdminLabService {
                 if (!userPhoneNumber.getPhone().equals(updatedPhoneNumber)) {
                     Optional<UserPhoneNumber> existingUser = userPhoneRepo.findUserByPhone(updatedPhoneNumber);
                     if (existingUser.isPresent()) {
+                        log.error("Admin add phone number {} already exist",userPhoneNumber.getPhone());
                         throw new ConflictException("This phone number " + updatedPhoneNumber + " already exists");
                     }
                     userPhoneNumber.setPhone(updatedPhoneNumber);
@@ -150,9 +159,9 @@ public class AdminLabServiceImpl implements AdminLabService {
         throw new IllegalArgumentException("Invalid id: " + labId);
     }
 
-
     @Override
     public String deleteLab(Long labId) {
+        log.info("Deleting lab with id: {}", labId);
         if (labId > 0) {
             Lab lab = labRepo.findById(labId)
                     .orElseThrow(() -> new RecordNotFoundException("No lab with id " + labId));
@@ -163,10 +172,13 @@ public class AdminLabServiceImpl implements AdminLabService {
                 unEnabledUser.setUpdatedAt(LocalDateTime.now());
 
                 userRepo.save(unEnabledUser);
+                log.info("lab with id {} deleted",labId);
                 return "Deleted successfully";
             }
+            log.error("User with id {} already disabled",labId);
             throw new UserDisabledException("This user is unEnabled already");
         }
+        log.error("Invalid lab id: {}", labId);
         throw new IllegalArgumentException("Invalid id: " + labId);
     }
 }
