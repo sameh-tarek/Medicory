@@ -1,6 +1,7 @@
 package com.graduationProject.medicory.service.lab.test;
 
 import com.graduationProject.medicory.entity.testsEntities.LabTest;
+import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.exception.StorageException;
 import com.graduationProject.medicory.mapper.testsMappers.LabTestMapper;
 import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
@@ -52,18 +53,32 @@ public class LabTestServiceImpl implements LabTestService {
         }
         String fileName = file.getOriginalFilename();
         String path = UPLOAD_DIR + fileName;
-
+        createDirectoryIfNotExist(UPLOAD_DIR);
         saveFile(path, file);
+        updateTestWithTheResult(path,testId);
+
         return "file uploaded successfully";
+    }
+
+    private void createDirectoryIfNotExist(String uploadDir) throws IOException {
+        Path directory = Paths.get(uploadDir);
+        if(!Files.exists(directory)){
+            Files.createDirectory(directory);
+        }
+    }
+
+    private void updateTestWithTheResult(String filePath, Long testId) {
+        LabTest labTest = labTestRepository.findById(testId).orElseThrow(
+                ()->new RecordNotFoundException("This test isn't exist.")
+        );
+        labTest.setStatus(false);
+        labTest.setTestResultPath(filePath);
+        labTestRepository.save(labTest);
     }
 
     private void saveFile(String filePath, MultipartFile file) throws IOException {
         byte[] bytes = file.getBytes();
         Path path = Paths.get(filePath);
-//        Path path = Paths.get(filePath).normalize().toAbsolutePath();
-//
-//        if(path.getParent().equals(this.UPLOAD_DIR))
-
         Files.write(path, bytes);
     }
 }

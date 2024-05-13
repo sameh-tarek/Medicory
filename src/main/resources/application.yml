@@ -3,7 +3,6 @@ server:
 
 spring:
   datasource:
-    #url: jdbc:mysql://mysqldb:3306/medicory
     url: jdbc:mysql://localhost:3306/medicory
     username: medicory
     password: Medicory.1
@@ -36,4 +35,4 @@ rsa:
 
 application:
   security:
-    upload_dir: test_results
+    upload_dir: test_results/
