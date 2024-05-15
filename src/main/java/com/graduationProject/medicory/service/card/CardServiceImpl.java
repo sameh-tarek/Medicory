@@ -12,18 +12,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CardServiceImpl implements CardService {
 
-    private final OwnerContext ownerContext;
     private final SecurityUtils securityUtils;
 
     @Override
-    public Role getInteractingRoleBasedOnCard(Long ownerId) {
+    public Role getInteractingRoleBasedOnCard(String userCode) {
 
-        Long authenticatedUserId = securityUtils.getCurrentAuthenticatedOwnerId();
+        String authenticatedUserCode = securityUtils.getCurrentAuthenticatedUserCode();
+        Role authenticatedUserRole = securityUtils.getCurrentAuthenticatedUserRole();
 
-        if (authenticatedUserId.equals(ownerId)) {
+        if (authenticatedUserCode.equals(userCode) &&
+                authenticatedUserRole == Role.OWNER) {
             return Role.OWNER;
         } else {
-            Role authenticatedUserRole = securityUtils.getCurrentAuthenticatedUserRole();
             if (authenticatedUserRole == Role.CLINIC ||
                     authenticatedUserRole == Role.HOSPITAL ||
                     authenticatedUserRole == Role.LAB ||
