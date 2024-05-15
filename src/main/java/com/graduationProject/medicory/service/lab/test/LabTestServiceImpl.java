@@ -2,7 +2,7 @@ package com.graduationProject.medicory.service.lab.test;
 
 import com.graduationProject.medicory.entity.testsEntities.LabTest;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
-import com.graduationProject.medicory.exception.StorageException;
+import com.graduationProject.medicory.exception.ResutExistsException;
 import com.graduationProject.medicory.mapper.testsMappers.LabTestMapper;
 import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
 import com.graduationProject.medicory.repository.testsRepositories.LabTestRepository;
@@ -22,8 +22,10 @@ public class LabTestServiceImpl implements LabTestService {
     private final LabTestRepository labTestRepository;
     private final LabTestMapper labTestMapper;
 
-    @Value("${application.file_storage.lab.tests}")
+    @Value("${application.file-storage.lab.tests}")
     private String UPLOAD_DIR;
+    @Value("${application.file-storage.lab.file-size}")
+    private long MAX_FILE_SIZE;
 
     @Override
     public List<LabTestResponseDTO> getAllTestsOfPrescription(Long prescriptionId) {
@@ -45,19 +47,13 @@ public class LabTestServiceImpl implements LabTestService {
 
     @Override//
     public String uploadTestResult(MultipartFile file, Long testId) throws IOException {
-
-        if (file.isEmpty()) {
-            throw new StorageException("Failed to store empty file.");
+        if(isResultExists(testId)){
+            throw new ResutExistsException("The result of this test is exist you can delete it then update.");
         }
-        String fileName = file.getOriginalFilename();
-        String path = UPLOAD_DIR + fileName;
-        FileStorageUtil.createDirectoryIfNotExist(UPLOAD_DIR);
-        FileStorageUtil.saveFile(path, file);
-        updateTestWithTheResult(path,testId);
-
+        String path = FileStorageUtil.uploadFile(file, UPLOAD_DIR, MAX_FILE_SIZE);
+        updateTestWithTheResult(path, testId);
         return "Result uploaded successfully";
     }
-
     @Override
     public String deleteTestResult(Long testId) throws IOException {
         LabTest test = labTestRepository.findById(testId).orElseThrow(
@@ -69,6 +65,7 @@ public class LabTestServiceImpl implements LabTestService {
 
         test.setStatus(true);
         test.setTestResultPath(null);
+
         labTestRepository.save(test);
 
         return "The result of the test deleted successfully.";
@@ -81,6 +78,12 @@ public class LabTestServiceImpl implements LabTestService {
         labTest.setStatus(false);
         labTest.setTestResultPath(filePath);
         labTestRepository.save(labTest);
+    }
+    private boolean isResultExists(Long testId) {
+        LabTest labTest = labTestRepository.findById(testId).orElseThrow(
+                ()->new RecordNotFoundException("This test isn't exist.")
+        );
+        return !labTest.isStatus();
     }
 }
 

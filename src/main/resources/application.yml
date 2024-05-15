@@ -35,7 +35,8 @@ rsa:
   public-key: classpath:certs/public.pem
 
 application:
-  file_storage:
+  file-storage:
     lab:
       tests: file_Storage/lab/tests/
       image-tests: file_Storage/lab/image-tests/
+      file-size: 10485760 #50 MH

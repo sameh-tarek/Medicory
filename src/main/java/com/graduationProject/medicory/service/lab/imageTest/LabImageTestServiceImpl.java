@@ -1,8 +1,9 @@
 package com.graduationProject.medicory.service.lab.imageTest;
 
-
 import com.graduationProject.medicory.entity.testsEntities.ImagingTest;
+import com.graduationProject.medicory.entity.testsEntities.LabTest;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
+import com.graduationProject.medicory.exception.ResutExistsException;
 import com.graduationProject.medicory.exception.StorageException;
 import com.graduationProject.medicory.mapper.testsMappers.ImagingTestMapper;
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
@@ -22,8 +23,10 @@ public class LabImageTestServiceImpl implements LabImageTestService {
     private final ImagingTestRepository imagingTestRepository;
     private final ImagingTestMapper imagingTestMapper;
 
-    @Value("${application.file_storage.lab.image-tests}")
+    @Value("${application.file-storage.lab.image-tests}")
     private String UPLOAD_DIR;
+    @Value("${application.file-storage.lab.file-size}")
+    private long MAX_FILE_SIZE;
 
     @Override
     public List<ImagingTestResponseDTO> getAllImageTestsOfPrescription(Long prescriptionId) {
@@ -36,28 +39,21 @@ public class LabImageTestServiceImpl implements LabImageTestService {
 
     @Override
     public List<ImagingTestResponseDTO> getActiveImageTestsOfPrescription(Long prescriptionId) {
-
         List<ImagingTest> imagingTests = imagingTestRepository.findActiveTestsByPrescriptionId(prescriptionId);
         List<ImagingTestResponseDTO> response = imagingTests.stream()
                 .map(imagingTest -> imagingTestMapper.toDTO(imagingTest))
                 .toList();
         return response;
     }
-
-    @Override
-    public String uploadImageTestResult(MultipartFile file, Long imageTestId) throws IOException {
-
-        if(file.isEmpty()){
-            throw new StorageException("Failed to store empty file.");
-        }
-        String fileName = file.getOriginalFilename();
-        String path = UPLOAD_DIR+fileName;
-        FileStorageUtil.createDirectoryIfNotExist(UPLOAD_DIR);
-        FileStorageUtil.saveFile(path,file);
-        updateTestWithTheResult(path,imageTestId);
-
-        return "Result uploaded successfully";
+@Override
+public String uploadImageTestResult(MultipartFile file, Long imageTestId) throws IOException {
+    if(isResultExists(imageTestId)){
+        throw new ResutExistsException("The result of this test is exist you can delete it then update.");
     }
+    String filePath = FileStorageUtil.uploadFile(file, UPLOAD_DIR, MAX_FILE_SIZE);
+    updateTestWithTheResult(filePath, imageTestId);
+    return "Result uploaded successfully";
+}
     @Override
     public String deleteImageTestResult(Long testId) throws IOException {
         ImagingTest imagingTest = imagingTestRepository.findById(testId).orElseThrow(
@@ -65,14 +61,14 @@ public class LabImageTestServiceImpl implements LabImageTestService {
         );
 
         String path = imagingTest.getImageResult();
-        if(path!=null) {
-            FileStorageUtil.deleteFile(path);
-        }
-
         FileStorageUtil.deleteFile(path);
+
         imagingTest.setStatus(true);
         imagingTest.setImageResult(null);
-        return "Result deleted successfully.";
+
+        imagingTestRepository.save(imagingTest);
+
+        return "The result of the Imaging test deleted successfully.";
     }
 
     private void updateTestWithTheResult(String path, Long imageTestId) {
@@ -83,5 +79,10 @@ public class LabImageTestServiceImpl implements LabImageTestService {
         imagingTest.setImageResult(path);
         imagingTestRepository.save(imagingTest);
     }
-
+    private boolean isResultExists(Long testId) {
+        ImagingTest labTest = imagingTestRepository.findById(testId).orElseThrow(
+                ()->new RecordNotFoundException("This test isn't exist.")
+        );
+        return !labTest.isStatus();
+    }
 }
