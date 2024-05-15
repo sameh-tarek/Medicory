@@ -47,7 +47,7 @@ public class Medication {
     @JoinColumn(name = "current_schedule_id")
     private CurrentSchedule currentSchedule;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
 

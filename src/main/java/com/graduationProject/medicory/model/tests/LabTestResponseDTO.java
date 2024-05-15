@@ -1,20 +1,19 @@
 package com.graduationProject.medicory.model.tests;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Setter
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class LabTestResponseDTO {
     private Long id;
     private String name;
     private String description;
-    private String imageResult;
-    private String resultNotes;
+    private String testNotes;
     private boolean status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

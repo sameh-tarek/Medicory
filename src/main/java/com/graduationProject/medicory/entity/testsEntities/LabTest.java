@@ -4,14 +4,14 @@ import com.graduationProject.medicory.entity.medicationEntities.Prescription;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyResponseDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Setter
+@Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "lab_tests")
@@ -24,9 +24,9 @@ public class LabTest {
 
     private String description;
 
-    private String imageResult;
+    private String testResultPath;
 
-    private String resultNotes;
+    private String testNotes;
 
     private boolean status;
 
