@@ -15,4 +15,6 @@ public interface LabTestService {
     List<LabTestResponseDTO> getActiveTestsOfPrescription(Long prescriptionId);
 
     String uploadTestResult(MultipartFile file, Long testId) throws IOException;
+
+    String deleteTestResult(Long testId) throws IOException;
 }

@@ -7,6 +7,7 @@ import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.repository.testsRepositories.ImagingTestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 @RequiredArgsConstructor
@@ -33,5 +34,10 @@ public class LabImageTestServiceImpl implements LabImageTestService {
                 .map(imagingTest -> imagingTestMapper.toDTO(imagingTest))
                 .toList();
         return response;
+    }
+
+    @Override
+    public String uploadImageTestResult(MultipartFile file, Long imageTestId) {
+        return null;
     }
 }

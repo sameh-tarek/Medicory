@@ -24,7 +24,7 @@ public class LabTestServiceImpl implements LabTestService {
     private final LabTestRepository labTestRepository;
     private final LabTestMapper labTestMapper;
 
-    @Value("${application.security.upload_dir}")
+    @Value("${application.file_storage.upload_dir.tests}")
     private String UPLOAD_DIR;
 
     @Override
@@ -60,10 +60,31 @@ public class LabTestServiceImpl implements LabTestService {
         return "file uploaded successfully";
     }
 
+    @Override
+    public String deleteTestResult(Long testId) throws IOException {
+        LabTest test = labTestRepository.findById(testId).orElseThrow(
+                ()->new IllegalArgumentException("test not found!")
+        );
+        String path = test.getTestResultPath();
+        deleteTestResultFromStorage(path);
+        test.setStatus(true);
+        test.setTestResultPath(null);
+        labTestRepository.save(test);
+
+        return "The result of the test deleted successfully.";
+    }
+
+    private void deleteTestResultFromStorage(String filePath) throws IOException {
+        if(filePath!=null){
+            Path path = Paths.get(filePath);
+            Files.deleteIfExists(path);
+        }
+    }
+
     private void createDirectoryIfNotExist(String uploadDir) throws IOException {
         Path directory = Paths.get(uploadDir);
         if(!Files.exists(directory)){
-            Files.createDirectory(directory);
+            Files.createDirectories(directory);
         }
     }
 

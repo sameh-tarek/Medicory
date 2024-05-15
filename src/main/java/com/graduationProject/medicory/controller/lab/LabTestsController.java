@@ -29,9 +29,14 @@ public class LabTestsController {
         List<LabTestResponseDTO> response = labTestService.getActiveTestsOfPrescription(prescriptionId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    @PostMapping("uploadResult/{testId}")
+    @PostMapping("result/{testId}")
     ResponseEntity<String> uploadTestResult(@RequestParam("file") MultipartFile file, @PathVariable Long testId) throws IOException {
         String response = labTestService.uploadTestResult(file,testId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+    @DeleteMapping("result/{testId}")
+    ResponseEntity<String> deleteTestResult(@PathVariable Long testId) throws IOException {
+        String response = labTestService.deleteTestResult(testId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

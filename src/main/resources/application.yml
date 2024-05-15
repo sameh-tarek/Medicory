@@ -34,5 +34,7 @@ rsa:
   public-key: classpath:certs/public.pem
 
 application:
-  security:
-    upload_dir: test_results/
+  file_storage:
+    upload_dir:
+      tests: file_Storage/lab/tests/
+      image-tests: file_Storage/lab/image-tests/
