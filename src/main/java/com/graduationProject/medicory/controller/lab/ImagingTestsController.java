@@ -13,8 +13,9 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/lab/imagingTest/")
+@RequestMapping("/lab/imagingTests/")
 public class ImagingTestsController {
+
     final private LabImageTestService labImageTestService;
 
     @GetMapping("{prescriptionId}")
@@ -27,9 +28,14 @@ public class ImagingTestsController {
         List<ImagingTestResponseDTO> response = labImageTestService.getActiveImageTestsOfPrescription(prescriptionId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    @PostMapping("uploadResult/{imageTestId}")
+    @PostMapping("result/{imageTestId}")
     ResponseEntity<String> uploadTestResult(@RequestParam("file") MultipartFile file, @PathVariable Long imageTestId) throws IOException {
         String response = labImageTestService.uploadImageTestResult(file,imageTestId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+    @DeleteMapping("result/{testId}")
+    ResponseEntity<String> deleteTestResult(@PathVariable Long testId) throws IOException {
+        String response = labImageTestService.deleteImageTestResult(testId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

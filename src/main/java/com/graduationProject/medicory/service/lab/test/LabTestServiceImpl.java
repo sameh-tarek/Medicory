@@ -24,7 +24,7 @@ public class LabTestServiceImpl implements LabTestService {
     private final LabTestRepository labTestRepository;
     private final LabTestMapper labTestMapper;
 
-    @Value("${application.file_storage.upload_dir.tests}")
+    @Value("${application.file_storage.lab.tests}")
     private String UPLOAD_DIR;
 
     @Override
@@ -45,7 +45,7 @@ public class LabTestServiceImpl implements LabTestService {
         return response;
     }
 
-    @Override
+    @Override//
     public String uploadTestResult(MultipartFile file, Long testId) throws IOException {
 
         if (file.isEmpty()) {

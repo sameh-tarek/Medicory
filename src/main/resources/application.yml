@@ -36,6 +36,6 @@ rsa:
 
 application:
   file_storage:
-    upload_dir:
+    lab:
       tests: file_Storage/lab/tests/
       image-tests: file_Storage/lab/image-tests/
