@@ -40,6 +40,7 @@ public class LabMappperImpl implements LabMapper {
     public LabDTO toDTO(Lab lab) {
         User user = lab.getUser();
         return LabDTO.builder()
+                .id(lab.getId())
                 .name(lab.getName())
                 .googleMapsLink(lab.getGoogleMapsLink())
                 .address(lab.getAddress())

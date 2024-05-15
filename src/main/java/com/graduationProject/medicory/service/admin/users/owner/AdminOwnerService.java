@@ -1,4 +1,4 @@
-package com.graduationProject.medicory.service.admin.users;
+package com.graduationProject.medicory.service.admin.users.owner;
 
 
 import com.graduationProject.medicory.model.users.owner.OwnerRequestDTO;
