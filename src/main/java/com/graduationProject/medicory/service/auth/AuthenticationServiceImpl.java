@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final JWTService jwtService;
     private final JavaMailSender emailSender;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${app.password-reset.code-length}")
     private int codeLength;
@@ -103,7 +105,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     "because you not verify the code That sent for You on Gmail.");
         }
 
-        user.setPassword(newPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         log.info("Password updated Successfully!");
         return "Password reset successfully.";
