@@ -7,15 +7,13 @@ import com.graduationProject.medicory.exception.StorageException;
 import com.graduationProject.medicory.mapper.testsMappers.ImagingTestMapper;
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.repository.testsRepositories.ImagingTestRepository;
+import com.graduationProject.medicory.utils.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 @RequiredArgsConstructor
 @Service
@@ -54,38 +52,27 @@ public class LabImageTestServiceImpl implements LabImageTestService {
         }
         String fileName = file.getOriginalFilename();
         String path = UPLOAD_DIR+fileName;
-        createDirectoryIfNotExist(UPLOAD_DIR);
-        saveFile(path,file);
+        FileStorageUtil.createDirectoryIfNotExist(UPLOAD_DIR);
+        FileStorageUtil.saveFile(path,file);
         updateTestWithTheResult(path,imageTestId);
 
         return "Result uploaded successfully";
     }
-
     @Override
     public String deleteImageTestResult(Long testId) throws IOException {
         ImagingTest imagingTest = imagingTestRepository.findById(testId).orElseThrow(
-                ()->new IllegalArgumentException("test not found!")
+                ()->new RecordNotFoundException("Imaging test not found for id: " + testId)
         );
+
         String path = imagingTest.getImageResult();
-        deleteImageTestResultFromStorage(path);
+        if(path!=null) {
+            FileStorageUtil.deleteFile(path);
+        }
+
+        FileStorageUtil.deleteFile(path);
         imagingTest.setStatus(true);
         imagingTest.setImageResult(null);
         return "Result deleted successfully.";
-    }
-
-    private void deleteImageTestResultFromStorage(String filePath) throws IOException {
-        if (filePath!=null){
-            Path path = Paths.get(filePath);
-            Files.deleteIfExists(path);
-        }
-    }
-
-
-    private void createDirectoryIfNotExist(String uploadDir) throws IOException {
-        Path directory = Paths.get(uploadDir);
-        if(!Files.exists(directory)){
-            Files.createDirectories(directory);
-        }
     }
 
     private void updateTestWithTheResult(String path, Long imageTestId) {
@@ -97,9 +84,4 @@ public class LabImageTestServiceImpl implements LabImageTestService {
         imagingTestRepository.save(imagingTest);
     }
 
-    private void saveFile(String filePath, MultipartFile file) throws IOException {
-        byte[] bytes = file.getBytes();
-        Path path = Paths.get(filePath);
-        Files.write(path,bytes);
-    }
 }

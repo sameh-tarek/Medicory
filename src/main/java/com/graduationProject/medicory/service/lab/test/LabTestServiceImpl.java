@@ -6,15 +6,13 @@ import com.graduationProject.medicory.exception.StorageException;
 import com.graduationProject.medicory.mapper.testsMappers.LabTestMapper;
 import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
 import com.graduationProject.medicory.repository.testsRepositories.LabTestRepository;
+import com.graduationProject.medicory.utils.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 //
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -53,39 +51,27 @@ public class LabTestServiceImpl implements LabTestService {
         }
         String fileName = file.getOriginalFilename();
         String path = UPLOAD_DIR + fileName;
-        createDirectoryIfNotExist(UPLOAD_DIR);
-        saveFile(path, file);
+        FileStorageUtil.createDirectoryIfNotExist(UPLOAD_DIR);
+        FileStorageUtil.saveFile(path, file);
         updateTestWithTheResult(path,testId);
 
-        return "file uploaded successfully";
+        return "Result uploaded successfully";
     }
 
     @Override
     public String deleteTestResult(Long testId) throws IOException {
         LabTest test = labTestRepository.findById(testId).orElseThrow(
-                ()->new IllegalArgumentException("test not found!")
+                ()->new RecordNotFoundException("Imaging test not found for id: " + testId)
         );
+
         String path = test.getTestResultPath();
-        deleteTestResultFromStorage(path);
+        FileStorageUtil.deleteFile(path);
+
         test.setStatus(true);
         test.setTestResultPath(null);
         labTestRepository.save(test);
 
         return "The result of the test deleted successfully.";
-    }
-
-    private void deleteTestResultFromStorage(String filePath) throws IOException {
-        if(filePath!=null){
-            Path path = Paths.get(filePath);
-            Files.deleteIfExists(path);
-        }
-    }
-
-    private void createDirectoryIfNotExist(String uploadDir) throws IOException {
-        Path directory = Paths.get(uploadDir);
-        if(!Files.exists(directory)){
-            Files.createDirectories(directory);
-        }
     }
 
     private void updateTestWithTheResult(String filePath, Long testId) {
@@ -95,12 +81,6 @@ public class LabTestServiceImpl implements LabTestService {
         labTest.setStatus(false);
         labTest.setTestResultPath(filePath);
         labTestRepository.save(labTest);
-    }
-
-    private void saveFile(String filePath, MultipartFile file) throws IOException {
-        byte[] bytes = file.getBytes();
-        Path path = Paths.get(filePath);
-        Files.write(path, bytes);
     }
 }
 
