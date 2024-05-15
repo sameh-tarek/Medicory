@@ -1,4 +1,4 @@
-package com.graduationProject.medicory.controller.cardscan;
+package com.graduationProject.medicory.controller.card;
 
 import com.graduationProject.medicory.entity.enums.Role;
 import com.graduationProject.medicory.service.card.CardService;
@@ -18,9 +18,9 @@ public class CardController {
         return userCode;
     }
 
-    @PostMapping("/interacting-role/{ownerId}")
-    public ResponseEntity<Role> getInteractingRoleBasedOnCard(@PathVariable Long ownerId) {
-        Role interactingRole = cardService.getInteractingRoleBasedOnCard(ownerId);
+    @PostMapping("/interacting-role/{userCode}")
+    public ResponseEntity<Role> getInteractingRoleBasedOnCard(@PathVariable String userCode) {
+        Role interactingRole = cardService.getInteractingRoleBasedOnCard(userCode);
         return ResponseEntity.ok(interactingRole);
     }
 }
