@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 @RequiredArgsConstructor
 @Service
@@ -45,15 +48,15 @@ public class LabImageTestServiceImpl implements LabImageTestService {
                 .toList();
         return response;
     }
-@Override
-public String uploadImageTestResult(MultipartFile file, Long imageTestId) throws IOException {
-    if(isResultExists(imageTestId)){
-        throw new ResutExistsException("The result of this test is exist you can delete it then update.");
+    @Override
+    public String uploadImageTestResult(MultipartFile file, Long imageTestId) throws IOException {
+        if(isResultExists(imageTestId)){
+            throw new ResutExistsException("The result of this test is exist you can delete it then update.");
+        }
+        String filePath = FileStorageUtil.uploadFile(file, UPLOAD_DIR, MAX_FILE_SIZE);
+        updateTestWithTheResult(filePath, imageTestId);
+        return "Result uploaded successfully";
     }
-    String filePath = FileStorageUtil.uploadFile(file, UPLOAD_DIR, MAX_FILE_SIZE);
-    updateTestWithTheResult(filePath, imageTestId);
-    return "Result uploaded successfully";
-}
     @Override
     public String deleteImageTestResult(Long testId) throws IOException {
         ImagingTest imagingTest = imagingTestRepository.findById(testId).orElseThrow(
@@ -70,6 +73,7 @@ public String uploadImageTestResult(MultipartFile file, Long imageTestId) throws
 
         return "The result of the Imaging test deleted successfully.";
     }
+
 
     private void updateTestWithTheResult(String path, Long imageTestId) {
         ImagingTest imagingTest = imagingTestRepository.findById(imageTestId).orElseThrow(

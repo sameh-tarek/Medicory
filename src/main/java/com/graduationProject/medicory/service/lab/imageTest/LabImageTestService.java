@@ -15,4 +15,5 @@ public interface LabImageTestService {
     String uploadImageTestResult(MultipartFile file, Long imageTestId) throws IOException;
 
     String deleteImageTestResult(Long testId) throws IOException;
+
 }
