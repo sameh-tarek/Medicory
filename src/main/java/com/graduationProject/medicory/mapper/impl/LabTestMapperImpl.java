@@ -35,6 +35,7 @@ public class LabTestMapperImpl implements LabTestMapper {
                         .name(labTest.getName())
                         .description(labTest.getDescription())
                         .testNotes(labTest.getTestNotes())
+                        .imageResult(labTest.getTestResultPath())
                         .status(labTest.isStatus())
                         .createdAt(labTest.getCreatedAt())
                         .updatedAt(labTest.getUpdatedAt())

@@ -14,6 +14,7 @@ public class LabTestResponseDTO {
     private String name;
     private String description;
     private String testNotes;
+    private String imageResult;
     private boolean status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 public class PrescriptionResponse {
     private Long prescriptionId;
     private String doctorName;
-    private boolean status;
+    private boolean medicationStatus;
+    private boolean prescriptionStatus;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

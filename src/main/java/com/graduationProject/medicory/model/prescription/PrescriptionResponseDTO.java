@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @Builder
 public class PrescriptionResponseDTO {
+    PrescriptionResponse prescriptionResponse;
     List<MedicationResponseDTO> medications;
     List<LabTestResponseDTO> labTests;
     List<ImagingTestResponseDTO> imagingTests;

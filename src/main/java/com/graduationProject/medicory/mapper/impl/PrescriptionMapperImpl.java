@@ -18,10 +18,11 @@ public class PrescriptionMapperImpl implements PrescriptionMapper {
 
         return PrescriptionResponse.builder()
                 .prescriptionId(prescription.getId())
-                .doctorName(getDoctorName(prescription))
+                .doctorName(prescription.getDoctor().getFirstName() + prescription.getDoctor().getLastName())
+                .medicationStatus(prescription.isMedicationStatus())
+                .prescriptionStatus(prescription.isPrescriptionStatus())
                 .createdAt(prescription.getCreatedAt())
                 .updatedAt(prescription.getUpdatedAt())
-                .status(prescription.isPrescriptionStatus())
                 .build();
     }
 

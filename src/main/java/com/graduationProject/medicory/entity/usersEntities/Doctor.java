@@ -42,4 +42,8 @@ public class Doctor {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+//    public String getFullName(){
+//        return firstName!=null? firstName + " " + middleName + " " + lastName : "";
+//    }
 }

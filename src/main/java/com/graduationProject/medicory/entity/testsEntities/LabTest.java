@@ -41,4 +41,20 @@ public class LabTest {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @Override
+    public String toString() {
+        return "LabTest{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", testResultPath='" + testResultPath + '\'' +
+                ", testNotes='" + testNotes + '\'' +
+                ", status=" + status +
+                ", owner=" + owner +
+                ", prescription=" + prescription +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }
