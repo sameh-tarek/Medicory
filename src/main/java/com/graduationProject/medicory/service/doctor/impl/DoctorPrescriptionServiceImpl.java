@@ -67,6 +67,13 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
         newPrescription.setUpdatedAt(LocalDateTime.now());
         newPrescription.setOwner(owner);
         newPrescription.setDoctor(getCurrentDoctor());
+
+        if(medications.size()>0){
+            newPrescription.setPharmacyNeeded(true);
+        }
+        if(labTests.size()>0 || imagingTests.size()>0){
+            newPrescription.setLabNeeded(true);
+        }
         prescriptionRepository.save(newPrescription);
 
         log.info("Prescription Added successfully!");

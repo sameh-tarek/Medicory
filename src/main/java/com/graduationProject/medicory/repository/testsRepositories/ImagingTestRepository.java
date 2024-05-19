@@ -12,4 +12,7 @@ public interface ImagingTestRepository extends JpaRepository<ImagingTest, Long> 
 
     @Query("FROM ImagingTest where prescription.id = :prescriptionId AND status = true")
     List<ImagingTest> findActiveTestsByPrescriptionId(Long prescriptionId);
+
+    @Query("SELECT i.imageResult FROM ImagingTest i WHERE i.name = :fileName")
+    String findPathByName(String fileName);
 }
