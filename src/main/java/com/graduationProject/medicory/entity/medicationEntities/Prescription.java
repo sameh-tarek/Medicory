@@ -53,5 +53,6 @@ public class Prescription {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
 }
 

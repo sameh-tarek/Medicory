@@ -14,15 +14,22 @@ import com.graduationProject.medicory.mapper.medicationsMappers.MedicationMapper
 import com.graduationProject.medicory.model.medication.MedicationDTO;
 import com.graduationProject.medicory.model.medication.MedicationResponseDTO;
 import com.graduationProject.medicory.model.prescription.PrescriptionRequestDTO;
+import com.graduationProject.medicory.model.prescription.PrescriptionResponse;
 import com.graduationProject.medicory.model.prescription.PrescriptionResponseDTO;
 import com.graduationProject.medicory.model.tests.ImagingTestRequestDTO;
+import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.model.tests.LabTestRequestDTO;
+import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
+import com.graduationProject.medicory.repository.MedicationsRepositories.MedicationRepository;
+import com.graduationProject.medicory.repository.testsRepositories.ImagingTestRepository;
+import com.graduationProject.medicory.repository.testsRepositories.LabTestRepository;
 import com.graduationProject.medicory.repository.usersRepositories.DoctorRepository;
 import com.graduationProject.medicory.repository.MedicationsRepositories.MedicineRepository;
 import com.graduationProject.medicory.repository.usersRepositories.OwnerRepository;
 import com.graduationProject.medicory.repository.MedicationsRepositories.PrescriptionRepository;
 import com.graduationProject.medicory.service.doctor.DoctorPrescriptionService;
 import com.graduationProject.medicory.utils.SecurityUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,7 +51,11 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
     private final DoctorRepository doctorRepository;
     private final LabTestMapper labTestMapper;
     private final ImagingTestMapper imagingTestMapper;
+    private final LabTestRepository labTestRepository;
+    private final ImagingTestRepository imagingTestRepository;
+    private final MedicationRepository medicationRepository;
 
+    @Transactional
     @Override
     public boolean addNewPrescription(String userCode, PrescriptionRequestDTO prescriptionRequestDTO) {
         log.trace("Doctor wants to add prescriptionRequestDTO {}, for owner with id {}", prescriptionRequestDTO, userCode);
@@ -52,28 +63,33 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
                 .orElseThrow(() -> new RecordNotFoundException("This owner with id " + userCode + " doesn't exist"));
 
         Prescription newPrescription = new Prescription();
-
-
-        List<Medication> medications = mapMedications(prescriptionRequestDTO.getMedications(), owner, newPrescription);
-        List<LabTest> labTests = mapLabTests(prescriptionRequestDTO.getLabTests(), owner, newPrescription);
-        List<ImagingTest> imagingTests = mapImagingTests(prescriptionRequestDTO.getImagingTests(), owner, newPrescription);
-
-
-        newPrescription.setMedications(medications);
-        newPrescription.setTests(labTests);
-        newPrescription.setImagingTests(imagingTests);
-        newPrescription.setMedicationStatus(true);
         newPrescription.setCreatedAt(LocalDateTime.now());
         newPrescription.setUpdatedAt(LocalDateTime.now());
         newPrescription.setOwner(owner);
         newPrescription.setDoctor(getCurrentDoctor());
 
-        if(medications.size()>0){
+
+        prescriptionRepository.save(newPrescription);
+
+        List<Medication> medications = mapMedications(prescriptionRequestDTO.getMedications(), owner, newPrescription);
+        List<LabTest> labTests = mapLabTests(prescriptionRequestDTO.getLabTests(), owner, newPrescription);
+        List<ImagingTest> imagingTests = mapImagingTests(prescriptionRequestDTO.getImagingTests(), owner, newPrescription);
+
+        newPrescription.setMedications(medications);
+        newPrescription.setImagingTests(imagingTests);
+        newPrescription.setMedicationStatus(true);
+
+        if (medications.size() > 0) {
             newPrescription.setPharmacyNeeded(true);
         }
-        if(labTests.size()>0 || imagingTests.size()>0){
+        if (labTests.size() > 0 || imagingTests.size() > 0) {
             newPrescription.setLabNeeded(true);
         }
+
+
+        labTestRepository.saveAll(labTests);
+        imagingTestRepository.saveAll(imagingTests);
+        medicationRepository.saveAll(medications);
         prescriptionRepository.save(newPrescription);
 
         log.info("Prescription Added successfully!");
@@ -90,6 +106,7 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
                     medication.setUpdatedAt(LocalDateTime.now());
                     medication.setOwner(owner);
                     medication.setMedicine(medicine);
+                    log.info("Medication ... {}", medication);
                     return medication;
                 })
                 .collect(Collectors.toList());
@@ -103,6 +120,7 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
                     labTest.setCreatedAt(LocalDateTime.now());
                     labTest.setUpdatedAt(LocalDateTime.now());
                     labTest.setOwner(owner);
+                    log.info("lab .... {} ", labTest);
                     return labTest;
                 })
                 .collect(Collectors.toList());
@@ -129,17 +147,41 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
                 .orElseThrow(() ->
                         new RecordNotFoundException("This prescription with id " + prescriptionId + " doesn't exist"));
         List<MedicationResponseDTO> medicationResponseDTOS = prescription.getMedications()
-                .stream()
-                .map(medicationMapper::toDTo)
+                .stream().map(medicationMapper::toDTo)
                 .collect(Collectors.toList());
+
+        List<ImagingTestResponseDTO> imagingTestResponseDTOS = prescription.getImagingTests()
+                .stream().map(imagingTestMapper::toDTO)
+                .collect(Collectors.toList());
+
+        List<LabTestResponseDTO> labTestResponseDTOS = prescription.getTests()
+                .stream().map(labTestMapper::toDTO)
+                .collect(Collectors.toList());
+        log.info("labTestResponseDTOS {}", labTestResponseDTOS);
+
+        PrescriptionResponse prescriptionDetails = getPrescriptionDetails(prescription);
 
         PrescriptionResponseDTO prescriptionResponseDTO = PrescriptionResponseDTO
                 .builder()
                 .medications(medicationResponseDTOS)
+                .imagingTests(imagingTestResponseDTOS)
+                .labTests(labTestResponseDTOS)
+                .prescriptionResponse(prescriptionDetails)
                 .build();
 
         log.trace("this the prescription {}", prescriptionResponseDTO);
         return prescriptionResponseDTO;
+    }
+
+    private PrescriptionResponse getPrescriptionDetails(Prescription prescription) {
+        return PrescriptionResponse.builder()
+                .prescriptionId(prescription.getId())
+                //.doctorName(prescription.getDoctor().getFirstName() + prescription.getDoctor().getLastName())
+                .medicationStatus(prescription.isMedicationStatus())
+                .prescriptionStatus(prescription.isPrescriptionStatus())
+                .createdAt(prescription.getCreatedAt())
+                .updatedAt(prescription.getUpdatedAt())
+                .build();
     }
 
     @Override
@@ -151,19 +193,46 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
         return owner.getPrescriptions()
                 .stream()
                 .map(prescription -> {
-                    PrescriptionResponseDTO prescriptionResponseDTO = PrescriptionResponseDTO.builder().build();
-                    List<MedicationResponseDTO> medicationResponseDTOs = prescription.getMedications()
-                            .stream()
-                            .map(medication -> {
-                                MedicationResponseDTO medicationResponseDTO = medicationMapper.toDTo(medication);
-                                return medicationResponseDTO;
-                            })
-                            .collect(Collectors.toList());
-                    prescriptionResponseDTO.setMedications(medicationResponseDTOs);
+                    PrescriptionResponseDTO prescriptionResponseDTO = PrescriptionResponseDTO.builder()
+                            .prescriptionResponse(mapPrescriptionResponse(prescription))
+                            .medications(mapMedications(prescription.getMedications()))
+                            .labTests(mapLabTests(prescription.getTests()))
+                            .imagingTests(mapImagingTests(prescription.getImagingTests()))
+                            .build();
                     return prescriptionResponseDTO;
                 })
                 .collect(Collectors.toList());
     }
+
+    private PrescriptionResponse mapPrescriptionResponse(Prescription prescription) {
+        return PrescriptionResponse.builder()
+                .prescriptionId(prescription.getId())
+                //.doctorName(prescription.getDoctor().getFirstName() + prescription.getDoctor())
+                .medicationStatus(prescription.isMedicationStatus())
+                .prescriptionStatus(prescription.isPrescriptionStatus())
+                .createdAt(prescription.getCreatedAt())
+                .updatedAt(prescription.getUpdatedAt())
+                .build();
+    }
+
+    private List<MedicationResponseDTO> mapMedications(List<Medication> medications) {
+        return medications.stream()
+                .map(medicationMapper::toDTo)
+                .collect(Collectors.toList());
+    }
+
+    private List<LabTestResponseDTO> mapLabTests(List<LabTest> labTests) {
+        return labTests.stream()
+                .map(labTestMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    private List<ImagingTestResponseDTO> mapImagingTests(List<ImagingTest> imagingTests) {
+        return imagingTests.stream()
+                .map(imagingTestMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
 
     private Medicine getMedicineByName(String name){
         Medicine medicine = medicineRepository.findByName(name)
