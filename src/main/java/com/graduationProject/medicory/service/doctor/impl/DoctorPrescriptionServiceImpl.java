@@ -78,6 +78,8 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
         newPrescription.setMedications(medications);
         newPrescription.setImagingTests(imagingTests);
         newPrescription.setMedicationStatus(true);
+        newPrescription.setPrescriptionStatus(true);
+
 
         if (medications.size() > 0) {
             newPrescription.setPharmacyNeeded(true);
