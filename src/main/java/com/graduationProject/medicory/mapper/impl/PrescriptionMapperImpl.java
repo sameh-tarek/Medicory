@@ -24,7 +24,7 @@ public class PrescriptionMapperImpl implements PrescriptionMapper {
     public PrescriptionResponse toResponse(Prescription prescription) {
         return PrescriptionResponse.builder()
                 .prescriptionId(prescription.getId())
-                //.doctorName(getDoctorName(prescription))
+                .doctorName(getDoctorName(prescription))
                 .medicationStatus(prescription.isMedicationStatus())
                 .prescriptionStatus(prescription.isPrescriptionStatus())
                 .createdAt(prescription.getCreatedAt())
@@ -50,6 +50,9 @@ public class PrescriptionMapperImpl implements PrescriptionMapper {
 
     private String getDoctorName(Prescription prescription) {
         Doctor doctor = prescription.getDoctor();
+        if(doctor == null){
+            return "";
+        }
         return doctor.getFirstName() + " " + doctor.getLastName();
     }
 }
