@@ -8,6 +8,7 @@ import com.graduationProject.medicory.entity.testsEntities.LabTest;
 import com.graduationProject.medicory.entity.usersEntities.Doctor;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
+import com.graduationProject.medicory.mapper.medicationsMappers.PrescriptionMapper;
 import com.graduationProject.medicory.mapper.testsMappers.ImagingTestMapper;
 import com.graduationProject.medicory.mapper.testsMappers.LabTestMapper;
 import com.graduationProject.medicory.mapper.medicationsMappers.MedicationMapper;
@@ -54,6 +55,7 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
     private final LabTestRepository labTestRepository;
     private final ImagingTestRepository imagingTestRepository;
     private final MedicationRepository medicationRepository;
+    private final PrescriptionMapper prescriptionMapper;
 
     @Transactional
     @Override
@@ -78,6 +80,8 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
         newPrescription.setMedications(medications);
         newPrescription.setImagingTests(imagingTests);
         newPrescription.setMedicationStatus(true);
+        newPrescription.setPrescriptionStatus(true);
+
 
         if (medications.size() > 0) {
             newPrescription.setPharmacyNeeded(true);
@@ -159,7 +163,7 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
                 .collect(Collectors.toList());
         log.info("labTestResponseDTOS {}", labTestResponseDTOS);
 
-        PrescriptionResponse prescriptionDetails = getPrescriptionDetails(prescription);
+        PrescriptionResponse prescriptionDetails = prescriptionMapper.toResponse(prescription);
 
         PrescriptionResponseDTO prescriptionResponseDTO = PrescriptionResponseDTO
                 .builder()
@@ -173,16 +177,6 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
         return prescriptionResponseDTO;
     }
 
-    private PrescriptionResponse getPrescriptionDetails(Prescription prescription) {
-        return PrescriptionResponse.builder()
-                .prescriptionId(prescription.getId())
-                //.doctorName(prescription.getDoctor().getFirstName() + prescription.getDoctor().getLastName())
-                .medicationStatus(prescription.isMedicationStatus())
-                .prescriptionStatus(prescription.isPrescriptionStatus())
-                .createdAt(prescription.getCreatedAt())
-                .updatedAt(prescription.getUpdatedAt())
-                .build();
-    }
 
     @Override
     public List<PrescriptionResponseDTO> getAllPrescriptions(String userCode) {

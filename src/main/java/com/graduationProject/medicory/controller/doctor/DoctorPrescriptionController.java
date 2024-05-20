@@ -29,6 +29,8 @@ public class DoctorPrescriptionController {
         return doctorPrescriptionService.addNewPrescription(userCode, prescriptionRequestDTO);
     }
 
+
+
     @Operation(summary = "Doctor Find prescription By Id")
     @GetMapping("prescriptions")
     public PrescriptionResponseDTO findPrescriptionById (@RequestParam Long prescriptionId) {

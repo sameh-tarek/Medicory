@@ -66,6 +66,7 @@ public class DoctorTestsServiceImpl implements DoctorTestsService {
         updatedLabTest.setUpdatedAt(LocalDateTime.now());
         updatedLabTest.setId(existTest.getId());
         updatedLabTest.setOwner(existTest.getOwner());
+        updatedLabTest.setPrescription(existTest.getPrescription());
         labTestRepository.save(updatedLabTest);
         return true;
     }
@@ -143,6 +144,7 @@ public class DoctorTestsServiceImpl implements DoctorTestsService {
         updatedImagingTest.setUpdatedAt(LocalDateTime.now());
         updatedImagingTest.setId(existTest.getId());
         updatedImagingTest.setOwner(existTest.getOwner());
+        updatedImagingTest.setPrescription(existTest.getPrescription());
         imagingTestRepository.save(updatedImagingTest);
         return true;
     }
