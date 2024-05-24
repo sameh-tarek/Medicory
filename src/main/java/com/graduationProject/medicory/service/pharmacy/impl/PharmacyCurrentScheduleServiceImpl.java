@@ -57,24 +57,6 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
         return medicationsResponse;
     }
 
-//    @Override
-//    public String createVoiceRecord(MultipartFile file, Long medicationId) {
-//        Medication medication = medicationRepository.findById(medicationId).orElseThrow(
-//                ()->new IllegalArgumentException("Medication id is wrong.")
-//        );
-//
-//        File destnation = new File("voice-records");
-//
-//        VoiceRecord voiceRecord = VoiceRecord.builder()
-//                .name(file.getOriginalFilename())
-//                .path(destnation.getPath()+file.getOriginalFilename())
-//                .medication(medication)
-//                .build();
-//
-//        voiceRecordRepository.save(voiceRecord);
-//        return "voice record saved successfully.";
-//    }
-
     private Owner fetchOwner(String userCode){
         return ownerRepository.findByUserCode(userCode).orElseThrow(
                 ()->new IllegalArgumentException("user not fount!")

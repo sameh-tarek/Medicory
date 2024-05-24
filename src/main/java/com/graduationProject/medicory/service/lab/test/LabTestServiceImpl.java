@@ -86,4 +86,3 @@ public class LabTestServiceImpl implements LabTestService {
         return !labTest.isStatus();
     }
 }
-
