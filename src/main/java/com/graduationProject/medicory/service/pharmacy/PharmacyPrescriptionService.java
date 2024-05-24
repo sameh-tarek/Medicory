@@ -1,6 +1,6 @@
 package com.graduationProject.medicory.service.pharmacy;
 
-import com.graduationProject.medicory.model.prescription.PrescriptionResponseDTO;
+import com.graduationProject.medicory.model.prescription.PrescriptionResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public interface PharmacyPrescriptionService {
 
-    List<PrescriptionResponseDTO> getAllPrescription(String userCode);
-    List<PrescriptionResponseDTO> getActivePrescription(String userCode);
-    PrescriptionResponseDTO getPrescriptionById(String userCode, Long id);
+    List<PrescriptionResponse> getAllPrescription(String userCode);
+    List<PrescriptionResponse> getActivePrescription(String userCode);
+    PrescriptionResponse getPrescriptionById(String userCode, Long id);
 }

@@ -1,7 +1,6 @@
 package com.graduationProject.medicory.controller.lab;
 
 import com.graduationProject.medicory.model.prescription.PrescriptionResponse;
-import com.graduationProject.medicory.model.prescription.PrescriptionResponseDTO;
 import com.graduationProject.medicory.service.lab.LabService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,13 +19,13 @@ public class LabPrescriptions {
     private final LabService labService;
 
     @GetMapping("{userCode}")
-    ResponseEntity<List<PrescriptionResponseDTO>> getAllPrescriptionsNeedLab(@PathVariable String userCode){
-        List<PrescriptionResponseDTO> response = labService.getAllPrescriptionsNeedLab(userCode);
+    ResponseEntity<List<PrescriptionResponse>> getAllPrescriptionsNeedLab(@PathVariable String userCode){
+        List<PrescriptionResponse> response = labService.getAllPrescriptionsNeedLab(userCode);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @GetMapping("active/{userCode}")
-    ResponseEntity<List<PrescriptionResponseDTO>> getActivePrescriptionsNeedLab(@PathVariable String userCode){
-        List<PrescriptionResponseDTO> response = labService.getActivePrescriptionsNeedLab(userCode);
+    ResponseEntity<List<PrescriptionResponse>> getActivePrescriptionsNeedLab(@PathVariable String userCode){
+        List<PrescriptionResponse> response = labService.getActivePrescriptionsNeedLab(userCode);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
