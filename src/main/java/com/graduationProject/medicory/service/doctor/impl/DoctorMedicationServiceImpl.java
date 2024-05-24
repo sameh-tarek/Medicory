@@ -115,4 +115,12 @@ public class DoctorMedicationServiceImpl implements DoctorMedicationService {
         medicationRepository.delete(medication);
         return true;
     }
+
+    @Override
+    public List<MedicationResponseDTO> getAllPrescriptionMedicationsForPatient(Long prescriptionId) {
+        List<MedicationResponseDTO> allPrescriptionMedications = medicationRepository.findByPrescriptionId(prescriptionId)
+                .stream().map(medicationMapper::toDTo)
+                .collect(Collectors.toList());
+        return allPrescriptionMedications;
+    }
 }

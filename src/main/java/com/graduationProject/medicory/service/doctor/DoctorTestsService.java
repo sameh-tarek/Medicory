@@ -9,9 +9,10 @@ import java.util.List;
 
 public interface DoctorTestsService {
     List<LabTestResponseDTO> findAllLabTestsForPatient(String userCode);
+    List<LabTestResponseDTO> getAllPrescriptionLabTestsForPatient(Long prescriptionId);
     String deleteLabTestFromHistory(Long testId);
     boolean updateLabTest(Long testId, LabTestRequestDTO labTestRequestDTO);
-    boolean addLabTestsForPatientThatRequiredNow(String userCode, List<LabTestRequestDTO> requiredTests);
+    boolean addPrescriptionLabTestsForPatient(String userCode, List<LabTestRequestDTO> requiredTests, Long prescriptionId);
     List<LabTestResponseDTO> getActiveLabTests(String userCode);
     LabTestResponseDTO findLabTestById(Long testId);
 
@@ -19,9 +20,10 @@ public interface DoctorTestsService {
 
 
     List<ImagingTestResponseDTO> getAllImagingTestForPatient(String userCode);
+    List<ImagingTestResponseDTO> getAllPrescriptionImagingTestForPatient(Long prescriptionId);
     boolean deleteImagingTestFromHistory(Long testId);
     boolean updateImagingTest(Long testId, ImagingTestRequestDTO imagingTestRequestDTO);
-    boolean addImagingTestForPatientThatRequiredNow(String userCode, List<ImagingTestRequestDTO> requiredTests);
+    boolean addImagingTestForPatient(String userCode, List<ImagingTestRequestDTO> requiredTests, Long prescriptionId);
     List<ImagingTestResponseDTO> getActiveImagingTest(String userCode);
     ImagingTestResponseDTO findImagingTestById(Long testId);
 }
