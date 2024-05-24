@@ -1,5 +1,6 @@
 package com.graduationProject.medicory.service.doctor.impl;
 
+import com.graduationProject.medicory.entity.medicationEntities.Prescription;
 import com.graduationProject.medicory.entity.testsEntities.ImagingTest;
 import com.graduationProject.medicory.entity.testsEntities.LabTest;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
@@ -10,6 +11,7 @@ import com.graduationProject.medicory.model.tests.ImagingTestRequestDTO;
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.model.tests.LabTestRequestDTO;
 import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
+import com.graduationProject.medicory.repository.MedicationsRepositories.PrescriptionRepository;
 import com.graduationProject.medicory.repository.testsRepositories.ImagingTestRepository;
 import com.graduationProject.medicory.repository.testsRepositories.LabTestRepository;
 import com.graduationProject.medicory.repository.usersRepositories.OwnerRepository;
@@ -34,6 +36,7 @@ public class DoctorTestsServiceImpl implements DoctorTestsService {
     private final ImagingTestRepository imagingTestRepository;
     private final OwnerContext ownerContext;
     private final OwnerRepository ownerRepository;
+    private final PrescriptionRepository prescriptionRepository;
 
     @Override
     public List<LabTestResponseDTO> findAllLabTestsForPatient(String userCode) {
@@ -44,6 +47,14 @@ public class DoctorTestsServiceImpl implements DoctorTestsService {
                 .map(labTestMapper::toDTO)
                 .collect(Collectors.toList());
         log.info("Patient Lab Tests {}", labTestResponseDTOS);
+        return labTestResponseDTOS;
+    }
+
+    @Override
+    public List<LabTestResponseDTO> getAllPrescriptionLabTestsForPatient(Long prescriptionId) {
+        List<LabTestResponseDTO> labTestResponseDTOS = labTestRepository.findByPrescriptionId(prescriptionId)
+                .stream().map(labTestMapper::toDTO)
+                .collect(Collectors.toList());
         return labTestResponseDTOS;
     }
 
@@ -73,8 +84,10 @@ public class DoctorTestsServiceImpl implements DoctorTestsService {
 
 
     @Override
-    public boolean addLabTestsForPatientThatRequiredNow(String userCode, List<LabTestRequestDTO> requiredTests) {
+    public boolean addPrescriptionLabTestsForPatient(String userCode, List<LabTestRequestDTO> requiredTests, Long prescriptionId) {
         log.info("Doctor need to ask patient with id {}, for this lab tests {}", userCode, requiredTests);
+        Prescription prescription = prescriptionRepository.findById(prescriptionId)
+                .orElseThrow(() -> new RecordNotFoundException("This prescription doesn't exist!"));
 
         Owner owner = ownerContext.getCurrentOwner(userCode);
         List<LabTest> labTests = requiredTests.stream()
@@ -82,6 +95,7 @@ public class DoctorTestsServiceImpl implements DoctorTestsService {
                 .map(labTest -> {
                     labTest.setStatus(true);
                     labTest.setOwner(owner);
+                    labTest.setPrescription(prescription);
                     return labTest;
                 })
                 .collect(Collectors.toList());
@@ -126,6 +140,14 @@ public class DoctorTestsServiceImpl implements DoctorTestsService {
     }
 
     @Override
+    public List<ImagingTestResponseDTO> getAllPrescriptionImagingTestForPatient(Long prescriptionId) {
+        List<ImagingTestResponseDTO> imagingTestResponseDTOS = imagingTestRepository.findByPrescriptionId(prescriptionId)
+                .stream().map(imagingTestMapper::toDTO)
+                .collect(Collectors.toList());
+        return imagingTestResponseDTOS;
+    }
+
+    @Override
     public boolean deleteImagingTestFromHistory(Long testId) {
         ImagingTest imagingTest = imagingTestRepository.findById(testId)
                 .orElseThrow(() -> new RecordNotFoundException("This Imaging Test with id " + testId + " doesn't exist!"));
@@ -150,8 +172,11 @@ public class DoctorTestsServiceImpl implements DoctorTestsService {
     }
 
     @Override
-    public boolean addImagingTestForPatientThatRequiredNow(String userCode, List<ImagingTestRequestDTO> requiredTests) {
+    public boolean addImagingTestForPatient(String userCode, List<ImagingTestRequestDTO> requiredTests, Long prescriptionId) {
         log.info("Doctor need to ask patient with id {}, for this Imaging tests {}", userCode, requiredTests);
+        Prescription prescription = prescriptionRepository.findById(prescriptionId)
+                .orElseThrow(() -> new RecordNotFoundException("This prescription doesn't exist!"));
+
 
         Owner owner = ownerContext.getCurrentOwner(userCode);
         List<ImagingTest> imagingTests = requiredTests.stream()
@@ -159,6 +184,7 @@ public class DoctorTestsServiceImpl implements DoctorTestsService {
                 .map(imagingTest -> {
                     imagingTest.setStatus(true);
                     imagingTest.setOwner(owner);
+                    imagingTest.setPrescription(prescription);
                     return imagingTest;
                 })
                 .collect(Collectors.toList());
@@ -168,6 +194,7 @@ public class DoctorTestsServiceImpl implements DoctorTestsService {
         log.info("lab tests after add {}", owner.getLabTests());
         return true;
     }
+
 
     @Override
     public List<ImagingTestResponseDTO> getActiveImagingTest(String userCode) {

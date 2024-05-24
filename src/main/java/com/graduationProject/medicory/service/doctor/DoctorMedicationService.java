@@ -11,4 +11,5 @@ public interface DoctorMedicationService {
     MedicationResponseDTO findMedicationById(Long medicationId);
     boolean updateMedication(Long medicationId, MedicationDTO medicationDTO);
     boolean deleteMedication(Long medicationId);
+    List<MedicationResponseDTO> getAllPrescriptionMedicationsForPatient(Long prescriptionId);
 }
