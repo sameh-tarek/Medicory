@@ -106,7 +106,6 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
         throw new IllegalArgumentException("Invalid id " + ownerId + " ......");
     }
 
-    // TODO GENERATE CODE WITH EACH USER
     @Override
     public String addNewOwner(OwnerRequestDTO newOwnerDTO) {
         log.info("Adding new owner");

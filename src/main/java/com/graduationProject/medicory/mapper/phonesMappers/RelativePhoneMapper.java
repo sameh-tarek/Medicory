@@ -9,5 +9,6 @@ import java.util.List;
 public interface RelativePhoneMapper {
 
    List<RelativePhoneNumber> toEntity(List<RelativePhoneNumberDTO> relativePhoneNumberDTO);
+   List<RelativePhoneNumberDTO> toDTO (List<RelativePhoneNumber> relativePhoneNumbers);
 }
 
