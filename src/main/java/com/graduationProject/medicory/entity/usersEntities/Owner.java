@@ -95,7 +95,7 @@ public class Owner {
     @JoinColumn(name = "current_schedule_id")
     private CurrentSchedule currentSchedule;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RelativePhoneNumber> relativePhoneNumbers;
 
     @Override

@@ -11,13 +11,14 @@ import com.graduationProject.medicory.mapper.usersMappers.OwnerMapper;
 import com.graduationProject.medicory.mapper.usersMappers.UserMapper;
 import com.graduationProject.medicory.model.users.owner.OwnerRequestDTO;
 import com.graduationProject.medicory.model.users.owner.OwnerResponseDTO;
-import com.graduationProject.medicory.repository.usersRepositories.OwnerRepository;
 import com.graduationProject.medicory.repository.phoneRepositories.RelativePhoneNumberRepository;
 import com.graduationProject.medicory.repository.phoneRepositories.UserPhoneNumberRepository;
+import com.graduationProject.medicory.repository.usersRepositories.OwnerRepository;
 import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
-import com.graduationProject.medicory.service.admin.users.owner.AdminOwnerService;
+import com.graduationProject.medicory.utils.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,6 +38,9 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
     private final UserMapper userMapper;
     private final RelativePhoneNumberRepository relativeRepo;
     private final UserPhoneNumberRepository userPhoneRepo;
+    private final PasswordEncoder passwordEncoder;
+    private final PasswordGenerator passwordGenerator;
+
 
     @Override
     public List<OwnerResponseDTO> findOwnersByOwnerName(String fullName) {
@@ -101,12 +105,13 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
         if (ownerId > 0) {
             Owner owner = ownerRepository.findById(ownerId)
                     .orElseThrow(() -> new RecordNotFoundException("No owner with id " + ownerId));
-            return ownerMapper.toRequestDTO(owner);
+            OwnerRequestDTO response = ownerMapper.toRequestDTO(owner);
+            response.getUser().setPassword(null);
+            return response;
         }
         throw new IllegalArgumentException("Invalid id " + ownerId + " ......");
     }
 
-    // TODO GENERATE CODE WITH EACH USER
     @Override
     public String addNewOwner(OwnerRequestDTO newOwnerDTO) {
         log.info("Adding new owner");
@@ -114,7 +119,8 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
         User newUser = newOwner.getUser();
         Optional<User> checkUserExisting = userRepository.findByEmail(newOwner.getUser().getEmail());
         if (!checkUserExisting.isPresent()) {
-
+            String password = passwordGenerator.generatePassword();
+            newUser.setPassword(passwordEncoder.encode(password));
             newUser.setCreatedAt(LocalDateTime.now());
             newUser.setUpdatedAt(LocalDateTime.now());
 
@@ -133,6 +139,7 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
             userRepository.save(newUser);
             ownerRepository.save(newOwner);
             userPhoneRepo.saveAll(userPhoneNumbers);
+            passwordGenerator.sendPasswordEmail(newUser.getEmail(), password);
             return "owner added successfully";
         }
         throw new ConflictException("Owner with email " + newUser.getEmail() + " already exists");
@@ -147,14 +154,6 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
             User oldUser = oldOwner.getUser();
             Owner updatedOwner = ownerMapper.toEntity(updatedOwnerDTO);
             User updatedUser = userMapper.toEntity(updatedOwnerDTO.getUser());
-
-            if (updatedUser != null) {
-                oldUser.setEmail(updatedUser.getEmail());
-                oldUser.setPassword(updatedUser.getPassword());
-                oldUser.setEnabled(updatedUser.isEnabled());
-                oldUser.setRole(updatedUser.getRole());
-                oldUser.setUpdatedAt(LocalDateTime.now());
-            }
 
             oldOwner.setFirstName(updatedOwnerDTO.getFirstName());
             oldOwner.setMiddleName(updatedOwnerDTO.getMiddleName());
@@ -172,12 +171,13 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
             List<RelativePhoneNumber> existingRelativePhoneNumbers = oldOwner.getRelativePhoneNumbers()
                     .stream()
                     .map(existingPhoneNumber -> {
-                        Optional<RelativePhoneNumber> matchingUpdatedPhoneNumber = updatedRelativePhoneNumbers.stream()
+                        Optional<RelativePhoneNumber> matchingUpdatedPhoneNumber = updatedRelativePhoneNumbers
+                                .stream()
                                 .filter(updatedPhoneNumber ->
-                                        updatedPhoneNumber.getId() == existingPhoneNumber.getId())
+                                        updatedPhoneNumber.getOwner().getId() == existingPhoneNumber.getOwner().getId())
                                 .findFirst();
-
                         if (matchingUpdatedPhoneNumber.isPresent()) {
+                            System.out.println("true");
                             RelativePhoneNumber updatedPhoneNumber = matchingUpdatedPhoneNumber.get();
                             existingPhoneNumber.setPhone(updatedPhoneNumber.getPhone());
                             existingPhoneNumber.setRelation(updatedPhoneNumber.getRelation());
@@ -191,7 +191,8 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
             List<UserPhoneNumber> existingUserPhoneNumbers = oldUser.getUserPhoneNumbers()
                     .stream()
                     .map(existingPhoneNumber -> {
-                        Optional<UserPhoneNumber> matchingUpdatedPhoneNumber = updatedUserPhoneNumbers.stream()
+                        Optional<UserPhoneNumber> matchingUpdatedPhoneNumber = updatedUserPhoneNumbers
+                                .stream()
                                 .filter(updatedPhoneNumber ->
                                         updatedPhoneNumber.getId() == existingPhoneNumber.getId())
                                 .findFirst();
@@ -211,6 +212,18 @@ public class AdminOwnerServiceImpl implements AdminOwnerService {
                     })
 
                     .collect(Collectors.toList());
+            if (updatedUser != null) {
+                oldUser.setEmail(updatedUser.getEmail());
+                oldUser.setEnabled(updatedUser.isEnabled());
+                oldUser.setRole(updatedUser.getRole());
+                oldUser.setUpdatedAt(LocalDateTime.now());
+                if (updatedUser.getPassword() != null) {
+                    String updatedPassword = updatedUser.getPassword();
+                    oldUser.setPassword(updatedPassword);
+                    passwordGenerator.sendPasswordEmail(updatedUser.getEmail(), updatedPassword);
+
+                }
+            }
             relativeRepo.saveAll(existingRelativePhoneNumbers);
             userPhoneRepo.saveAll(existingUserPhoneNumbers);
             userRepository.save(oldUser);
