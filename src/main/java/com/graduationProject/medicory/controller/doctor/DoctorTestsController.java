@@ -41,7 +41,8 @@ public class DoctorTestsController {
     @PutMapping("tests/{testId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "Update a lab test")
-    public boolean updateLabTest(@PathVariable(name = "testId") Long testId, @RequestBody LabTestRequestDTO labTestRequestDTO){
+    public boolean updateLabTest(@PathVariable(name = "testId") Long testId,
+                                 @RequestBody LabTestRequestDTO labTestRequestDTO){
         return doctorTestsService.updateLabTest(testId, labTestRequestDTO);
     }
 
@@ -88,7 +89,8 @@ public class DoctorTestsController {
     @PutMapping("imaging-tests/{testId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "Update an imaging test")
-    public boolean updateImagingTest(@PathVariable(name = "testId") Long testId, @RequestBody ImagingTestRequestDTO imagingTestRequestDTO){
+    public boolean updateImagingTest(@PathVariable(name = "testId") Long testId,
+                                     @RequestBody ImagingTestRequestDTO imagingTestRequestDTO){
         return doctorTestsService.updateImagingTest(testId, imagingTestRequestDTO);
     }
 
