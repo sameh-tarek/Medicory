@@ -12,8 +12,10 @@ import com.graduationProject.medicory.model.users.hospital.HospitalResponseDTO;
 import com.graduationProject.medicory.repository.usersRepositories.HospitalRepository;
 import com.graduationProject.medicory.repository.phoneRepositories.UserPhoneNumberRepository;
 import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
+import com.graduationProject.medicory.utils.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,7 +30,8 @@ import java.util.stream.Collectors;
 public class AdminHospitalServiceImpl implements AdminHospitalService {
 
     private final HospitalMapper hospitalMapper;
-
+    private final PasswordEncoder passwordEncoder;
+    private final PasswordGenerator passwordGenerator;
     private final HospitalRepository hospitalRepository;
     private final UserRepository userRepository;
     private final UserPhoneNumberRepository userPhoneRepo;
@@ -80,6 +83,7 @@ public class AdminHospitalServiceImpl implements AdminHospitalService {
                     .findById(hospitalId)
                     .orElseThrow(() -> new RecordNotFoundException("No hospital with id " + hospitalId));
             HospitalDTO response = hospitalMapper.toDTO(hospital);
+            response.setPassword(null);
             log.info("Data of hospital with id {} : {}",hospitalId,response);
             return response;
         }
@@ -93,6 +97,8 @@ public class AdminHospitalServiceImpl implements AdminHospitalService {
         Optional<User> userExist = userRepository.findByEmail(hospital.getUser().getEmail());
         if (!userExist.isPresent()) {
             User newUser = hospital.getUser();
+            String password= passwordGenerator.generatePassword();
+            newUser.setPassword(password);
             newUser.setUpdatedAt(LocalDateTime.now());
             newUser.setCreatedAt(LocalDateTime.now());
 
@@ -113,6 +119,7 @@ public class AdminHospitalServiceImpl implements AdminHospitalService {
             userRepository.save(newUser);
             hospitalRepository.save(hospital);
             userPhoneRepo.saveAll(userPhoneNumbers);
+            passwordGenerator.sendPasswordEmail(newUser.getEmail(), password);
             log.info("Hospital added successfully");
             return "Hospital added successfully";
         }
@@ -132,11 +139,6 @@ public class AdminHospitalServiceImpl implements AdminHospitalService {
             oldHospital.setGoogleMapsLink(updatedHospital.getGoogleMapsLink());
             User oldUser = oldHospital.getUser();
 
-            oldUser.setEmail(updatedHospital.getEmail());
-            oldUser.setPassword(updatedHospital.getPassword());
-            oldUser.setEnabled(updatedHospital.isEnabled());
-            oldUser.setRole(updatedHospital.getRole());
-            oldUser.setUpdatedAt(LocalDateTime.now());
             List<String> updatedPhoneNumbers = updatedHospital.getUserPhoneNumbers();
             List<UserPhoneNumber> oldUserPhoneNumbers = oldUser.getUserPhoneNumbers();
 
@@ -154,6 +156,15 @@ public class AdminHospitalServiceImpl implements AdminHospitalService {
                 }
             }
 
+            oldUser.setEmail(updatedHospital.getEmail());
+            oldUser.setEnabled(updatedHospital.isEnabled());
+            oldUser.setRole(updatedHospital.getRole());
+            oldUser.setUpdatedAt(LocalDateTime.now());
+            if(updatedHospital.getPassword()!=null){
+                String newPassword = updatedHospital.getPassword();
+                oldUser.setPassword(passwordEncoder.encode(newPassword));
+                passwordGenerator.sendPasswordEmail(updatedHospital.getEmail(),newPassword);
+            }
 
             userPhoneRepo.saveAll(oldUserPhoneNumbers);
             userRepository.save(oldUser);

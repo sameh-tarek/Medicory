@@ -7,15 +7,16 @@ import com.graduationProject.medicory.exception.ConflictException;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.exception.UserDisabledException;
 import com.graduationProject.medicory.mapper.usersMappers.LabMapper;
-import com.graduationProject.medicory.mapper.usersMappers.UserMapper;
 import com.graduationProject.medicory.model.users.lab.LabDTO;
 import com.graduationProject.medicory.model.users.lab.LabRequestDTO;
 import com.graduationProject.medicory.model.users.lab.LabResponseDTO;
 import com.graduationProject.medicory.repository.usersRepositories.LabRepository;
 import com.graduationProject.medicory.repository.phoneRepositories.UserPhoneNumberRepository;
 import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
+import com.graduationProject.medicory.utils.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,8 @@ public class AdminLabServiceImpl implements AdminLabService {
     private final UserRepository userRepo;
     private final LabMapper labMap;
     private final UserPhoneNumberRepository userPhoneRepo;
-    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final PasswordGenerator passwordGenerator;
 
 
     @Override
@@ -41,6 +43,7 @@ public class AdminLabServiceImpl implements AdminLabService {
             Lab lab = labRepo.findById(labId)
                     .orElseThrow(() -> new RecordNotFoundException("No lab with id " + labId));
             LabDTO response =labMap.toDTO(lab);
+            response.setPassword(null);
             log.info("Data of lab with id {} : {}",labId,response);
             return response ;
         }
@@ -86,6 +89,8 @@ public class AdminLabServiceImpl implements AdminLabService {
         User newUser = lab.getUser();
         Optional<User> existingUser = userRepo.findByEmail(newUser.getEmail());
         if (!existingUser.isPresent()) {
+            String password = passwordGenerator.generatePassword();
+            newUser.setPassword(passwordEncoder.encode(password));
             newUser.setCreatedAt(LocalDateTime.now());
             newUser.setUpdatedAt(LocalDateTime.now());
 
@@ -106,6 +111,8 @@ public class AdminLabServiceImpl implements AdminLabService {
             userRepo.save(newUser);
             labRepo.save(lab);
             userPhoneRepo.saveAll(userPhoneNumbers);
+
+            passwordGenerator.sendPasswordEmail(newUser.getEmail(), password);
             log.info("Lab added successfully");
             return "Lab inserted successfully";
         }
@@ -125,14 +132,6 @@ public class AdminLabServiceImpl implements AdminLabService {
 
             User oldUser = oldLab.getUser();
 
-            oldUser.setEmail(updatedLab.getEmail());
-            oldUser.setEnabled(updatedLab.isEnabled());
-            oldUser.setPassword(updatedLab.getPassword());
-            oldUser.setRole(updatedLab.getRole());
-            oldUser.setUpdatedAt(LocalDateTime.now());
-            oldLab.setUser(oldUser);
-
-            // Update or add user phone numbers
             List<String> updatedPhoneNumbers = updatedLab.getUserPhoneNumbers();
             List<UserPhoneNumber> oldUserPhoneNumbers = oldUser.getUserPhoneNumbers();
 
@@ -149,6 +148,17 @@ public class AdminLabServiceImpl implements AdminLabService {
                     userPhoneNumber.setPhone(updatedPhoneNumber);
                 }
             }
+
+            oldUser.setEmail(updatedLab.getEmail());
+            oldUser.setEnabled(updatedLab.isEnabled());
+            oldUser.setRole(updatedLab.getRole());
+            oldUser.setUpdatedAt(LocalDateTime.now());
+            if(updatedLab.getPassword()!=null){
+                String password = updatedLab.getPassword();
+                oldUser.setPassword(passwordEncoder.encode(password));
+                passwordGenerator.sendPasswordEmail(updatedLab.getEmail(),password);
+            }
+
             userRepo.save(oldUser);
             labRepo.save(oldLab);
             userPhoneRepo.saveAll(oldUserPhoneNumbers);

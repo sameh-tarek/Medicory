@@ -14,8 +14,10 @@ import com.graduationProject.medicory.repository.usersRepositories.DoctorReposit
 import com.graduationProject.medicory.repository.phoneRepositories.UserPhoneNumberRepository;
 import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
 import com.graduationProject.medicory.service.admin.users.doctor.AdminDoctorService;
+import com.graduationProject.medicory.utils.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,6 +34,8 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
     private final DoctorMapper doctorMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final PasswordGenerator passwordGenerator;
     private final UserPhoneNumberRepository userPhoneRepo;
 
     @Override
@@ -106,6 +110,7 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
             Doctor doctor = doctorRepository.findById(doctorId)
                     .orElseThrow(() -> new RecordNotFoundException("No doctor  with id " + doctorId));
             DoctorDTO response = doctorMapper.toDTO(doctor);
+            response.setPassword(null);
             log.info("Data of doctor with id {} :{}",doctorId,response);
             return response;
         }
@@ -118,6 +123,8 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
         User newUser = newDoctor.getUser();
         Optional<User> existing = userRepository.findByEmail(newUser.getEmail());
         if (!existing.isPresent()) {
+            String newPassword = passwordGenerator.generatePassword();
+            newUser.setPassword(passwordEncoder.encode(newPassword));
             newUser.setUpdatedAt(LocalDateTime.now());
             newUser.setCreatedAt(LocalDateTime.now());
 
@@ -137,6 +144,7 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
             userRepository.save(newUser);
             doctorRepository.save(newDoctor);
             userPhoneRepo.saveAll(userPhoneNumbers);
+            passwordGenerator.sendPasswordEmail(newUser.getEmail(),newPassword);
             log.info("Doctor added successfully");
             return "Doctor added successfully";
         }
@@ -161,12 +169,6 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
 
             User oldUser = oldDoctor.getUser();
 
-            oldUser.setEmail(updatedDoctorDTO.getEmail());
-            oldUser.setPassword(updatedDoctorDTO.getPassword());
-            oldUser.setEnabled(updatedDoctorDTO.isEnabled());
-            oldUser.setRole(updatedDoctorDTO.getRole());
-            oldUser.setUpdatedAt(LocalDateTime.now());
-
             List<String> updatedPhoneNumbers = updatedDoctorDTO.getUserPhoneNumbers();
             List<UserPhoneNumber> oldUserPhoneNumbers = oldUser.getUserPhoneNumbers();
 
@@ -182,6 +184,16 @@ public class AdminDoctorServiceImpl implements AdminDoctorService {
                     }
                     userPhoneNumber.setPhone(updatedPhoneNumber);
                 }
+            }
+
+            oldUser.setEmail(updatedDoctorDTO.getEmail());
+            oldUser.setEnabled(updatedDoctorDTO.isEnabled());
+            oldUser.setRole(updatedDoctorDTO.getRole());
+            oldUser.setUpdatedAt(LocalDateTime.now());
+            if(updatedDoctorDTO.getPassword() !=null){
+                String newPassword = updatedDoctorDTO.getPassword();
+                oldUser.setPassword(passwordEncoder.encode(newPassword));
+                passwordGenerator.sendPasswordEmail(updatedDoctorDTO.getEmail(),newPassword);
             }
 
             userPhoneRepo.saveAll(oldUserPhoneNumbers);

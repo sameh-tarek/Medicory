@@ -14,8 +14,10 @@ import com.graduationProject.medicory.repository.usersRepositories.PharmacyRepos
 import com.graduationProject.medicory.repository.phoneRepositories.UserPhoneNumberRepository;
 import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
 import com.graduationProject.medicory.service.admin.users.pharmacy.AdminPharmacyService;
+import com.graduationProject.medicory.utils.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,6 +34,8 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
     private final UserRepository userRepository;
     private final PharmacyMpper pharmacyMpper;
     private final UserPhoneNumberRepository userPhoneRepo;
+    private final PasswordEncoder passwordEncoder;
+    private final PasswordGenerator passwordGenerator;
 
 
     @Override
@@ -68,7 +72,9 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
         if (id > 0) {
             Pharmacy pharmacy = pharmacyRepository.findById(id)
                     .orElseThrow(() -> new RecordNotFoundException("No pharmacy with id " + id));
-            return pharmacyMpper.toDTO(pharmacy);
+            PharmacyDTO response= pharmacyMpper.toDTO(pharmacy);
+            response.setPassword(null);
+            return response;
         }
         throw new IllegalArgumentException("Invalid pharmacy id " + id);
     }
@@ -81,6 +87,8 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
         Optional<User> existingUser = userRepository.findByEmail(newUser.getEmail());
         if (!existingUser.isPresent()) {
 
+            String password = passwordGenerator.generatePassword();
+            newUser.setPassword(passwordEncoder.encode(password));
             newUser.setCreatedAt(LocalDateTime.now());
             newUser.setUpdatedAt(LocalDateTime.now());
 
@@ -100,6 +108,8 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
             userRepository.save(newUser);
             pharmacyRepository.save(newPharmacy);
             userPhoneRepo.saveAll(userPhoneNumbers);
+
+            passwordGenerator.sendPasswordEmail(newUser.getEmail(), password);
             log.info("Pharmacy inserted successfully");
             return "Pharmacy inserted successfully";
         }
@@ -118,13 +128,6 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
             oldPharmacy.setGoogleMapsLink(updatedPharmacy.getGoogleMapsLink());
 
             User oldUser = oldPharmacy.getUser();
-
-            oldUser.setEmail(updatedPharmacy.getEmail());
-            oldUser.setPassword(updatedPharmacy.getPassword());
-            oldUser.setEnabled(updatedPharmacy.isEnabled());
-            oldUser.setRole(updatedPharmacy.getRole());
-            oldUser.setUpdatedAt(LocalDateTime.now());
-
             List<String> updatedPhoneNumbers = updatedPharmacy.getUserPhoneNumbers();
             List<UserPhoneNumber> oldUserPhoneNumbers = oldUser.getUserPhoneNumbers();
 
@@ -141,7 +144,16 @@ public class AdminPharmacyServiceImpl implements AdminPharmacyService {
                     userPhoneNumber.setPhone(updatedPhoneNumber);
                 }
             }
+            oldUser.setEmail(updatedPharmacy.getEmail());
+            oldUser.setEnabled(updatedPharmacy.isEnabled());
+            oldUser.setRole(updatedPharmacy.getRole());
+            oldUser.setUpdatedAt(LocalDateTime.now());
+            if(updatedPharmacy.getPassword()!=null){
+                String newPassword = updatedPharmacy.getPassword();
+                oldUser.setPassword(passwordEncoder.encode(newPassword));
+                passwordGenerator.sendPasswordEmail(updatedPharmacy.getEmail(), newPassword);
 
+            }
             userRepository.save(oldUser);
             pharmacyRepository.save(oldPharmacy);
             userPhoneRepo.saveAll(oldUserPhoneNumbers);

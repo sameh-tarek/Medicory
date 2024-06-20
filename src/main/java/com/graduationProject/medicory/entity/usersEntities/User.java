@@ -112,9 +112,6 @@ public class User implements UserDetails {
     public void generateCodeBeforePersist() {
         String generatedCode = generateCode();
         this.code = generatedCode;
-        // set password
-        this.password= generatedCode;
-
     }
 
 

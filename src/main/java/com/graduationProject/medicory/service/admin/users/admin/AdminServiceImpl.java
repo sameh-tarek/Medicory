@@ -10,11 +10,13 @@ import com.graduationProject.medicory.mapper.usersMappers.AdminMapper;
 import com.graduationProject.medicory.model.users.admin.AdminDTO;
 import com.graduationProject.medicory.model.users.admin.AdminRequestDTO;
 import com.graduationProject.medicory.model.users.admin.AdminResponseDTO;
-import com.graduationProject.medicory.repository.usersRepositories.AdminRepository;
 import com.graduationProject.medicory.repository.phoneRepositories.UserPhoneNumberRepository;
+import com.graduationProject.medicory.repository.usersRepositories.AdminRepository;
 import com.graduationProject.medicory.repository.usersRepositories.UserRepository;
+import com.graduationProject.medicory.utils.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,6 +32,8 @@ public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
     private final AdminMapper adminMapper;
     private final UserPhoneNumberRepository userPhoneRepo;
+    private final PasswordEncoder passwordEncoder;
+    private final PasswordGenerator passwordGenerator;
 
 
     @Override
@@ -38,7 +42,9 @@ public class AdminServiceImpl implements AdminService {
         if (adminId > 0) {
             Admin admin = adminRepository.findById(adminId)
                     .orElseThrow(() -> new RecordNotFoundException("No admin with id " + adminId));
-            return adminMapper.toDTO(admin);
+            AdminDTO response = adminMapper.toDTO(admin);
+            response.setPassword(null);
+            return response;
         }
         throw new IllegalArgumentException("Invalid id " + adminId);
     }
@@ -92,8 +98,10 @@ public class AdminServiceImpl implements AdminService {
         User newUser = admin.getUser();
         Optional<User> existing = userRepository.findByEmail(newUser.getEmail());
         if (!existing.isPresent()) {
+            String password = passwordGenerator.generatePassword();
             newUser.setCreatedAt(LocalDateTime.now());
             newUser.setUpdatedAt(LocalDateTime.now());
+            newUser.setPassword(passwordEncoder.encode(password));
 
             List<UserPhoneNumber> userPhoneNumbers = newUser.getUserPhoneNumbers()
                     .stream()
@@ -109,6 +117,7 @@ public class AdminServiceImpl implements AdminService {
             userRepository.save(newUser);
             adminRepository.save(admin);
             userPhoneRepo.saveAll(userPhoneNumbers);
+            passwordGenerator.sendPasswordEmail(newUser.getEmail(), password);
             log.info("Admin added successfully");
             return "Admin added successfully";
         }
@@ -131,12 +140,6 @@ public class AdminServiceImpl implements AdminService {
         oldAdmin.setGender(updatedAdminDTO.getGender());
 
         User oldUser = oldAdmin.getUser();
-
-        oldUser.setEmail(updatedAdminDTO.getEmail());
-        oldUser.setEnabled(updatedAdminDTO.isEnabled());
-        oldUser.setRole(updatedAdminDTO.getRole());
-        oldUser.setUpdatedAt(LocalDateTime.now());
-
         List<String> updatedPhoneNumbers = updatedAdminDTO.getUserPhoneNumbers();
         List<UserPhoneNumber> oldUserPhoneNumbers = oldUser.getUserPhoneNumbers();
 
@@ -153,6 +156,16 @@ public class AdminServiceImpl implements AdminService {
             }
         }
 
+        oldUser.setEmail(updatedAdminDTO.getEmail());
+        oldUser.setEnabled(updatedAdminDTO.isEnabled());
+        oldUser.setRole(updatedAdminDTO.getRole());
+        oldUser.setUpdatedAt(LocalDateTime.now());
+
+        if (updatedAdminDTO.getPassword() != null) {
+            String newPassword = updatedAdminDTO.getPassword();
+            oldUser.setPassword(passwordEncoder.encode(newPassword));
+            passwordGenerator.sendPasswordEmail(updatedAdminDTO.getEmail(), newPassword);
+        }
         userRepository.save(oldUser);
         adminRepository.save(oldAdmin);
         userPhoneRepo.saveAll(oldUserPhoneNumbers);
