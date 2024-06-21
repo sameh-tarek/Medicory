@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,7 +81,7 @@ public class AdminDoctorController {
             @ApiResponse(responseCode = "201" ,description = "Created, doctor created")
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
     })
-   public ResponseEntity<String> addDoctor(@RequestBody DoctorRequestDTO newDoctor){
+   public ResponseEntity<String> addDoctor(@Valid @RequestBody DoctorRequestDTO newDoctor){
         String message = doctorService.addNewDoctor(newDoctor);
         return new ResponseEntity<>(message,HttpStatus.CREATED);
     }
@@ -92,7 +93,7 @@ public class AdminDoctorController {
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
 
     })
-    public ResponseEntity<String> updateDoctor(@RequestBody DoctorDTO updatedDoctor, @PathVariable long doctorId){
+    public ResponseEntity<String> updateDoctor(@RequestBody DoctorDTO updatedDoctor,@Valid @PathVariable long doctorId){
         String message = doctorService.updateDoctor(updatedDoctor,doctorId);
         return new ResponseEntity<>(message,HttpStatus.OK);
     }

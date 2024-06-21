@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +76,7 @@ public class AdminController {
             @ApiResponse(responseCode = "201" ,description = "Created, admin created")
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
     })
-    public ResponseEntity<String> addAdmin(@RequestBody AdminRequestDTO newAdmin){
+    public ResponseEntity<String> addAdmin(@Valid @RequestBody AdminRequestDTO newAdmin){
         String message = adminService.addAdmin(newAdmin);
         return new ResponseEntity<>(message, HttpStatus.CREATED);
 
@@ -89,7 +90,7 @@ public class AdminController {
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
 
     })
-    public ResponseEntity<String > updateAdmin(@PathVariable long adminId,@RequestBody AdminDTO updatedAdmin){
+    public ResponseEntity<String > updateAdmin(@PathVariable long adminId,@Valid @RequestBody AdminDTO updatedAdmin){
         String message = adminService.updateAdmin(updatedAdmin,adminId);
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
