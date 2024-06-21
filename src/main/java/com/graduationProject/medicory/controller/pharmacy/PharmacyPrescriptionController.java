@@ -11,26 +11,26 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/pharmacy")
+@RequestMapping("/pharmacy/prescriptions/")
 public class PharmacyPrescriptionController {
     private final PharmacyPrescriptionService pharmacyPrescriptionService;
-    @GetMapping("{userCode}/prescriptions")
-    ResponseEntity<List<PrescriptionResponse>> getAllPrescription(@PathVariable String userCode){
-        List<PrescriptionResponse> allPrescriptionsResponse = pharmacyPrescriptionService.getAllPrescription(userCode);
+    @GetMapping("{userCode}")
+    ResponseEntity<List<PrescriptionResponse>> getAllPrescriptionNeedPharmacy(@PathVariable String userCode){
+        List<PrescriptionResponse> allPrescriptionsResponse = pharmacyPrescriptionService.getAllPrescriptionNeedPharmacy(userCode);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(allPrescriptionsResponse);
     }
-    @GetMapping("{userCode}/active-prescriptions")
-    ResponseEntity<List<PrescriptionResponse>> getActivePrescription(@PathVariable String userCode){
-        List<PrescriptionResponse> allPrescriptionsResponse = pharmacyPrescriptionService.getActivePrescription(userCode);
+    @GetMapping("active/{userCode}")
+    ResponseEntity<List<PrescriptionResponse>> getActivePrescriptionNeedPharmacy(@PathVariable String userCode){
+        List<PrescriptionResponse> allPrescriptionsResponse = pharmacyPrescriptionService.getActivePrescriptionNeedPharmacy(userCode);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(allPrescriptionsResponse);
     }
-    @GetMapping("{userCode}/prescriptions/{id}")
+    @GetMapping("{userCode}/{id}")
     ResponseEntity<PrescriptionResponse> getPrescriptionById(@PathVariable String userCode, @PathVariable Long id){
         PrescriptionResponse prescription = pharmacyPrescriptionService.getPrescriptionById(userCode,id);
 

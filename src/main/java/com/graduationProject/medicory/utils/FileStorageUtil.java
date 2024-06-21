@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 
 public class FileStorageUtil {
     private static void createDirectoryIfNotExist(String uploadDir) throws IOException {
-        Path directory = Paths.get(uploadDir);
+        Path directory = Path.of(uploadDir);
         if(!Files.exists(directory)){
             Files.createDirectories(directory);
         }
@@ -21,7 +21,7 @@ public class FileStorageUtil {
             throw new StorageException("Failed to store empty file.");
         }
         byte[] bytes = file.getBytes();
-        Path path = Paths.get(filePath);
+        Path path = Path.of(filePath);
         Files.write(path,bytes);
     }
 
@@ -32,18 +32,18 @@ public class FileStorageUtil {
         }
     }
 
-    public static String uploadFile(MultipartFile file, String uloadDir, long maxFileSize) throws IOException {
+    public static String uploadFile(MultipartFile file, String uploadDir, long maxFileSize) throws IOException {
         if(file.isEmpty()){
             throw new StorageException("Failed to store empty file.");
         }
         if(!isValidSize(file,maxFileSize)){
-            throw new IllegalArgumentException("File size should be less than 50MB");
+            throw new IllegalArgumentException("File size should be less than "+maxFileSize);
         }
 
         String fileName = file.getOriginalFilename();
-        String path = uloadDir + fileName;
+        String path = uploadDir + fileName;
 
-        createDirectoryIfNotExist(uloadDir);
+        createDirectoryIfNotExist(uploadDir);
         saveFile(path,file);
 
         return path;
