@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,7 +79,7 @@ public class AdminLabController {
             @ApiResponse(responseCode = "201" ,description = "Created, lab created")
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
     })
-    public ResponseEntity<String> addLab(@RequestBody LabRequestDTO newLab) {
+    public ResponseEntity<String> addLab(@Valid @RequestBody LabRequestDTO newLab) {
         String message = labService.addLab(newLab);
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
@@ -91,7 +92,7 @@ public class AdminLabController {
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
 
     })
-    public ResponseEntity<String> updateLab(@RequestBody LabDTO updatedLab, @PathVariable Long labId) {
+    public ResponseEntity<String> updateLab(@Valid @RequestBody LabDTO updatedLab, @PathVariable Long labId) {
         String message = labService.updateLab(updatedLab, labId);
         return ResponseEntity.ok(message);
     }

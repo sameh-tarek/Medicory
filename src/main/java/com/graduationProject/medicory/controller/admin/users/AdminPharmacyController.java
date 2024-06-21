@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,7 +80,7 @@ public class AdminPharmacyController {
             @ApiResponse(responseCode = "201" ,description = "Created, pharmacy created")
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
     })
-    public ResponseEntity<String> addPharmacy(@RequestBody PharmacyRequestDTO newPharmacy) {
+    public ResponseEntity<String> addPharmacy(@Valid @RequestBody PharmacyRequestDTO newPharmacy) {
         String message = pharmacyService.addPharmacy(newPharmacy);
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
@@ -93,7 +94,7 @@ public class AdminPharmacyController {
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
 
     })
-    public ResponseEntity<String> updatePharmacy(@RequestBody PharmacyDTO updatedPharmacy, @PathVariable Long pharmacyId) {
+    public ResponseEntity<String> updatePharmacy(@Valid  @RequestBody PharmacyDTO updatedPharmacy, @PathVariable Long pharmacyId) {
         String message = pharmacyService.updatePharmacy(updatedPharmacy, pharmacyId);
         return ResponseEntity.ok(message);
     }
