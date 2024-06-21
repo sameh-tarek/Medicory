@@ -41,7 +41,6 @@ public class ClinicDTO {
     @Size(min = 3, max = 100, message = "Specialization must be between 3 and 100 characters")
     private String specialization;
 
-    @Pattern(regexp = "^[A-Za-z0-9]{3,10}$", message = "Code must be between 3 and 10 alphanumeric characters")
     private String code;
 
     @Email(message = "Invalid email format")
@@ -51,7 +50,7 @@ public class ClinicDTO {
             )
     private String email;
 
-    @NotNull(message = "Password is required")
+    @Null
     @NotBlank(message = "Password is required")
     @Size(min = 12, message = "Password must be at least 12 characters long")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).*$",

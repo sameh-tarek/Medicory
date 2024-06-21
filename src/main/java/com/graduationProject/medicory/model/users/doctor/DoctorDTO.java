@@ -57,7 +57,7 @@ public class DoctorDTO {
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Invalid email format")
     private String email;
 
-    @NotNull(message = "Password cannot be null")
+    @Null
     @NotBlank(message = "Password is required")
     @Size(min = 12, message = "Password must be at least 12 characters long")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{12,}$",

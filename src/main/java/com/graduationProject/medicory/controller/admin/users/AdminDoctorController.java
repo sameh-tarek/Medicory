@@ -93,7 +93,7 @@ public class AdminDoctorController {
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
 
     })
-    public ResponseEntity<String> updateDoctor(@RequestBody DoctorDTO updatedDoctor,@Valid @PathVariable long doctorId){
+    public ResponseEntity<String> updateDoctor(@Valid @RequestBody DoctorDTO updatedDoctor, @PathVariable long doctorId){
         String message = doctorService.updateDoctor(updatedDoctor,doctorId);
         return new ResponseEntity<>(message,HttpStatus.OK);
     }

@@ -41,7 +41,7 @@ public class AdminDTO {
     )
     private String email;
 
-    @NotNull(message = "Password is required")
+    @Null
     @NotBlank(message = "Password is required")
     @Size(min = 12, message = "Password must be at least 12 characters long")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).*$",
