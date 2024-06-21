@@ -32,6 +32,7 @@ public class MedicationMapperImpl implements MedicationMapper {
     public MedicationResponseDTO toDTo(Medication medication) {
         return MedicationResponseDTO.builder()
                 .id(medication.getId())
+                .name(medication.getMedicine().getName())
                 .dose(medication.getDose())
                 .frequency(medication.getFrequency())
                 .tips(medication.getTips())

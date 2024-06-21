@@ -18,9 +18,15 @@ public class DoctorMedicationController {
     private final DoctorMedicationService medicationService;
 
     @GetMapping("/{userCode}/medications")
-    @Operation(summary = "Get all medications for a patient")
+    @Operation(summary = "Get all medications History for a patient")
     public List<MedicationResponseDTO> getAllMedicationsForPatient(@PathVariable String userCode) {
         return medicationService.getAllMedicationsForPatient(userCode);
+    }
+
+    @GetMapping("/medications/{prescriptionId}")
+    @Operation(summary = "Get all Prescription medications for a patient")
+    public List<MedicationResponseDTO> getAllPrescriptionMedicationsForPatient(@PathVariable Long prescriptionId) {
+        return medicationService.getAllPrescriptionMedicationsForPatient(prescriptionId);
     }
 
     @PostMapping("/{userCode}/medications")

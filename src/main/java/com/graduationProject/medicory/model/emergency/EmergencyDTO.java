@@ -1,6 +1,6 @@
 package com.graduationProject.medicory.model.emergency;
 
-import com.graduationProject.medicory.entity.phoneEntities.RelativePhoneNumber;
+import com.graduationProject.medicory.model.phones.RelativePhoneNumberDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,5 +16,7 @@ public class EmergencyDTO {
     private List< String> chronicDiseases;
     private List<String> allergies;
     private List<String> surgeries;
-    private List<RelativePhoneNumber> relativePhoneNumbers;
+    private List<String> medicines;
+    private List<RelativePhoneNumberDTO> relativePhoneNumbers;
+
 }
