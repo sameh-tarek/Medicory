@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public interface PharmacyPrescriptionService {
 
-    List<PrescriptionResponse> getAllPrescription(String userCode);
-    List<PrescriptionResponse> getActivePrescription(String userCode);
+    List<PrescriptionResponse> getAllPrescriptionNeedPharmacy(String userCode);
+    List<PrescriptionResponse> getActivePrescriptionNeedPharmacy(String userCode);
     PrescriptionResponse getPrescriptionById(String userCode, Long id);
 }
