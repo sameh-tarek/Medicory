@@ -36,7 +36,10 @@ rsa:
 
 application:
   file-storage:
+    pharmacy:
+      records: file_Storage/pharmacy/records/
+      record-size: 10485760 #50 MB
     lab:
       tests: file_Storage/lab/tests/
       image-tests: file_Storage/lab/image-tests/
-      file-size: 10485760 #50 MH
+      file-size: 52428800 #250 MB
