@@ -40,8 +40,7 @@ public class PharmacyDTO {
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Invalid email format")
     private String email;
 
-    @Null
-    @NotBlank(message = "Password is required")
+
     @Size(min = 12, message = "Password must be at least 12 characters long")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).*$",
             message = "Password must contain at least one digit, one lowercase, one uppercase letter, one special character, and no whitespace")
@@ -57,5 +56,6 @@ public class PharmacyDTO {
     private LocalDateTime updatedAt;
 
     @NotEmpty(message = "User phone numbers list cannot be empty")
+    @Size(min = 1, message = "At least one phone number must be provided")
     private List<@Pattern(regexp = "\\+?[0-9\\-\\s]*", message = "Invalid phone number format") String> userPhoneNumbers;
 }

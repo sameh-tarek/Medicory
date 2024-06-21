@@ -16,14 +16,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminRequestDTO {
-    @NotNull(message= "First name can not be null")
+    @NotNull(message = "First name can not be null")
     @NotBlank(message = "First name is required")
-    @Size(min=3,max=15,message = "First name can not be less than 3 or exceed 15")
+    @Size(min = 3, max = 15, message = "First name must be between 3 and 15 characters")
     private String firstName;
 
-    @NotNull(message= "Last name can not be null")
+    @NotNull(message = "Last name can not be null")
     @NotBlank(message = "Last name is required")
-    @Size(min=3,max=15,message = "Last name can not be less than 3 or exceed 15")
+    @Size(min = 3, max = 15, message = "Last name must be between 3 and 15 characters")
     private String lastName;
 
     @NotNull(message = "Marital status is required")
@@ -34,9 +34,7 @@ public class AdminRequestDTO {
 
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
-    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
-             ,message = "Invalid email"
-         )
+    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Invalid email format")
     private String email;
 
     @NotNull(message = "Role is required")
@@ -46,7 +44,6 @@ public class AdminRequestDTO {
     private boolean isEnabled;
 
     @NotNull(message = "Phone numbers must not be null")
-    @NotBlank(message = "Phone number is required")
-    @Size(min = 1, message = "At least one phone number must be provided")
-    private List<@Pattern(regexp = "^\\+?[0-9\\-\\s]*$", message = "Invalid phone number format")String> phoneNumbers;
+    @NotEmpty(message = "At least one phone number must be provided")
+    private List<@Pattern(regexp = "^\\+?[0-9\\-\\s]*$", message = "Invalid phone number format") String> phoneNumbers;
 }

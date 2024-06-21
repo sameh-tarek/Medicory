@@ -50,7 +50,7 @@ public class ClinicRequestDTO {
 
     private boolean isEnabled;
 
-    @NotNull(message = "Phone numbers list cannot be null")
-    @Size(min = 1, message = "At least one phone number must be provided")
+    @NotNull(message = "Phone numbers must not be null")
+    @NotEmpty(message = "At least one phone number must be provided")    @Size(min = 1, message = "At least one phone number must be provided")
     private List<@Pattern(regexp = "^\\+?[0-9\\-\\s]*$", message = "Invalid phone number format") String> userPhoneNumbers;
 }

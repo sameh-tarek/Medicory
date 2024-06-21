@@ -14,15 +14,13 @@ import java.util.List;
 @AllArgsConstructor
 public class UserDTO {
 
-    @NotBlank(message = "Code is required")
     private String code;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;
 
-    @Null
-    @NotBlank(message = "Password is required")
+
     @Size(min = 12, message = "Password must be at least 12 characters long")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).*$",
             message = "Password must contain at least one digit, one lowercase, one uppercase letter, one special character, and no whitespace")

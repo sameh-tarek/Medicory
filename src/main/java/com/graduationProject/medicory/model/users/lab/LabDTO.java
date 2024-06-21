@@ -42,8 +42,7 @@ public class LabDTO {
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Invalid email format")
     private String email;
 
-    @Null
-    @NotBlank(message = "Password is required")
+
     @Size(min = 12, message = "Password must be at least 12 characters long")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#\\$%\\^&\\*])(?=\\S+$).{12,}$",
             message = "Password must have at least one uppercase letter, one lowercase letter, one number, and one special character")

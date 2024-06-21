@@ -40,6 +40,8 @@ public class PharmacyRequestDTO {
 
     private boolean isEnabled;
 
-    @NotEmpty(message = "User phone numbers list cannot be empty")
+    @NotNull(message = "Phone numbers must not be null")
+    @NotEmpty(message = "At least one phone number must be provided")
+    @Size(min = 1, message = "At least one phone number must be provided")
     private List<@Pattern(regexp = "\\+?[0-9\\-\\s]*", message = "Invalid phone number format") String> userPhoneNumbers;
 }
