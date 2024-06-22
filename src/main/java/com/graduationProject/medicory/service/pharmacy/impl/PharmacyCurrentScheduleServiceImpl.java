@@ -2,6 +2,7 @@ package com.graduationProject.medicory.service.pharmacy.impl;
 
 import com.graduationProject.medicory.entity.medicationEntities.*;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
+import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.exception.VoiceRecordNotFoundException;
 import com.graduationProject.medicory.mapper.medicationsMappers.MedicationMapper;
 import com.graduationProject.medicory.model.medication.CurrentScheduleRequest;
@@ -54,7 +55,7 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
     @Override
     public List<MedicationDTO> getMedicationOfPrescription(String userCode, Long prescriptionId) {
         Prescription prescription = prescriptionRepository.findPrescriptionByUserCodeAndPrescriptionId(userCode,prescriptionId).orElseThrow(
-                ()->new IllegalArgumentException("user code or prescription id is wrong.")
+                ()->new RecordNotFoundException("user code or prescription id is wrong.")
         );
         List<MedicationDTO> medicationsResponse = prescription.getMedications()
                 .stream()
@@ -98,12 +99,12 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
 
     private Owner fetchOwner(String userCode){
         return ownerRepository.findByUserCode(userCode).orElseThrow(
-                ()->new IllegalArgumentException("user not fount!")
+                ()->new RecordNotFoundException("user not found!")
         );
     }
     private Medication fetchMedication(Long medicationId) {
         return medicationRepository.findById(medicationId).orElseThrow(
-                ()->new IllegalArgumentException("medication not found!")
+                ()->new RecordNotFoundException("medication not found!")
         );
     }
     private CurrentSchedule fetchOrCreateCurrentSchedule(Owner owner) {
