@@ -1,6 +1,5 @@
 package com.graduationProject.medicory.utils;
 
-import com.graduationProject.medicory.exception.ResutExistsException;
 import com.graduationProject.medicory.exception.StorageException;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +36,7 @@ public class FileStorageUtil {
             throw new StorageException("Failed to store empty file.");
         }
         if(!isValidSize(file,maxFileSize)){
-            throw new IllegalArgumentException("File size should be less than "+maxFileSize);
+            throw new StorageException("File size should be less than "+ (maxFileSize/(1024*1024)) +"MB");
         }
 
         String fileName = file.getOriginalFilename();
