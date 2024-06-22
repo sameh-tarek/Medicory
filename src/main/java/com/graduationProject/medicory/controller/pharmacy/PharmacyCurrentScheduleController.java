@@ -3,6 +3,7 @@ package com.graduationProject.medicory.controller.pharmacy;
 import com.graduationProject.medicory.model.medication.CurrentScheduleRequest;
 import com.graduationProject.medicory.model.medication.MedicationDTO;
 import com.graduationProject.medicory.service.pharmacy.PharmacyCurrentScheduleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class PharmacyCurrentScheduleController {
                 .body(response);
     }
     @PostMapping("{userCode}/medications")
-    ResponseEntity<String> addToCurrentSchedule(@PathVariable String userCode, @RequestBody CurrentScheduleRequest currentScheduleRequest){
+    ResponseEntity<String> addToCurrentSchedule(@PathVariable String userCode, @Valid @RequestBody CurrentScheduleRequest currentScheduleRequest){
         String response = pharmacyCurrentScheduleService.createTreatmentSchedule(userCode, currentScheduleRequest);
         return ResponseEntity
                 .status(HttpStatus.OK)
