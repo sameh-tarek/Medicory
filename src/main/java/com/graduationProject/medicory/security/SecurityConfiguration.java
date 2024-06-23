@@ -63,8 +63,7 @@ public class SecurityConfiguration {
     public AuthenticationManager authenticationManager (UserDetailsService userDetailsService) {
         var authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
-        //TODO : apply password Encoder
-        //authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPasswordEncoder(passwordEncoder());
         return new ProviderManager(authProvider);
     }
 

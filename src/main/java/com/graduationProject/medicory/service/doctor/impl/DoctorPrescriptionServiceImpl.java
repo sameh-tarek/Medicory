@@ -188,7 +188,7 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
                 .stream()
                 .map(prescription -> {
                     PrescriptionResponseDTO prescriptionResponseDTO = PrescriptionResponseDTO.builder()
-                            .prescriptionResponse(mapPrescriptionResponse(prescription))
+                            .prescriptionResponse(prescriptionMapper.toResponse(prescription))
                             .medications(mapMedications(prescription.getMedications()))
                             .labTests(mapLabTests(prescription.getTests()))
                             .imagingTests(mapImagingTests(prescription.getImagingTests()))
@@ -196,17 +196,6 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
                     return prescriptionResponseDTO;
                 })
                 .collect(Collectors.toList());
-    }
-
-    private PrescriptionResponse mapPrescriptionResponse(Prescription prescription) {
-        return PrescriptionResponse.builder()
-                .prescriptionId(prescription.getId())
-                //.doctorName(prescription.getDoctor().getFirstName() + prescription.getDoctor())
-                .medicationStatus(prescription.isMedicationStatus())
-                .prescriptionStatus(prescription.isPrescriptionStatus())
-                .createdAt(prescription.getCreatedAt())
-                .updatedAt(prescription.getUpdatedAt())
-                .build();
     }
 
     private List<MedicationResponseDTO> mapMedications(List<Medication> medications) {
