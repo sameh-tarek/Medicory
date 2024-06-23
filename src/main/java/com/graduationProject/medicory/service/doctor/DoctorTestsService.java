@@ -15,6 +15,7 @@ public interface DoctorTestsService {
     boolean addPrescriptionLabTestsForPatient(String userCode, List<LabTestRequestDTO> requiredTests, Long prescriptionId);
     List<LabTestResponseDTO> getActiveLabTests(String userCode);
     LabTestResponseDTO findLabTestById(Long testId);
+    boolean changeLabTestStatus(Long testId);
 
 
 
@@ -26,4 +27,6 @@ public interface DoctorTestsService {
     boolean addImagingTestForPatient(String userCode, List<ImagingTestRequestDTO> requiredTests, Long prescriptionId);
     List<ImagingTestResponseDTO> getActiveImagingTest(String userCode);
     ImagingTestResponseDTO findImagingTestById(Long testId);
+
+    boolean changeImagingTestStatus(Long testId);
 }
