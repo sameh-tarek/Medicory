@@ -146,7 +146,7 @@ public class OwnerMapperImpl implements OwnerMapper {
                     RelativePhoneNumber relativePhoneNumber = new RelativePhoneNumber();
                     relativePhoneNumber.setOwner(owner);
                     relativePhoneNumber.setPhone(dto.getPhone());
-                    relativePhoneNumber.setRelation(dto.getRelation());
+                    relativePhoneNumber.setRelation(dto.getRelation().toUpperCase());
                     return relativePhoneNumber;
                 })
                 .collect(Collectors.toList());

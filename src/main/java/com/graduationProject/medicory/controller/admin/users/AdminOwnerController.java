@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,7 +80,7 @@ public class AdminOwnerController {
             @ApiResponse(responseCode = "201" ,description = "Created, owner created")
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
     })
-    public ResponseEntity<String> addNewOwner(@RequestBody OwnerRequestDTO newOwner) {
+    public ResponseEntity<String> addNewOwner(@Valid  @RequestBody OwnerRequestDTO newOwner) {
         String message = ownerService.addNewOwner(newOwner);
         return new ResponseEntity<>(message, HttpStatus.CREATED);
 
@@ -93,7 +94,7 @@ public class AdminOwnerController {
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
 
     })
-    public ResponseEntity<String> updateOwner(@PathVariable long ownerId, @RequestBody OwnerRequestDTO updatedOwner) {
+    public ResponseEntity<String> updateOwner(@PathVariable long ownerId,@Valid @RequestBody OwnerRequestDTO updatedOwner) {
         String message = ownerService.updateOwner(ownerId, updatedOwner);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }

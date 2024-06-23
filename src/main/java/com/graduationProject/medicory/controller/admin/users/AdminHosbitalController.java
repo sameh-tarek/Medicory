@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,7 +74,7 @@ public class AdminHosbitalController {
             @ApiResponse(responseCode = "201" ,description = "Created, hospital created")
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
     })
-    public ResponseEntity<String> addHospital(@RequestBody HospitalRequestDTO hospital){
+    public ResponseEntity<String> addHospital(@Valid @RequestBody HospitalRequestDTO hospital){
         String message = hospitalService.addHospital(hospital);
         return new ResponseEntity<>(message,HttpStatus.CREATED);
     }
@@ -85,7 +86,7 @@ public class AdminHosbitalController {
             ,@ApiResponse(responseCode = "409",description = "Conflict  , May be the email or phone numbers already exist")
 
     })
-    public ResponseEntity<String> updateHospital(@PathVariable long hospitalId,@RequestBody HospitalDTO hospital){
+    public ResponseEntity<String> updateHospital(@PathVariable long hospitalId,@Valid @RequestBody HospitalDTO hospital){
         String message = hospitalService.updateHospital(hospitalId,hospital);
         return ResponseEntity.ok(message);
     }
