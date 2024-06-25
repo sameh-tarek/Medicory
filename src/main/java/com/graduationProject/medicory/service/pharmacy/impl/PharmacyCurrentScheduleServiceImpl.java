@@ -15,6 +15,7 @@ import com.graduationProject.medicory.repository.usersRepositories.OwnerReposito
 import com.graduationProject.medicory.service.pharmacy.PharmacyCurrentScheduleService;
 import com.graduationProject.medicory.utils.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +24,9 @@ import java.io.IOException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentScheduleService {
@@ -42,15 +45,33 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
     @Override
     public String createTreatmentSchedule(String userCode, CurrentScheduleRequest currentScheduleRequest) {
 
-        Owner owner = fetchOwner(userCode);
+        Medication medication = fetchMedicationUsingUserCodeAndMedicationId(userCode,currentScheduleRequest.getId());
+        Owner owner = fetchOwner(medication);
         CurrentSchedule currentSchedule = fetchOrCreateCurrentSchedule(owner);
 
-        Medication medication = fetchMedication( currentScheduleRequest.getId());
         updateAndSaveMedication(medication,currentScheduleRequest,currentSchedule);
 
         return "The medication added successfully to the current schedule.";
     }
 
+    @Override
+    public String deleteTreatmentFromCurrentSchedule(String userCode, Long medicationId) {
+        Medication medication = fetchMedicationUsingUserCodeAndMedicationId(userCode, medicationId);
+
+        if (medication.getCurrentSchedule() == null && !medication.isMedicationStatus()) {
+            return "The medication is already deleted from the current schedule.";
+        }
+
+        medication.setCurrentSchedule(null);
+        medication.setMedicationStatus(false);
+        medication.setUpdatedAt(LocalDateTime.now());
+
+        medicationRepository.save(medication);
+
+        log.info("Medication with ID {} deleted from current schedule by user {}", medicationId, userCode);
+
+        return "The medication deleted successfully from current schedule.";
+    }
 
     @Override
     public List<MedicationDTO> getMedicationOfPrescription(String userCode, Long prescriptionId) {
@@ -66,7 +87,7 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
 
     @Override
     public String createVoiceRecord(String userCode, MultipartFile file, Long medicationId) throws IOException {
-        Medication medication = fetchMedication(medicationId);
+        Medication medication = fetchMedicationUsingUserCodeAndMedicationId(userCode, medicationId);
         String path = FileStorageUtil.uploadFile(file,UPLOAD_DIR,MAX_FILE_SIZE);
 
         VoiceRecord voiceRecord = VoiceRecord.builder()
@@ -96,17 +117,17 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
         return "The Voice record deleted successfully.";
     }
 
+    private Medication fetchMedicationUsingUserCodeAndMedicationId(String userCode, Long id) {
+        return medicationRepository.findByIdAndUserCode(id, userCode).orElseThrow(
+                () -> new RecordNotFoundException("There is an error with the user code or medication ID")
+        );
+    }
 
-    private Owner fetchOwner(String userCode){
-        return ownerRepository.findByUserCode(userCode).orElseThrow(
-                ()->new RecordNotFoundException("user not found!")
-        );
+
+    private Owner fetchOwner(Medication medication){
+        return medication.getOwner();
     }
-    private Medication fetchMedication(Long medicationId) {
-        return medicationRepository.findById(medicationId).orElseThrow(
-                ()->new RecordNotFoundException("medication not found!")
-        );
-    }
+
     private CurrentSchedule fetchOrCreateCurrentSchedule(Owner owner) {
 
         return currentScheduleRepository.findByOwnerId(owner.getId())
@@ -139,6 +160,7 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
         medication.setDose(currentScheduleRequest.getDose());
         medication.setFrequency(currentScheduleRequest.getFrequency());
         medication.setTips(currentScheduleRequest.getTips());
+        medication.setMedicationStatus(true);
 
         medication.setCurrentSchedule(currentSchedule);
         medicationRepository.save(medication);

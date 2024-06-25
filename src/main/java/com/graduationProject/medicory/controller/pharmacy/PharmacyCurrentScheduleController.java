@@ -1,7 +1,11 @@
 package com.graduationProject.medicory.controller.pharmacy;
 
+import com.graduationProject.medicory.entity.medicationEntities.Medication;
+import com.graduationProject.medicory.mapper.medicationsMappers.MedicationMapper;
 import com.graduationProject.medicory.model.medication.CurrentScheduleRequest;
 import com.graduationProject.medicory.model.medication.MedicationDTO;
+import com.graduationProject.medicory.model.medication.MedicationResponseDTO;
+import com.graduationProject.medicory.repository.MedicationsRepositories.CurrentScheduleRepository;
 import com.graduationProject.medicory.service.pharmacy.PharmacyCurrentScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,7 @@ import java.util.List;
 public class PharmacyCurrentScheduleController {
     private final PharmacyCurrentScheduleService pharmacyCurrentScheduleService;
 
+
     @GetMapping("{userCode}/{prescriptionId}/medications")
     ResponseEntity<List<MedicationDTO>> getMedicationsOfPrescription(@PathVariable String userCode, @PathVariable Long prescriptionId){
         List<MedicationDTO> response = pharmacyCurrentScheduleService.getMedicationOfPrescription(userCode,prescriptionId);
@@ -29,6 +34,13 @@ public class PharmacyCurrentScheduleController {
     @PostMapping("{userCode}/medications")
     ResponseEntity<String> addToCurrentSchedule(@PathVariable String userCode, @Valid @RequestBody CurrentScheduleRequest currentScheduleRequest){
         String response = pharmacyCurrentScheduleService.createTreatmentSchedule(userCode, currentScheduleRequest);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+    @DeleteMapping("{userCode}/medications/{medicationId}")
+    ResponseEntity<String> deleteFromCurrentSchedule(@PathVariable String userCode, @PathVariable Long medicationId){
+        String response = pharmacyCurrentScheduleService.deleteTreatmentFromCurrentSchedule(userCode, medicationId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
@@ -51,6 +63,5 @@ public class PharmacyCurrentScheduleController {
                 .body(response);
 
     }
-
 
 }
