@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/owners/{userId}")
+@RequestMapping("/owners/{userCode}")
 public class OwnerController {
     @Autowired
     OwnerService ownerService;
 
     @GetMapping("/personal-information")
-    public OwnerDTO getPersonalInformation(@PathVariable long userId){
-        return ownerService.getOwnerPersonalInformation(userId);
+    public OwnerDTO getPersonalInformation(@PathVariable String userCode){
+        return ownerService.getOwnerPersonalInformation(userCode);
     }
 
 

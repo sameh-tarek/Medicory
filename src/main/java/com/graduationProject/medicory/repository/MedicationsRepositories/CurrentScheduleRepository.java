@@ -9,4 +9,5 @@ public interface CurrentScheduleRepository extends JpaRepository<CurrentSchedule
 
 
     Optional<CurrentSchedule> findByOwnerId(Long id);
+
 }

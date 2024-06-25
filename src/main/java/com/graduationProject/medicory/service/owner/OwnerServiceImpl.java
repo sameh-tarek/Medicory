@@ -45,16 +45,16 @@ public class OwnerServiceImpl implements OwnerService {
     private final CurrentScheduleRepository currentScheduleRepository;
 
     @Override
-    public OwnerDTO getOwnerPersonalInformation(long id) {
-        Owner owner= ownerRepository.findAllByUserId(id)
-                .orElseThrow(()-> new RecordNotFoundException("Owner with id " + id + " doesn't exist!"));
+    public OwnerDTO getOwnerPersonalInformation(String userCode) {
+        Owner owner= ownerRepository.findByUserCode(userCode)
+                .orElseThrow(()-> new RecordNotFoundException("Owner with id " + userCode + " doesn't exist!"));
         return ownerMapper.toDTO(owner);
     }
 
     @Override
-    public List<ChronicDiseasesResponseDTO> getOwnerChronicDiseases(long id) {
-        Owner owner = ownerRepository.findById(id).orElseThrow(
-                () -> new RecordNotFoundException("Owner with id: " + id+ " not exist!")
+    public List<ChronicDiseasesResponseDTO> getOwnerChronicDiseases(String userCode) {
+        Owner owner = ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("Owner with id: " + userCode+ " not exist!")
         );
         return owner.getChronicDiseases()
                 .stream()
@@ -63,22 +63,22 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public ChronicDiseasesResponseDTO getOwnerChronicDiseaseById(long diseaseId, long userId) {
-        Owner owner = ownerRepository.findById(userId).orElseThrow(
-                () -> new RecordNotFoundException("Owner with id: " + userId + " not exist!")
+    public ChronicDiseasesResponseDTO getOwnerChronicDiseaseById(long diseaseId, String userCode) {
+        Owner owner = ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("Owner with id: " + userCode + " not exist!")
         );
          return owner.getChronicDiseases()
                  .stream()
                  .filter(chronicDiseases -> chronicDiseases.getId() == diseaseId)
                  .map(chronicDiseasesMapper::toDTO)
                  .findFirst()
-                 .orElseThrow(() -> new RecordNotFoundException("User with id: "+ userId + " not have a chronic disease with id: " + diseaseId));
+                 .orElseThrow(() -> new RecordNotFoundException("User with id: "+ userCode + " not have a chronic disease with id: " + diseaseId));
     }
 
     @Override
-    public List<AllergiesResponseDTO> getOwnerAllergies(long id) {
-        Owner owner = ownerRepository.findById(id).orElseThrow(
-                () -> new RecordNotFoundException("Owner with id: " + id+ " not exist!"));
+    public List<AllergiesResponseDTO> getOwnerAllergies(String userCode) {
+        Owner owner = ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("Owner with id: " + userCode+ " not exist!"));
         return owner.getAllergies()
                 .stream()
                 .map(allergiesMapper::toDTO)
@@ -86,23 +86,23 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public AllergiesResponseDTO getOwnerAllergyById(long diseaseId, long userId) {
-        Owner owner = ownerRepository.findById(userId).orElseThrow(
-                () -> new RecordNotFoundException("Owner with id: " + userId + " not exist!")
+    public AllergiesResponseDTO getOwnerAllergyById(long diseaseId, String userCode) {
+        Owner owner = ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("Owner with id: " + userCode + " not exist!")
         );
         return owner.getAllergies()
                 .stream()
                 .filter(allergies -> allergies.getId() == diseaseId)
                 .map(allergiesMapper::toDTO)
                 .findFirst()
-                .orElseThrow(() -> new RecordNotFoundException("User with id: "+ userId + " not have a Allergy with id: " + diseaseId));
+                .orElseThrow(() -> new RecordNotFoundException("User with id: "+ userCode + " not have a Allergy with id: " + diseaseId));
 
     }
 
     @Override
-    public List<ImmunizationResponseDTO> getOwnerImmunizations(long id) {
-        Owner owner = ownerRepository.findById(id).orElseThrow(
-                () -> new RecordNotFoundException("Owner with id: " + id+ " not exist!"));
+    public List<ImmunizationResponseDTO> getOwnerImmunizations(String userCode) {
+        Owner owner = ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("Owner with id: " + userCode+ " not exist!"));
         return owner.getImmunizations()
                 .stream()
                 .map(immunizationMapper::toDTO)
@@ -110,23 +110,23 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public ImmunizationResponseDTO getOwnerImmunizationById(long diseaseId, long userId) {
-        Owner owner = ownerRepository.findById(userId).orElseThrow(
-                () -> new RecordNotFoundException("Owner with id: " + userId + " not exist!")
+    public ImmunizationResponseDTO getOwnerImmunizationById(long diseaseId, String userCode) {
+        Owner owner = ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("Owner with id: " + userCode + " not exist!")
         );
         return owner.getImmunizations()
                 .stream()
                 .filter(immunization -> immunization.getId() == diseaseId)
                 .map(immunizationMapper::toDTO)
                 .findFirst()
-                .orElseThrow(() -> new RecordNotFoundException("User with id: "+ userId + " not have a immunization with id: " + diseaseId));
+                .orElseThrow(() -> new RecordNotFoundException("User with id: "+ userCode + " not have a immunization with id: " + diseaseId));
 
     }
 
     @Override
-    public List<SurgeryResponseDTO> getOwnerSurgeries(long id) {
-        Owner owner = ownerRepository.findById(id).orElseThrow(
-                () -> new RecordNotFoundException("Owner with id: " + id+ " not exist!"));
+    public List<SurgeryResponseDTO> getOwnerSurgeries(String userCode) {
+        Owner owner = ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("Owner with id: " + userCode+ " not exist!"));
         return owner.getSurgeries()
                 .stream()
                 .map(surgeryMapper::toDTO)
@@ -134,23 +134,23 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public SurgeryResponseDTO getOwnerSurgeryById(long diseaseId, long userId) {
-        Owner owner = ownerRepository.findById(userId).orElseThrow(
-                () -> new RecordNotFoundException("Owner with id: " + userId + " not exist!")
+    public SurgeryResponseDTO getOwnerSurgeryById(long diseaseId, String userCode) {
+        Owner owner = ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("Owner with id: " + userCode + " not exist!")
         );
         return owner.getSurgeries()
                 .stream()
                 .filter(surgery -> surgery.getId() == diseaseId)
                 .map(surgeryMapper::toDTO)
                 .findFirst()
-                .orElseThrow(() -> new RecordNotFoundException("User with id: "+ userId + " not have a surgery with id: " + diseaseId));
+                .orElseThrow(() -> new RecordNotFoundException("User with id: "+ userCode + " not have a surgery with id: " + diseaseId));
 
     }
 
     @Override
-    public List<LabTestResponseDTO> getOwnerLabTests(long userId) {
-        return ownerRepository.findById(userId).orElseThrow(
-                () -> new RecordNotFoundException("owner with id "+ userId + " not found!")
+    public List<LabTestResponseDTO> getOwnerLabTests(String userCode) {
+        return ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("owner with id "+ userCode + " not found!")
         )
                 .getLabTests()
                 .stream()
@@ -159,9 +159,9 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public LabTestResponseDTO getOwnerLabTestByTestId(long testId, long userId) {
-        return ownerRepository.findById(userId).orElseThrow(
-                () -> new RecordNotFoundException("Owner with id: " + userId+ " not exist!")
+    public LabTestResponseDTO getOwnerLabTestByTestId(long testId, String userCode) {
+        return ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("Owner with id: " + userCode+ " not exist!")
         )
                 .getLabTests()
                 .stream()
@@ -169,14 +169,14 @@ public class OwnerServiceImpl implements OwnerService {
                 .map(labTestMapper::toDTO)
                 .findFirst()
                 .orElseThrow(
-                        () -> new RecordNotFoundException("User with id " + userId + " not have a test with id " + testId)
+                        () -> new RecordNotFoundException("User with id " + userCode + " not have a test with id " + testId)
                 );
     }
 
     @Override
-    public List<ImagingTestResponseDTO> getOwnerImagingTests(long userId) {
-        return ownerRepository.findById(userId).orElseThrow(
-                () -> new RecordNotFoundException("owner with id "+ userId + " not found!")
+    public List<ImagingTestResponseDTO> getOwnerImagingTests(String userCode) {
+        return ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("owner with id "+ userCode + " not found!")
         )
                 .getImagingTests()
                 .stream()
@@ -185,9 +185,9 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public ImagingTestResponseDTO getOwnerImagingTestByTestId(long testId, long userId) {
-        return ownerRepository.findById(userId).orElseThrow(
-                () -> new RecordNotFoundException("owner with id "+ userId + " not found!")
+    public ImagingTestResponseDTO getOwnerImagingTestByTestId(long testId, String userCode) {
+        return ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("owner with id "+ userCode + " not found!")
         )
                 .getImagingTests()
                 .stream()
@@ -195,15 +195,19 @@ public class OwnerServiceImpl implements OwnerService {
                 .map(imagingTestMapper::toDTO)
                 .findFirst()
                 .orElseThrow(
-                        () -> new RecordNotFoundException("User with id " + userId + " not have an imaging test with id " + testId)
+                        () -> new RecordNotFoundException("User with id " + userCode + " not have an imaging test with id " + testId)
                 );
     }
 
     @Override
-    public List<MedicationDTO> getCurrentMedicationSchedule(long userId) {
+    public List<MedicationDTO> getCurrentMedicationSchedule(String userCode) {
 
-        return currentScheduleRepository.findByOwnerId(userId).orElseThrow(
-                () -> new RecordNotFoundException("owner with id "+ userId + " not have current medication schedule!")
+        Long ownerId = ownerRepository.findByUserCode(userCode).orElseThrow(
+                () -> new RecordNotFoundException("owner with userCode "+ userCode + " not found!")
+        ).getId();
+
+        return currentScheduleRepository.findByOwnerId(ownerId).orElseThrow(
+                () -> new RecordNotFoundException("owner with userCode "+ userCode + " not have current medication schedule!")
         ).getMedications()
                 .stream()
                 .filter(Medication::isMedicationStatus)

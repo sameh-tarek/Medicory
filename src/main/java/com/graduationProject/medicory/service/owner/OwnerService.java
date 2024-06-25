@@ -14,31 +14,31 @@ import java.util.List;
 
 @Service
 public interface OwnerService {
-    OwnerDTO getOwnerPersonalInformation(long id);
+    OwnerDTO getOwnerPersonalInformation(String userCode);
 
-    List<ChronicDiseasesResponseDTO> getOwnerChronicDiseases(long id);
+    List<ChronicDiseasesResponseDTO> getOwnerChronicDiseases(String userCode);
 
-    ChronicDiseasesResponseDTO getOwnerChronicDiseaseById(long diseaseId, long userId);
+    ChronicDiseasesResponseDTO getOwnerChronicDiseaseById(long diseaseId, String userCode);
 
-    List<AllergiesResponseDTO> getOwnerAllergies(long id);
+    List<AllergiesResponseDTO> getOwnerAllergies(String userCode);
 
-    AllergiesResponseDTO getOwnerAllergyById(long diseaseId, long userId);
+    AllergiesResponseDTO getOwnerAllergyById(long diseaseId, String userCode);
 
-    List<ImmunizationResponseDTO> getOwnerImmunizations(long id);
+    List<ImmunizationResponseDTO> getOwnerImmunizations(String userCode);
 
-    ImmunizationResponseDTO getOwnerImmunizationById(long diseaseId, long userId);
+    ImmunizationResponseDTO getOwnerImmunizationById(long diseaseId, String userCode);
 
-    List<SurgeryResponseDTO> getOwnerSurgeries(long id);
+    List<SurgeryResponseDTO> getOwnerSurgeries(String userCode);
 
-    SurgeryResponseDTO getOwnerSurgeryById(long diseaseId, long userId);
+    SurgeryResponseDTO getOwnerSurgeryById(long diseaseId, String userCode);
 
-    List<LabTestResponseDTO> getOwnerLabTests(long userId);
+    List<LabTestResponseDTO> getOwnerLabTests(String userCode);
 
-    LabTestResponseDTO getOwnerLabTestByTestId(long testId, long userId);
+    LabTestResponseDTO getOwnerLabTestByTestId(long testId, String userCode);
 
-    List<ImagingTestResponseDTO> getOwnerImagingTests(long userId);
+    List<ImagingTestResponseDTO> getOwnerImagingTests(String userCode);
 
-    ImagingTestResponseDTO getOwnerImagingTestByTestId(long testId, long userId);
+    ImagingTestResponseDTO getOwnerImagingTestByTestId(long testId, String userCode);
 
-    List<MedicationDTO> getCurrentMedicationSchedule(long userId);
+    List<MedicationDTO> getCurrentMedicationSchedule(String userCode);
 }

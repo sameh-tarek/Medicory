@@ -11,49 +11,49 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/owners/{userId}/medical-history")
+@RequestMapping("/owners/{userCode}/medical-history")
 public class OwnerMedicalHistoryController {
 
     @Autowired
     OwnerService ownerService;
 
     @GetMapping("/chronic-diseases")
-    public List<ChronicDiseasesResponseDTO> getOwnerAllChronicDiseases(@PathVariable long userId){
-        return ownerService.getOwnerChronicDiseases(userId);
+    public List<ChronicDiseasesResponseDTO> getOwnerAllChronicDiseases(@PathVariable String userCode){
+        return ownerService.getOwnerChronicDiseases(userCode);
     }
 
     @GetMapping("/chronic-diseases/{diseaseId}")
-    public ChronicDiseasesResponseDTO getOwnerChronicDisease(@PathVariable long diseaseId, @PathVariable long userId){
-        return ownerService.getOwnerChronicDiseaseById(diseaseId, userId);
+    public ChronicDiseasesResponseDTO getOwnerChronicDisease(@PathVariable long diseaseId, @PathVariable String userCode){
+        return ownerService.getOwnerChronicDiseaseById(diseaseId, userCode);
     }
 
     @GetMapping("/allergies")
-    public List<AllergiesResponseDTO> getOwnerAllergies(@PathVariable long userId){
-        return ownerService.getOwnerAllergies(userId);
+    public List<AllergiesResponseDTO> getOwnerAllergies(@PathVariable String userCode){
+        return ownerService.getOwnerAllergies(userCode);
     }
 
     @GetMapping("/allergies/{diseaseId}")
-    public AllergiesResponseDTO getOwnerAllergy(@PathVariable long diseaseId, @PathVariable long userId){
-        return ownerService.getOwnerAllergyById(diseaseId, userId);
+    public AllergiesResponseDTO getOwnerAllergy(@PathVariable long diseaseId, @PathVariable String userCode){
+        return ownerService.getOwnerAllergyById(diseaseId, userCode);
     }
 
     @GetMapping("/immunizations")
-    public List<ImmunizationResponseDTO> getOwnerImmunizations(@PathVariable long userId){
-        return ownerService.getOwnerImmunizations(userId);
+    public List<ImmunizationResponseDTO> getOwnerImmunizations(@PathVariable String userCode){
+        return ownerService.getOwnerImmunizations(userCode);
     }
 
     @GetMapping("/immunizations/{diseaseId}")
-    public ImmunizationResponseDTO getOwnerImmunization(@PathVariable long diseaseId, @PathVariable long userId){
-        return ownerService.getOwnerImmunizationById(diseaseId, userId);
+    public ImmunizationResponseDTO getOwnerImmunization(@PathVariable long diseaseId, @PathVariable String userCode){
+        return ownerService.getOwnerImmunizationById(diseaseId, userCode);
     }
 
     @GetMapping("/surgeries")
-    public List<SurgeryResponseDTO> getOwnerSurgeries(@PathVariable long userId){
-        return ownerService.getOwnerSurgeries(userId);
+    public List<SurgeryResponseDTO> getOwnerSurgeries(@PathVariable String userCode){
+        return ownerService.getOwnerSurgeries(userCode);
     }
 
     @GetMapping("/surgeries/{diseaseId}")
-    public SurgeryResponseDTO getOwnerSurgeries(@PathVariable long diseaseId, @PathVariable long userId){
-        return ownerService.getOwnerSurgeryById(diseaseId, userId);
+    public SurgeryResponseDTO getOwnerSurgeries(@PathVariable long diseaseId, @PathVariable String userCode){
+        return ownerService.getOwnerSurgeryById(diseaseId, userCode);
     }
 }
