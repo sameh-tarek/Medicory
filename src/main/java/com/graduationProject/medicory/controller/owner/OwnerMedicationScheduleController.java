@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/owners/{ownerId}/medication-schedule")
+@RequestMapping("/owners/{userCode}/medication-schedule")
 public class OwnerMedicationScheduleController {
 
     @Autowired
     private OwnerService ownerService;
 
     @GetMapping
-    public List<MedicationDTO> getMedicationSchedule(@PathVariable long ownerId){
-        return ownerService.getMedicationSchedule(ownerId);
+    public List<MedicationDTO> getMedicationSchedule(@PathVariable String userCode){
+        return ownerService.getCurrentMedicationSchedule(userCode);
     }
 
 }
