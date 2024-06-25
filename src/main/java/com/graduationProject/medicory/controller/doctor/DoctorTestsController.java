@@ -67,6 +67,13 @@ public class DoctorTestsController {
         return doctorTestsService.findLabTestById(testId);
     }
 
+    @PutMapping("tests/status")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @Operation(summary = "change lab test status")
+    public boolean changeLabTestStatus (@RequestParam Long testId) {
+        return doctorTestsService.changeLabTestStatus(testId);
+    }
+
     @GetMapping("/{userCode}/imaging-tests")
     @Operation(summary = "Get all imaging tests for a patient")
     public List<ImagingTestResponseDTO> getAllImagingTestForPatient(@PathVariable String userCode) {
@@ -114,4 +121,12 @@ public class DoctorTestsController {
     public ImagingTestResponseDTO findImagingTestById (@RequestParam Long testId) {
         return doctorTestsService.findImagingTestById(testId);
     }
+
+    @PutMapping("imaging-tests/status")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @Operation(summary = "change imaging test status")
+    public boolean changeImagingTestStatus (@RequestParam Long testId) {
+        return doctorTestsService.changeImagingTestStatus(testId);
+    }
+
 }

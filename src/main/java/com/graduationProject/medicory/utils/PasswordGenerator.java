@@ -55,7 +55,7 @@ public class PasswordGenerator {
         SimpleMailMessage email = new SimpleMailMessage();
         email.setSubject("Your account password ");
         email.setText("Your password is : "+password);
-        email.setTo("salmasobhy456@gmail.com");
+        email.setTo(receiver);
         mailSender.send(email);
     }
 }

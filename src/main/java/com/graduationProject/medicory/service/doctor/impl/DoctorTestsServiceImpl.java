@@ -126,6 +126,18 @@ public class DoctorTestsServiceImpl implements DoctorTestsService {
         return labTestMapper.toDTO(labTest);
     }
 
+    @Override
+    public boolean changeLabTestStatus(Long testId) {
+        log.info("Doctor want to change status for test with id {}", testId);
+        LabTest labTest = labTestRepository.findById(testId)
+                .orElseThrow(() -> new RecordNotFoundException("This test with id " + testId + " doesn't exist!"));
+        log.info("The current status {}", labTest.isStatus());
+        labTest.setStatus(!labTest.isStatus());
+        labTestRepository.save(labTest);
+        log.info("The new status {}", labTest.isStatus());
+        return true;
+    }
+
 
     @Override
     public List<ImagingTestResponseDTO> getAllImagingTestForPatient(String userCode) {
@@ -215,5 +227,17 @@ public class DoctorTestsServiceImpl implements DoctorTestsService {
         log.info("imaging test with id {} is {}", testId, imagingTest);
         return imagingTestMapper.toDTO(imagingTest);
 
+    }
+
+    @Override
+    public boolean changeImagingTestStatus(Long testId) {
+        log.info("Doctor want to change status for imaging test with id {}", testId);
+        ImagingTest imagingTestTest = imagingTestRepository.findById(testId)
+                .orElseThrow(() -> new RecordNotFoundException("This imaging test with id " + testId + " doesn't exist!"));
+        log.info("The current status {}", imagingTestTest.isStatus());
+        imagingTestTest.setStatus(!imagingTestTest.isStatus());
+        imagingTestRepository.save(imagingTestTest);
+        log.info("The new status {}", imagingTestTest.isStatus());
+        return true;
     }
 }
