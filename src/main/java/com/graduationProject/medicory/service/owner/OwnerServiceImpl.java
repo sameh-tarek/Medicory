@@ -1,5 +1,6 @@
 package com.graduationProject.medicory.service.owner;
 
+import com.graduationProject.medicory.entity.medicationEntities.CurrentSchedule;
 import com.graduationProject.medicory.entity.medicationEntities.Medication;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
@@ -19,6 +20,7 @@ import com.graduationProject.medicory.model.owner.OwnerDTO;
 import com.graduationProject.medicory.model.surgery.SurgeryResponseDTO;
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
+import com.graduationProject.medicory.repository.MedicationsRepositories.CurrentScheduleRepository;
 import com.graduationProject.medicory.repository.usersRepositories.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +42,7 @@ public class OwnerServiceImpl implements OwnerService {
     private final LabTestMapper labTestMapper;
     private final ImagingTestMapper imagingTestMapper;
     private final MedicationMapper medicationMapper;
+    private final CurrentScheduleRepository currentScheduleRepository;
 
     @Override
     public OwnerDTO getOwnerPersonalInformation(long id) {
@@ -197,19 +200,15 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public List<MedicationDTO> getMedicationSchedule(long userId) {
-        List<MedicationDTO> medicationDTOS = ownerRepository.findById(userId).orElseThrow(
-                () -> new RecordNotFoundException("owner with id "+ userId + " not found!")
-        )
-                .getCurrentSchedule()
-                .getMedications()
+    public List<MedicationDTO> getCurrentMedicationSchedule(long userId) {
+
+        return currentScheduleRepository.findByOwnerId(userId).orElseThrow(
+                () -> new RecordNotFoundException("owner with id "+ userId + " not have current medication schedule!")
+        ).getMedications()
                 .stream()
                 .filter(Medication::isMedicationStatus)
                 .map(medicationMapper::toDTO)
                 .collect(Collectors.toList());
-
-        log.info("Medication schedule for owner with id {} is {}", userId, medicationDTOS);
-        return medicationDTOS;
     }
 
 }

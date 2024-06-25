@@ -40,5 +40,5 @@ public interface OwnerService {
 
     ImagingTestResponseDTO getOwnerImagingTestByTestId(long testId, long userId);
 
-    List<MedicationDTO> getMedicationSchedule(long userId);
+    List<MedicationDTO> getCurrentMedicationSchedule(long userId);
 }

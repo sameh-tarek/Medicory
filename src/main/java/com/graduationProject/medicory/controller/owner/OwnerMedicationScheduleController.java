@@ -19,7 +19,7 @@ public class OwnerMedicationScheduleController {
 
     @GetMapping
     public List<MedicationDTO> getMedicationSchedule(@PathVariable long ownerId){
-        return ownerService.getMedicationSchedule(ownerId);
+        return ownerService.getCurrentMedicationSchedule(ownerId);
     }
 
 }
