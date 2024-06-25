@@ -17,7 +17,6 @@ import com.graduationProject.medicory.utils.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,6 +44,13 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
     public String createTreatmentSchedule(String userCode, CurrentScheduleRequest currentScheduleRequest) {
         log.info("Creating treatment schedule for userCode: {} with request: {}", userCode, currentScheduleRequest);
         Medication medication = fetchMedicationUsingUserCodeAndMedicationId(userCode, currentScheduleRequest.getId());
+
+
+        if(isInCurrentSchedule(medication)){
+            log.info("Medication ID {} is already added to current schedule.", medication.getId());
+            return "The medication is already added to the current schedule.";
+        }
+
         Owner owner = fetchOwner(medication);
         CurrentSchedule currentSchedule = fetchOrCreateCurrentSchedule(owner);
 
@@ -60,10 +66,11 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
 
         Medication medication = fetchMedicationUsingUserCodeAndMedicationId(userCode, medicationId);
 
-        if (medication.getCurrentSchedule() == null && Boolean.FALSE.equals(medication.isMedicationStatus())) {
+        if (!isInCurrentSchedule(medication)) {
             log.info("Medication ID {} is already deleted from current schedule.", medicationId);
             return "The medication is already deleted from the current schedule.";
         }
+
 
         medication.setCurrentSchedule(null);
         medication.setMedicationStatus(false);
@@ -140,6 +147,9 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
     private Owner fetchOwner(Medication medication) {
         log.info("Fetching owner for medication ID: {}", medication.getId());
         return medication.getOwner();
+    }
+    private boolean isInCurrentSchedule(Medication medication) {
+        return medication.getCurrentSchedule() != null && medication.isMedicationStatus();
     }
 
     private CurrentSchedule fetchOrCreateCurrentSchedule(Owner owner) {
