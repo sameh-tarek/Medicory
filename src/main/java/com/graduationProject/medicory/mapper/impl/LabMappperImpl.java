@@ -7,6 +7,7 @@ import com.graduationProject.medicory.mapper.phonesMappers.UserPhoneNumberMapper
 import com.graduationProject.medicory.model.users.lab.LabDTO;
 import com.graduationProject.medicory.model.users.lab.LabRequestDTO;
 import com.graduationProject.medicory.model.users.lab.LabResponseDTO;
+import com.graduationProject.medicory.model.users.lab.LabSearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class LabMappperImpl implements LabMapper {
     private final UserPhoneNumberMapper phoneNumberMapper;
-
-
     @Override
     public Lab toRequestEntity(LabRequestDTO lab) {
         User user = User.builder()
@@ -58,7 +57,6 @@ public class LabMappperImpl implements LabMapper {
                 .build();
     }
 
-
     @Override
     public LabResponseDTO toResponseDTO(Lab lab) {
         return new LabResponseDTO(
@@ -67,4 +65,15 @@ public class LabMappperImpl implements LabMapper {
                 lab.getUser().isEnabled()
         );
     }
+
+    @Override
+    public LabSearchResponseDTO toSearchResponseDTO(Lab lab) {
+        return LabSearchResponseDTO.builder()
+                .name(lab.getName())
+                .address(lab.getAddress())
+                .googleMapsLink(lab.getGoogleMapsLink())
+                .build();
+    }
+
+
 }

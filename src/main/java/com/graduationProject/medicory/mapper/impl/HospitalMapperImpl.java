@@ -7,6 +7,7 @@ import com.graduationProject.medicory.mapper.phonesMappers.UserPhoneNumberMapper
 import com.graduationProject.medicory.model.users.hospital.HospitalDTO;
 import com.graduationProject.medicory.model.users.hospital.HospitalRequestDTO;
 import com.graduationProject.medicory.model.users.hospital.HospitalResponseDTO;
+import com.graduationProject.medicory.model.users.hospital.HospitalSearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -55,6 +56,15 @@ public class HospitalMapperImpl implements HospitalMapper {
                 .googleMapsLink(hospital.getGoogleMapsLink())
                 .address(hospital.getAddress())
                 .user(toUserEntity(hospital))
+                .build();
+    }
+
+    @Override
+    public HospitalSearchResponseDTO toSearchResponseDTO(Hospital hospital) {
+        return HospitalSearchResponseDTO.builder()
+                .name(hospital.getName())
+                .googleMapsLink(hospital.getGoogleMapsLink())
+                .address(hospital.getAddress())
                 .build();
     }
 

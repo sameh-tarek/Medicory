@@ -7,6 +7,7 @@ import com.graduationProject.medicory.mapper.phonesMappers.UserPhoneNumberMapper
 import com.graduationProject.medicory.model.users.doctor.DoctorDTO;
 import com.graduationProject.medicory.model.users.doctor.DoctorRequestDTO;
 import com.graduationProject.medicory.model.users.doctor.DoctorResponseDTO;
+import com.graduationProject.medicory.model.users.doctor.DoctorSearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -69,6 +70,16 @@ public class DoctorMapperImpl implements DoctorMapper {
                         + " " + doctor.getLastName(),
                 doctor.getUser().isEnabled()
         );
+    }
+
+    @Override
+    public DoctorSearchResponseDTO toSearchResponseDTO(Doctor doctor) {
+        return DoctorSearchResponseDTO.builder()
+                .firstName(doctor.getFirstName())
+                .middleName(doctor.getMiddleName())
+                .lastName(doctor.getLastName())
+                .specialization(doctor.getSpecialization())
+                .build();
     }
 
     private User toUserEntity(DoctorRequestDTO doctor) {
