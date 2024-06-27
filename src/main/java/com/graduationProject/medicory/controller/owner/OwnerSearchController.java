@@ -1,5 +1,7 @@
 package com.graduationProject.medicory.controller.owner;
 
+import com.graduationProject.medicory.model.users.clinic.ClinicSearchResponseDTO;
+import com.graduationProject.medicory.model.users.hospital.HospitalSearchResponseDTO;
 import com.graduationProject.medicory.model.users.lab.LabSearchResponseDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacySearchResponseDTO;
 import com.graduationProject.medicory.service.owner.OwnerService;
@@ -27,13 +29,41 @@ public class OwnerSearchController {
         return ownerService.getLabsByName(labName);
     }
 
-    @GetMapping("/Pharmacies")
+    @GetMapping("/pharmacies")
     public List<PharmacySearchResponseDTO> getAllPharmacies(){
         return ownerService.getAllPharmacies();
     }
 
-    @GetMapping("/Pharmacies/{pharmacyName}")
+    @GetMapping("/pharmacies/{pharmacyName}")
     public List<PharmacySearchResponseDTO> getPharmaciesByName(@PathVariable String pharmacyName){
         return ownerService.getPharmaciesByName(pharmacyName);
     }
+
+    @GetMapping("/hospitals")
+    public List<HospitalSearchResponseDTO> getAllHospitals(){
+        return ownerService.getAllHospitals();
+    }
+
+    @GetMapping("/hospitals/{hospitalName}")
+    public List<HospitalSearchResponseDTO> getHospitalsByName(@PathVariable String hospitalName){
+        return ownerService.getHospitalsByName(hospitalName);
+    }
+
+    @GetMapping("/clinics")
+    public List<ClinicSearchResponseDTO> getAllClinics(){
+        return ownerService.getAllClinics();
+    }
+
+    @GetMapping("/clinics/{clinicName}")
+    public List<ClinicSearchResponseDTO> getClinicsByName(@PathVariable String clinicName){
+        return ownerService.getClinicsByName(clinicName);
+    }
+
+    @GetMapping("/clinics/names/{doctorName}")
+    public List<ClinicSearchResponseDTO> getClinicsByDoctorName(@PathVariable String doctorName){
+        return ownerService.getClinicsByDoctorName(doctorName);
+    }
+
+
+
 }

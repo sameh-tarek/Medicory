@@ -2,6 +2,7 @@ package com.graduationProject.medicory.service.owner;
 
 import com.graduationProject.medicory.entity.medicationEntities.CurrentSchedule;
 import com.graduationProject.medicory.entity.medicationEntities.Medication;
+import com.graduationProject.medicory.entity.usersEntities.Doctor;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.mapper.medicationsMappers.MedicationMapper;
@@ -11,9 +12,7 @@ import com.graduationProject.medicory.mapper.otherMappers.ImmunizationMapper;
 import com.graduationProject.medicory.mapper.otherMappers.SurgeryMapper;
 import com.graduationProject.medicory.mapper.testsMappers.ImagingTestMapper;
 import com.graduationProject.medicory.mapper.testsMappers.LabTestMapper;
-import com.graduationProject.medicory.mapper.usersMappers.LabMapper;
-import com.graduationProject.medicory.mapper.usersMappers.OwnerMapper;
-import com.graduationProject.medicory.mapper.usersMappers.PharmacyMpper;
+import com.graduationProject.medicory.mapper.usersMappers.*;
 import com.graduationProject.medicory.model.allergies.AllergiesResponseDTO;
 import com.graduationProject.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
 import com.graduationProject.medicory.model.immunization.ImmunizationResponseDTO;
@@ -22,12 +21,13 @@ import com.graduationProject.medicory.model.owner.OwnerDTO;
 import com.graduationProject.medicory.model.surgery.SurgeryResponseDTO;
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
+import com.graduationProject.medicory.model.users.clinic.ClinicSearchResponseDTO;
+import com.graduationProject.medicory.model.users.doctor.DoctorSearchResponseDTO;
+import com.graduationProject.medicory.model.users.hospital.HospitalSearchResponseDTO;
 import com.graduationProject.medicory.model.users.lab.LabSearchResponseDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacySearchResponseDTO;
 import com.graduationProject.medicory.repository.MedicationsRepositories.CurrentScheduleRepository;
-import com.graduationProject.medicory.repository.usersRepositories.LabRepository;
-import com.graduationProject.medicory.repository.usersRepositories.OwnerRepository;
-import com.graduationProject.medicory.repository.usersRepositories.PharmacyRepository;
+import com.graduationProject.medicory.repository.usersRepositories.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,6 +53,12 @@ public class OwnerServiceImpl implements OwnerService {
     private final LabMapper labMapper;
     private final PharmacyRepository pharmacyRepository;
     private final PharmacyMpper pharmacyMapper;
+    private final ClinicRepository clinicRepository;
+    private final HospitalRepository hospitalRepository;
+    private final ClinicMapper clinicMapper;
+    private final HospitalMapper hospitalMapper;
+    private final DoctorRepository doctorRepository;
+    private final DoctorMapper doctorMapper;
 
     @Override
     public OwnerDTO getOwnerPersonalInformation(String userCode) {
@@ -254,6 +260,120 @@ public class OwnerServiceImpl implements OwnerService {
         return pharmacyRepository.findByName(pharmacyName)
                 .stream()
                 .map(pharmacyMapper :: toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ClinicSearchResponseDTO> getAllClinics() {
+        return clinicRepository.findAll()
+                .stream()
+                .map(clinicMapper :: toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ClinicSearchResponseDTO> getClinicsByName(String clinicName) {
+        return clinicRepository.findByName(clinicName)
+                .stream()
+                .map(clinicMapper :: toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ClinicSearchResponseDTO> getClinicsByDoctorName(String doctorName) {
+        return clinicRepository.findClinicByOwnerName(doctorName).orElseThrow(
+                () -> new RecordNotFoundException("Doctor " + doctorName + " has no clinics!")
+        )
+                .stream()
+                .map(clinicMapper :: toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<HospitalSearchResponseDTO> getAllHospitals() {
+        return hospitalRepository.findAll()
+                .stream()
+                .map(hospitalMapper :: toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<HospitalSearchResponseDTO> getHospitalsByName(String hospitalName) {
+        return hospitalRepository.findHospitalByName(hospitalName)
+                .stream()
+                .map(hospitalMapper :: toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DoctorSearchResponseDTO> getAllDoctors() {
+        return doctorRepository.findAll()
+                .stream()
+                .map(doctorMapper :: toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DoctorSearchResponseDTO> getDoctorsBySpecialization(String specialization) {
+        return doctorRepository.findDoctorBySpecializationIsContainingIgnoreCase(specialization)
+                .stream()
+                .map(doctorMapper::toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DoctorSearchResponseDTO> findDoctorByFirstName(String fName) {
+        return doctorRepository.findDoctorByFirstName(fName)
+                .stream()
+                .map(doctorMapper::toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DoctorSearchResponseDTO> findDoctorByMiddleName(String midName) {
+        return doctorRepository.findDoctorByMiddleName(midName)
+                .stream()
+                .map(doctorMapper::toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DoctorSearchResponseDTO> findDoctorByLastName(String lName) {
+        return doctorRepository.findDoctorByLastName(lName)
+                .stream()
+                .map(doctorMapper::toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DoctorSearchResponseDTO> findDoctorByFirstNameAndMiddleName(String fName, String midName) {
+        return doctorRepository.findDoctorByFirstNameAndMiddleName(fName,midName)
+                .stream()
+                .map(doctorMapper::toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DoctorSearchResponseDTO> findDoctorByFirstNameAndLastName(String fName, String lName) {
+        return doctorRepository.findDoctorByFirstNameAndLastName(fName, lName)
+                .stream()
+                .map(doctorMapper::toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DoctorSearchResponseDTO> findDoctorByMiddleNameAndLastName(String midName, String lName) {
+        return doctorRepository.findDoctorByMiddleNameAndLastName(midName, lName)
+                .stream()
+                .map(doctorMapper::toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DoctorSearchResponseDTO> findDoctorByFirstNameAndMiddleNameAndLastName(String fName, String midName, String lName) {
+        return doctorRepository.findDoctorByFirstNameAndMiddleNameAndLastName(fName, midName, lName)
+                .stream()
+                .map(doctorMapper::toSearchResponseDTO)
                 .collect(Collectors.toList());
     }
 

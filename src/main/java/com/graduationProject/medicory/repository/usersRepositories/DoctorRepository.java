@@ -18,5 +18,5 @@ List<Doctor> findDoctorByMiddleName(String name);
 List<Doctor> findDoctorByLastName(String  name);
 List<Doctor> findDoctorByMiddleNameAndLastName(String mName,String lName);
 
-
+List<Doctor> findDoctorBySpecializationIsContainingIgnoreCase(String specialization);
 }
