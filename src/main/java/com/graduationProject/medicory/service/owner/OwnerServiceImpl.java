@@ -11,6 +11,7 @@ import com.graduationProject.medicory.mapper.otherMappers.ImmunizationMapper;
 import com.graduationProject.medicory.mapper.otherMappers.SurgeryMapper;
 import com.graduationProject.medicory.mapper.testsMappers.ImagingTestMapper;
 import com.graduationProject.medicory.mapper.testsMappers.LabTestMapper;
+import com.graduationProject.medicory.mapper.usersMappers.LabMapper;
 import com.graduationProject.medicory.mapper.usersMappers.OwnerMapper;
 import com.graduationProject.medicory.model.allergies.AllergiesResponseDTO;
 import com.graduationProject.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
@@ -20,7 +21,9 @@ import com.graduationProject.medicory.model.owner.OwnerDTO;
 import com.graduationProject.medicory.model.surgery.SurgeryResponseDTO;
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
+import com.graduationProject.medicory.model.users.lab.LabSearchResponseDTO;
 import com.graduationProject.medicory.repository.MedicationsRepositories.CurrentScheduleRepository;
+import com.graduationProject.medicory.repository.usersRepositories.LabRepository;
 import com.graduationProject.medicory.repository.usersRepositories.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +46,8 @@ public class OwnerServiceImpl implements OwnerService {
     private final ImagingTestMapper imagingTestMapper;
     private final MedicationMapper medicationMapper;
     private final CurrentScheduleRepository currentScheduleRepository;
+    private final LabRepository labRepository;
+    private final LabMapper labMapper;
 
     @Override
     public OwnerDTO getOwnerPersonalInformation(String userCode) {
@@ -214,5 +219,22 @@ public class OwnerServiceImpl implements OwnerService {
                 .map(medicationMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<LabSearchResponseDTO> getAllLabs() {
+        return labRepository.findAll()
+                .stream()
+                .map(labMapper::toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LabSearchResponseDTO> getLabsByName(String labName) {
+        return labRepository.findByName(labName)
+                .stream()
+                .map(labMapper::toSearchResponseDTO)
+                .collect(Collectors.toList());
+    }
+
 
 }

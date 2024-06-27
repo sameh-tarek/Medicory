@@ -8,6 +8,8 @@ import com.graduationProject.medicory.model.owner.OwnerDTO;
 import com.graduationProject.medicory.model.surgery.SurgeryResponseDTO;
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
+import com.graduationProject.medicory.model.users.lab.LabSearchResponseDTO;
+import com.graduationProject.medicory.model.users.pharmacy.PharmacySearchResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,4 +43,11 @@ public interface OwnerService {
     ImagingTestResponseDTO getOwnerImagingTestByTestId(long testId, String userCode);
 
     List<MedicationDTO> getCurrentMedicationSchedule(String userCode);
+
+    List<LabSearchResponseDTO> getAllLabs();
+
+    List<LabSearchResponseDTO> getLabsByName(String labName);
+
+
+
 }
