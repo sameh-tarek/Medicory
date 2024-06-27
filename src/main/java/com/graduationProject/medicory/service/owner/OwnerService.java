@@ -48,6 +48,9 @@ public interface OwnerService {
 
     List<LabSearchResponseDTO> getLabsByName(String labName);
 
+    List<PharmacySearchResponseDTO> getAllPharmacies();
+
+    List<PharmacySearchResponseDTO> getPharmaciesByName(String pharmacyName);
 
 
 }

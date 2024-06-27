@@ -8,6 +8,7 @@ import com.graduationProject.medicory.mapper.phonesMappers.UserPhoneNumberMapper
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyRequestDTO;
 import com.graduationProject.medicory.model.users.pharmacy.PharmacyResponseDTO;
+import com.graduationProject.medicory.model.users.pharmacy.PharmacySearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -58,6 +59,15 @@ public class PharmacyMapperImpl implements PharmacyMpper {
                 pharmacy.getName(),
                 pharmacy.getUser().isEnabled()
         );
+    }
+
+    @Override
+    public PharmacySearchResponseDTO toSearchResponseDTO(Pharmacy pharmacy) {
+        return PharmacySearchResponseDTO.builder()
+                .name(pharmacy.getName())
+                .address(pharmacy.getAddress())
+                .googleMapsLink(pharmacy.getGoogleMapsLink())
+                .build();
     }
 
     private User toUserRequestEntity(PharmacyRequestDTO pharmacy) {

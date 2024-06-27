@@ -1,6 +1,7 @@
 package com.graduationProject.medicory.controller.owner;
 
 import com.graduationProject.medicory.model.users.lab.LabSearchResponseDTO;
+import com.graduationProject.medicory.model.users.pharmacy.PharmacySearchResponseDTO;
 import com.graduationProject.medicory.service.owner.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,5 +25,15 @@ public class OwnerSearchController {
     @GetMapping("/labs/{labName}")
     public List<LabSearchResponseDTO> getLabsByName(@PathVariable String labName){
         return ownerService.getLabsByName(labName);
+    }
+
+    @GetMapping("/Pharmacies")
+    public List<PharmacySearchResponseDTO> getAllPharmacies(){
+        return ownerService.getAllPharmacies();
+    }
+
+    @GetMapping("/Pharmacies/{pharmacyName}")
+    public List<PharmacySearchResponseDTO> getPharmaciesByName(@PathVariable String pharmacyName){
+        return ownerService.getPharmaciesByName(pharmacyName);
     }
 }
