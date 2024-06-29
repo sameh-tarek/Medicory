@@ -15,4 +15,6 @@ public interface PharmacyCurrentScheduleService {
     String createVoiceRecord(String userCode, MultipartFile file, Long medicationId) throws IOException;
 
     String deleteVoiceRecord(String userCode, Long medicationId, Long recordId) throws IOException;
+
+    String deleteTreatmentFromCurrentSchedule(String userCode, Long medicationId);
 }

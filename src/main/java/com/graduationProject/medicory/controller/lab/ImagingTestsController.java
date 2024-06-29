@@ -30,6 +30,7 @@ public class ImagingTestsController {
     }
     @PostMapping("result/{imageTestId}")
     ResponseEntity<String> uploadTestResult(@RequestParam("file") MultipartFile file, @PathVariable Long imageTestId) throws IOException {
+        System.out.println("1");
         String response = labImageTestService.uploadImageTestResult(file,imageTestId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

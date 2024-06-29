@@ -7,6 +7,7 @@ import com.graduationProject.medicory.mapper.phonesMappers.UserPhoneNumberMapper
 import com.graduationProject.medicory.model.users.clinic.ClinicDTO;
 import com.graduationProject.medicory.model.users.clinic.ClinicRequestDTO;
 import com.graduationProject.medicory.model.users.clinic.ClinicResponseDTO;
+import com.graduationProject.medicory.model.users.clinic.ClinicSearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -48,6 +49,16 @@ public class ClinicMapperImpl implements ClinicMapper {
                 clinic.getName(),
                 clinic.getUser().isEnabled()
         );
+    }
+
+    @Override
+    public ClinicSearchResponseDTO toSearchResponseDTO(Clinic clinic) {
+        return ClinicSearchResponseDTO.builder()
+                .address(clinic.getAddress())
+                .name(clinic.getName())
+                .googleMapsLink(clinic.getGoogleMapsLink())
+                .doctor(clinic.getOwnerName())
+                .build();
     }
 
     @Override

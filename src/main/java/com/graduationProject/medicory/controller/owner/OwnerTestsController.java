@@ -9,29 +9,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/owners/{ownerId}/tests")
+@RequestMapping("/owners/{userCode}/tests")
 public class OwnerTestsController {
     @Autowired
     private OwnerService ownerService;
 
     @GetMapping("/lab-tests")
-    public List<LabTestResponseDTO> getLabTests(@PathVariable long ownerId){
-        return ownerService.getOwnerLabTests(ownerId);
+    public List<LabTestResponseDTO> getLabTests(@PathVariable String userCode){
+        return ownerService.getOwnerLabTests(userCode);
     }
 
     @GetMapping("/lab-tests/{testId}")
-    public LabTestResponseDTO getLabTestById(@PathVariable long ownerId, @PathVariable long testId){
-        return ownerService.getOwnerLabTestByTestId(testId, ownerId);
+    public LabTestResponseDTO getLabTestById(@PathVariable String userCode, @PathVariable long testId){
+        return ownerService.getOwnerLabTestByTestId(testId, userCode);
     }
 
     @GetMapping("/imaging-tests")
-    public List<ImagingTestResponseDTO> getImagingTests(@PathVariable long ownerId){
-        return ownerService.getOwnerImagingTests(ownerId);
+    public List<ImagingTestResponseDTO> getImagingTests(@PathVariable String userCode){
+        return ownerService.getOwnerImagingTests(userCode);
     }
 
     @GetMapping("/imaging-tests/{testId}")
-    public ImagingTestResponseDTO getImagingTestById(@PathVariable long ownerId, @PathVariable long testId){
-        return ownerService.getOwnerImagingTestByTestId(testId, ownerId);
+    public ImagingTestResponseDTO getImagingTestById(@PathVariable String userCode, @PathVariable long testId){
+        return ownerService.getOwnerImagingTestByTestId(testId, userCode);
     }
 
 }
