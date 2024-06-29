@@ -45,5 +45,5 @@ public class AdminRequestDTO {
 
     @NotNull(message = "Phone numbers must not be null")
     @NotEmpty(message = "At least one phone number must be provided")
-    private List<@Pattern(regexp = "^\\+?[0-9\\-\\s]*$", message = "Invalid phone number format") String> phoneNumbers;
+    private List<@Size(min=8,max = 11,message = "phone number can't be less than 8 or exceeded 11") @Pattern(regexp = "^\\+?[0-9\\-\\s]*$", message = "Invalid phone number format") String> phoneNumbers;
 }
