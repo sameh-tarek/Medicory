@@ -4,7 +4,7 @@ import com.graduationProject.medicory.entity.enums.BloodType;
 import com.graduationProject.medicory.entity.enums.Gender;
 import com.graduationProject.medicory.entity.enums.MaritalStatus;
 import com.graduationProject.medicory.model.phones.RelativePhoneNumberDTO;
-import com.graduationProject.medicory.model.users.UserDTO;
+import com.graduationProject.medicory.model.users.user.UserDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

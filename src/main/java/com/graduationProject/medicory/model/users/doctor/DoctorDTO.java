@@ -59,8 +59,8 @@ public class DoctorDTO {
 
 
     @Size(min = 12, message = "Password must be at least 12 characters long")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{12,}$",
-            message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*.~`'\"(){}\\[\\]+\\-_:<>?/;]).*$",
+            message = "Password must contain at least one digit, one uppercase letter, one lowercase letter, and one special character")
     private String password;
 
     @NotNull(message = "Role is required")
@@ -74,5 +74,5 @@ public class DoctorDTO {
 
     @NotNull(message = "Phone numbers list cannot be null")
     @Size(min = 1, message = "At least one phone number must be provided")
-    private List<@Pattern(regexp = "^\\+?[0-9\\-\\s]*$", message = "Invalid phone number format") String> userPhoneNumbers;
+    private List<@Size(min=8,max = 11,message = "phone number can't be less than 8 or exceeded 11") @Pattern(regexp = "^\\+?[0-9\\-\\s]*$", message = "Invalid phone number format") String> userPhoneNumbers;
 }
