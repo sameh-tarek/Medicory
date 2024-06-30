@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class OwnerDTO {
+public class OwnerResponseDTO {
 
     private String name;
     private Integer age;

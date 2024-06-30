@@ -1,8 +1,6 @@
 package com.graduationProject.medicory.service.owner;
 
-import com.graduationProject.medicory.entity.medicationEntities.CurrentSchedule;
 import com.graduationProject.medicory.entity.medicationEntities.Medication;
-import com.graduationProject.medicory.entity.usersEntities.Doctor;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.mapper.medicationsMappers.MedicationMapper;
@@ -17,7 +15,7 @@ import com.graduationProject.medicory.model.allergies.AllergiesResponseDTO;
 import com.graduationProject.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
 import com.graduationProject.medicory.model.immunization.ImmunizationResponseDTO;
 import com.graduationProject.medicory.model.medication.MedicationDTO;
-import com.graduationProject.medicory.model.owner.OwnerDTO;
+import com.graduationProject.medicory.model.owner.OwnerResponseDTO;
 import com.graduationProject.medicory.model.surgery.SurgeryResponseDTO;
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
@@ -61,7 +59,7 @@ public class OwnerServiceImpl implements OwnerService {
     private final DoctorMapper doctorMapper;
 
     @Override
-    public OwnerDTO getOwnerPersonalInformation(String userCode) {
+    public OwnerResponseDTO getOwnerPersonalInformation(String userCode) {
         Owner owner= ownerRepository.findByUserCode(userCode)
                 .orElseThrow(()-> new RecordNotFoundException("Owner with id " + userCode + " doesn't exist!"));
         return ownerMapper.toDTO(owner);

@@ -4,6 +4,7 @@ import com.graduationProject.medicory.model.medication.MedicationDTO;
 import com.graduationProject.medicory.model.medication.MedicationResponseDTO;
 import com.graduationProject.medicory.service.doctor.DoctorMedicationService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class DoctorMedicationController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Add medications for a patient")
     public boolean addMedicationsForPatient(@PathVariable String userCode,
-                                            @RequestBody List<MedicationDTO> medications,
+                                            @Valid @RequestBody List<MedicationDTO> medications,
                                             @RequestParam Long prescriptionId) {
         return medicationService.addMedicationsForPatient(userCode, medications, prescriptionId);
     }
@@ -47,7 +48,7 @@ public class DoctorMedicationController {
     @PutMapping("/medications/{medicationId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "Update medication")
-    public boolean updateMedication(@PathVariable Long medicationId, @RequestBody MedicationDTO medicationDTO) {
+    public boolean updateMedication(@PathVariable Long medicationId, @Valid @RequestBody MedicationDTO medicationDTO) {
         return medicationService.updateMedication(medicationId, medicationDTO);
     }
 

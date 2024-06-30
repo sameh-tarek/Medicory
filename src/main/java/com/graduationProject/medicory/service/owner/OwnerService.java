@@ -1,11 +1,10 @@
 package com.graduationProject.medicory.service.owner;
 
-import com.graduationProject.medicory.entity.usersEntities.Doctor;
 import com.graduationProject.medicory.model.allergies.AllergiesResponseDTO;
 import com.graduationProject.medicory.model.chronicDisease.ChronicDiseasesResponseDTO;
 import com.graduationProject.medicory.model.immunization.ImmunizationResponseDTO;
 import com.graduationProject.medicory.model.medication.MedicationDTO;
-import com.graduationProject.medicory.model.owner.OwnerDTO;
+import com.graduationProject.medicory.model.owner.OwnerResponseDTO;
 import com.graduationProject.medicory.model.surgery.SurgeryResponseDTO;
 import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
@@ -20,7 +19,7 @@ import java.util.List;
 
 @Service
 public interface OwnerService {
-    OwnerDTO getOwnerPersonalInformation(String userCode);
+    OwnerResponseDTO getOwnerPersonalInformation(String userCode);
 
     List<ChronicDiseasesResponseDTO> getOwnerChronicDiseases(String userCode);
 

@@ -6,10 +6,9 @@ import com.graduationProject.medicory.entity.usersEntities.User;
 import com.graduationProject.medicory.mapper.usersMappers.OwnerMapper;
 import com.graduationProject.medicory.mapper.phonesMappers.RelativePhoneMapper;
 import com.graduationProject.medicory.mapper.usersMappers.UserMapper;
-import com.graduationProject.medicory.model.owner.OwnerDTO;
+import com.graduationProject.medicory.model.owner.OwnerResponseDTO;
 import com.graduationProject.medicory.model.phones.RelativePhoneNumberDTO;
 import com.graduationProject.medicory.model.users.owner.OwnerRequestDTO;
-import com.graduationProject.medicory.model.users.owner.OwnerResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -27,8 +26,8 @@ public class OwnerMapperImpl implements OwnerMapper {
     private final RelativePhoneMapper relativePhoneMapper;
 
     @Override
-    public OwnerDTO toDTO(Owner owner) {
-        return new OwnerDTO(
+    public OwnerResponseDTO toDTO(Owner owner) {
+        return new OwnerResponseDTO(
                 owner.getFirstName() +
                         (owner.getMiddleName() != null ? " " + owner.getMiddleName() : "") +
                         " " + owner.getLastName(),
@@ -70,8 +69,8 @@ public class OwnerMapperImpl implements OwnerMapper {
     }
 
     @Override
-    public OwnerResponseDTO toResponseDTO(Owner owner) {
-        return new OwnerResponseDTO(
+    public com.graduationProject.medicory.model.users.owner.OwnerResponseDTO toResponseDTO(Owner owner) {
+        return new com.graduationProject.medicory.model.users.owner.OwnerResponseDTO(
                 owner.getId(),
                 owner.getFirstName() + " "
                         + owner.getMiddleName() + " "

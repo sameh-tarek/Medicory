@@ -4,6 +4,7 @@ import com.graduationProject.medicory.model.prescription.PrescriptionRequestDTO;
 import com.graduationProject.medicory.model.prescription.PrescriptionResponseDTO;
 import com.graduationProject.medicory.service.doctor.DoctorPrescriptionService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +26,10 @@ public class DoctorPrescriptionController {
     @Operation(summary = "Doctor Add New prescription for Patient")
     @PostMapping("{userCode}/prescriptions")
     public Long addNewPrescription (@PathVariable String userCode,
-                                       @RequestBody PrescriptionRequestDTO prescriptionRequestDTO) {
+                                     @Valid @RequestBody PrescriptionRequestDTO prescriptionRequestDTO) {
+
         return doctorPrescriptionService.addNewPrescription(userCode, prescriptionRequestDTO);
     }
-
 
 
     @Operation(summary = "Doctor Find prescription By Id")
