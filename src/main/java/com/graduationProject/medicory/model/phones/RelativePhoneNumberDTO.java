@@ -19,6 +19,7 @@ public class RelativePhoneNumberDTO {
     @NotNull(message = "Phone number cannot be null")
     @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^\\+?[0-9\\-\\s]*$", message = "Invalid phone number format ")
+    @Size(min=8,max = 11,message = "phone number can't be less than 8 or exceeded 11")
     private String phone;
 
     @NotNull(message = "Relation cannot be null")

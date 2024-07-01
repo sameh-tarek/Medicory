@@ -1,4 +1,4 @@
-package com.graduationProject.medicory.model.users;
+package com.graduationProject.medicory.model.users.user;
 
 import com.graduationProject.medicory.entity.enums.Role;
 import com.graduationProject.medicory.model.phones.UserPhoneNumberDTO;
@@ -22,7 +22,7 @@ public class UserDTO {
 
 
     @Size(min = 12, message = "Password must be at least 12 characters long")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).*$",
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*.~`'\"(){}\\[\\]+\\-_:<>?/;]).*$",
             message = "Password must contain at least one digit, one lowercase, one uppercase letter, one special character, and no whitespace")
     private String password;
 

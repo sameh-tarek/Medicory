@@ -1,7 +1,7 @@
 package com.graduationProject.medicory.mapper.usersMappers;
 
 import com.graduationProject.medicory.entity.usersEntities.User;
-import com.graduationProject.medicory.model.users.UserDTO;
+import com.graduationProject.medicory.model.users.user.UserDTO;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

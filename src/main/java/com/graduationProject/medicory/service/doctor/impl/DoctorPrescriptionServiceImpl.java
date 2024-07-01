@@ -59,7 +59,7 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
 
     @Transactional
     @Override
-    public boolean addNewPrescription(String userCode, PrescriptionRequestDTO prescriptionRequestDTO) {
+    public Long addNewPrescription(String userCode, PrescriptionRequestDTO prescriptionRequestDTO) {
         log.trace("Doctor wants to add prescriptionRequestDTO {}, for owner with id {}", prescriptionRequestDTO, userCode);
         Owner owner = ownerRepository.findByUserCode(userCode)
                 .orElseThrow(() -> new RecordNotFoundException("This owner with id " + userCode + " doesn't exist"));
@@ -97,7 +97,7 @@ public class DoctorPrescriptionServiceImpl implements DoctorPrescriptionService 
         prescriptionRepository.save(newPrescription);
 
         log.info("Prescription Added successfully!");
-        return true;
+        return newPrescription.getId();
     }
 
     private List<Medication> mapMedications(List<MedicationDTO> medicationDTOs, Owner owner, Prescription prescription) {

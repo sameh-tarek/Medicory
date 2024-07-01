@@ -24,6 +24,7 @@ public class VoiceRecord {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     @JoinColumn(name = "medication_id")
     private Medication medication;

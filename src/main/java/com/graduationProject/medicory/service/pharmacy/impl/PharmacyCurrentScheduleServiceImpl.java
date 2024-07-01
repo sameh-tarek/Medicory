@@ -4,7 +4,10 @@ import com.graduationProject.medicory.entity.medicationEntities.*;
 import com.graduationProject.medicory.entity.usersEntities.Owner;
 import com.graduationProject.medicory.exception.RecordNotFoundException;
 import com.graduationProject.medicory.exception.VoiceRecordNotFoundException;
+import com.graduationProject.medicory.mapper.impl.AdminMapperImpl;
+import com.graduationProject.medicory.mapper.impl.VoiceRecordMapper;
 import com.graduationProject.medicory.mapper.medicationsMappers.MedicationMapper;
+import com.graduationProject.medicory.model.VoiceRecord.VoiceRecordResponse;
 import com.graduationProject.medicory.model.medication.CurrentScheduleRequest;
 import com.graduationProject.medicory.model.medication.MedicationDTO;
 import com.graduationProject.medicory.repository.MedicationsRepositories.CurrentScheduleRepository;
@@ -20,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +38,7 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
     private final MedicationMapper medicationMapper;
     private final CurrentScheduleRepository currentScheduleRepository;
     private final VoiceRecordRepository voiceRecordRepository;
+    private final VoiceRecordMapper voiceRecordMapper;
 
     @Value("${application.file-storage.pharmacy.records}")
     private String UPLOAD_DIR;
@@ -99,7 +104,7 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
     }
 
     @Override
-    public String createVoiceRecord(String userCode, MultipartFile file, Long medicationId) throws IOException {
+    public String createVoiceRecord(String userCode, MultipartFile file, Long medicationId) throws IOException, UnsupportedAudioFileException {
         log.info("Creating voice record for userCode: {}, medicationId: {}", userCode, medicationId);
         Medication medication = fetchMedicationUsingUserCodeAndMedicationId(userCode, medicationId);
         String path = FileStorageUtil.uploadFile(file, UPLOAD_DIR, MAX_FILE_SIZE);
@@ -115,6 +120,21 @@ public class PharmacyCurrentScheduleServiceImpl implements PharmacyCurrentSchedu
 
         log.info("Voice record created successfully for medication ID: {}", medicationId);
         return "The record created successfully.";
+    }
+
+    @Override
+    public List<VoiceRecordResponse> getVoiceRecords(String userCode, Long medicationId) {
+        log.info("Fetching paths of voice records for medication ID: {} and userCode: {}", medicationId, userCode);
+        Medication medication = fetchMedicationUsingUserCodeAndMedicationId(userCode, medicationId);
+
+
+        List<VoiceRecordResponse> voiceRecordResponses =
+                medication.getVoiceRecords().stream()
+                        .map(voiceRecord -> voiceRecordMapper.toDTO(voiceRecord))
+                        .toList();
+
+        log.info("Fetched {} voice Records Paths for medication ID: {}", voiceRecordResponses.size(), medicationId);
+        return voiceRecordResponses;
     }
 
     @Override

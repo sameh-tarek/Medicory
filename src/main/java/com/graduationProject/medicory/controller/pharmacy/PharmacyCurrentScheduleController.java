@@ -1,15 +1,19 @@
 package com.graduationProject.medicory.controller.pharmacy;
 
+import com.graduationProject.medicory.entity.medicationEntities.VoiceRecord;
+import com.graduationProject.medicory.model.VoiceRecord.VoiceRecordResponse;
 import com.graduationProject.medicory.model.medication.CurrentScheduleRequest;
 import com.graduationProject.medicory.model.medication.MedicationDTO;
 import com.graduationProject.medicory.service.pharmacy.PharmacyCurrentScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.util.List;
 
@@ -43,11 +47,19 @@ public class PharmacyCurrentScheduleController {
     }
 
     @PostMapping("{userCode}/medications/{medicationId}")
-    ResponseEntity<String> createVoiceRecord(@PathVariable String userCode, @RequestParam MultipartFile file, @PathVariable Long medicationId) throws IOException {
+    ResponseEntity<String> createVoiceRecord(@PathVariable String userCode, @RequestParam MultipartFile file, @PathVariable Long medicationId) throws IOException, UnsupportedAudioFileException {
         String response = pharmacyCurrentScheduleService.createVoiceRecord( userCode, file, medicationId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
+
+    }
+    @GetMapping("{userCode}/medications/{medicationId}/records")
+    ResponseEntity<List<VoiceRecordResponse>> getVoiceRecords(@PathVariable String userCode, @PathVariable Long medicationId) throws IOException {
+        List<VoiceRecordResponse> voiceRecordsPaths = pharmacyCurrentScheduleService.getVoiceRecords( userCode, medicationId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(voiceRecordsPaths);
 
     }
 

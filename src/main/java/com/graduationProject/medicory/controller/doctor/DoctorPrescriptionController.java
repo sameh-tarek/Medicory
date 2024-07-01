@@ -25,11 +25,11 @@ public class DoctorPrescriptionController {
 
     @Operation(summary = "Doctor Add New prescription for Patient")
     @PostMapping("{userCode}/prescriptions")
-    public boolean addNewPrescription (@PathVariable String userCode,
-                                       @Valid @RequestBody PrescriptionRequestDTO prescriptionRequestDTO) {
+    public Long addNewPrescription (@PathVariable String userCode,
+                                     @Valid @RequestBody PrescriptionRequestDTO prescriptionRequestDTO) {
+
         return doctorPrescriptionService.addNewPrescription(userCode, prescriptionRequestDTO);
     }
-
 
 
     @Operation(summary = "Doctor Find prescription By Id")
