@@ -5,6 +5,7 @@ import com.graduationProject.medicory.model.tests.ImagingTestResponseDTO;
 import com.graduationProject.medicory.model.tests.LabTestRequestDTO;
 import com.graduationProject.medicory.model.tests.LabTestResponseDTO;
 import com.graduationProject.medicory.service.doctor.DoctorTestsService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,7 @@ public class DoctorTestsController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "Update a lab test")
     public boolean updateLabTest(@PathVariable(name = "testId") Long testId,
-                                 @RequestBody LabTestRequestDTO labTestRequestDTO){
+                                 @Valid @RequestBody LabTestRequestDTO labTestRequestDTO){
         return doctorTestsService.updateLabTest(testId, labTestRequestDTO);
     }
 
@@ -50,7 +51,7 @@ public class DoctorTestsController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Add prescription lab tests for a patient")
     public boolean addPrescriptionLabTestsForPatient (@PathVariable String userCode,
-                                                      @RequestBody List<LabTestRequestDTO> requiredTests,
+                                                      @Valid @RequestBody List<LabTestRequestDTO> requiredTests,
                                                       @RequestParam Long prescriptionId) {
         return doctorTestsService.addPrescriptionLabTestsForPatient(userCode, requiredTests, prescriptionId);
     }
@@ -97,7 +98,7 @@ public class DoctorTestsController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "Update an imaging test")
     public boolean updateImagingTest(@PathVariable(name = "testId") Long testId,
-                                     @RequestBody ImagingTestRequestDTO imagingTestRequestDTO){
+                                     @Valid @RequestBody ImagingTestRequestDTO imagingTestRequestDTO){
         return doctorTestsService.updateImagingTest(testId, imagingTestRequestDTO);
     }
 
@@ -105,7 +106,7 @@ public class DoctorTestsController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Add prescription imaging tests for a patient")
     public boolean addPrescriptionImagingTestForPatient (@PathVariable String userCode,
-                                                         @RequestBody List<ImagingTestRequestDTO> requiredTests,
+                                                         @Valid @RequestBody List<ImagingTestRequestDTO> requiredTests,
                                                          @RequestParam Long prescriptionId) {
         return doctorTestsService.addImagingTestForPatient(userCode, requiredTests, prescriptionId);
     }

@@ -10,6 +10,7 @@ import com.graduationProject.medicory.model.surgery.SurgeryRequestDTO;
 import com.graduationProject.medicory.model.surgery.SurgeryResponseDTO;
 import com.graduationProject.medicory.service.doctor.DoctorMedicalHistoryService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,7 @@ public class DoctorMedicalHistoryController {
     @Operation(summary = "Doctor add New Chronic Diseases For Patient")
     @PostMapping("/{userCode}/chronic-diseases")
     @ResponseStatus(HttpStatus.CREATED)
-    public String addNewChronicDiseasesForPatient(@RequestBody ChronicDiseasesRequestDTO chronicDiseasesRequestDTO,
+    public String addNewChronicDiseasesForPatient(@Valid @RequestBody ChronicDiseasesRequestDTO chronicDiseasesRequestDTO,
                                                   @PathVariable String userCode){
         return doctorMedicalHistoryService.addNewChronicDiseasesForPatient(chronicDiseasesRequestDTO, userCode);
     }
@@ -46,7 +47,7 @@ public class DoctorMedicalHistoryController {
     @Operation(summary = "Doctor update Chronic Disease")
     @PutMapping("{userCode}/chronic-diseases/{diseasesId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateChronicDisease(@RequestBody ChronicDiseasesRequestDTO chronicDiseasesRequestDTO,
+    public String updateChronicDisease(@Valid @RequestBody ChronicDiseasesRequestDTO chronicDiseasesRequestDTO,
                                        @PathVariable Long diseasesId, @PathVariable String userCode){
         return doctorMedicalHistoryService.updateChronicDisease(chronicDiseasesRequestDTO, diseasesId, userCode);
     }
@@ -70,7 +71,7 @@ public class DoctorMedicalHistoryController {
     @Operation(summary = "Doctor add New Allergies For Patient")
     @PostMapping("{userCode}/allergies")
     @ResponseStatus(HttpStatus.CREATED)
-    public String addNewAllergiesForPatient(@RequestBody AllergiesRequestDTO allergiesRequestDTO,
+    public String addNewAllergiesForPatient(@Valid @RequestBody AllergiesRequestDTO allergiesRequestDTO,
                                             @PathVariable String userCode) {
         return doctorMedicalHistoryService.addNewAllergiesForPatient(allergiesRequestDTO, userCode);
     }
@@ -84,7 +85,7 @@ public class DoctorMedicalHistoryController {
     @Operation(summary = "Doctor update Allergies")
     @PutMapping("{userCode}/allergies/{allergiesId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateAllergies(@RequestBody AllergiesRequestDTO allergiesRequestDTO,
+    public String updateAllergies(@Valid @RequestBody AllergiesRequestDTO allergiesRequestDTO,
                                   @PathVariable Long allergiesId, @PathVariable String userCode){
         return doctorMedicalHistoryService.updateAllergies(allergiesRequestDTO, allergiesId, userCode);
     }
@@ -108,7 +109,7 @@ public class DoctorMedicalHistoryController {
     @Operation(summary = "Doctor add New Immunization For Patient")
     @PostMapping("{userCode}/immunizations")
     @ResponseStatus(HttpStatus.CREATED)
-    public String addNewImmunizationForPatient(@RequestBody ImmunizationRequestDTO immunizationRequestDTO,
+    public String addNewImmunizationForPatient(@Valid @RequestBody ImmunizationRequestDTO immunizationRequestDTO,
                                                @PathVariable String userCode) {
         return doctorMedicalHistoryService.addNewImmunizationForPatient(immunizationRequestDTO, userCode);
     }
@@ -122,7 +123,7 @@ public class DoctorMedicalHistoryController {
     @Operation(summary = "Doctor update Immunization")
     @PutMapping("{userCode}/immunizations/{immunizationId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateImmunization(@RequestBody ImmunizationRequestDTO immunizationRequestDTO,
+    public String updateImmunization(@Valid @RequestBody ImmunizationRequestDTO immunizationRequestDTO,
                                      @PathVariable Long immunizationId, @PathVariable String userCode){
         return doctorMedicalHistoryService.updateImmunization(immunizationRequestDTO, immunizationId, userCode);
     }
@@ -146,7 +147,7 @@ public class DoctorMedicalHistoryController {
     @Operation(summary = "Doctor add New Surgery For Patient")
     @PostMapping("{userCode}/surgeries")
     @ResponseStatus(HttpStatus.CREATED)
-    public String addNewSurgeryForPatient(@RequestBody SurgeryRequestDTO surgeryRequestDTO,
+    public String addNewSurgeryForPatient(@Valid @RequestBody SurgeryRequestDTO surgeryRequestDTO,
                                           @PathVariable String userCode) {
         return doctorMedicalHistoryService.addNewSurgeryForPatient(surgeryRequestDTO, userCode);
     }
@@ -160,7 +161,7 @@ public class DoctorMedicalHistoryController {
     @Operation(summary = "Doctor update Surgery")
     @PutMapping("{userCode}/surgeries/{surgeryId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateSurgery(@RequestBody SurgeryRequestDTO surgeryRequestDTO,
+    public String updateSurgery(@Valid @RequestBody SurgeryRequestDTO surgeryRequestDTO,
                                 @PathVariable Long surgeryId, @PathVariable String userCode){
         return doctorMedicalHistoryService.updateSurgery(surgeryRequestDTO, surgeryId, userCode);
     }
