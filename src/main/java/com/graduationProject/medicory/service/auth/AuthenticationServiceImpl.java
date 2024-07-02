@@ -54,8 +54,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         log.info("User has logged in successfully");
         return AuthenticationResponse.builder()
                 .id(user.getId())
+                .code(user.getCode())
                 .email(user.getEmail())
                 .token(jwtToken)
+                .role(user.getRole())
                 .build();
     }
 
