@@ -34,7 +34,8 @@ The Medicory API is the heart and soul of the Medicory health card solution, bri
 
 Visualize the Medicory data structure:
 
-![medicoryERD3](https://github.com/said-ahmd/health_card/assets/108232157/60a0e869-10d7-412d-96fd-d93ef5b3c640)
+![medicory@localhost](https://github.com/said-ahmd/health_card/assets/108232157/bc75d074-9457-4735-a823-bf986c4a6f8d)
+
 
 ## Tech Stack
 
